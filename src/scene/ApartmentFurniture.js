@@ -156,34 +156,6 @@ export class ApartmentFurniture {
     bedPointLight.position.set(0.0, 0.9, -0.5);
     podGroup.add(bedPointLight);
 
-    // Vending Machine "NC VM - NICOLA / SPURT" next to sleeping pod entrance
-    const vmGroup = new THREE.Group();
-    vmGroup.position.set(1.5, 0, -0.6);
-
-    const vmBodyGeo = new THREE.BoxGeometry(0.7, 1.9, 0.6);
-    const vmBody = new THREE.Mesh(vmBodyGeo, this.darkMetal);
-    vmBody.position.y = 0.95;
-    vmBody.castShadow = true;
-    vmGroup.add(vmBody);
-
-    // Glowing front display screen
-    const vmScreenGeo = new THREE.PlaneGeometry(0.55, 1.1);
-    const vmScreen = new THREE.Mesh(vmScreenGeo, this.warmOrangeEmissive);
-    vmScreen.position.set(0, 1.1, 0.31);
-    vmGroup.add(vmScreen);
-
-    // Dispenser slot at bottom
-    const slotGeo = new THREE.BoxGeometry(0.5, 0.25, 0.1);
-    const slot = new THREE.Mesh(slotGeo, this.tanMetal);
-    slot.position.set(0, 0.3, 0.28);
-    vmGroup.add(slot);
-
-    // VM Light spill
-    const vmLight = new THREE.PointLight(0xff6600, 1.8, 3.0);
-    vmLight.position.set(0, 1.1, 0.6);
-    vmGroup.add(vmLight);
-
-    podGroup.add(vmGroup);
     this.group.add(podGroup);
   }
 
@@ -602,6 +574,41 @@ export class ApartmentFurniture {
     const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.66, 1.01, 0.04), this.darkMetal);
     tvFrame.position.z = -0.025;
     tvGroup.add(tvFrame);
+
+    // TV Screen Ambient Point Light (illuminates sofa and right wall in cyan/blue)
+    const tvScreenLight = new THREE.PointLight(0x00f0ff, 2.5, 4.5, 1.2);
+    tvScreenLight.position.set(1.2, 1.6, -0.2);
+    loungeGroup.add(tvScreenLight);
+
+    // =========================================================================
+    // DEDICATED SUNKEN LOUNGE LIGHTING (Warm ambient & accent glow)
+    // =========================================================================
+    // 1. Warm overhead ceiling pendant spotlight shining down onto the sofa & coffee table
+    const loungeOverheadLight = new THREE.SpotLight(0xffbe6b, 4.2, 7.5, Math.PI / 2.8, 0.4, 1.0);
+    loungeOverheadLight.position.set(-0.2, 2.7, 0.0);
+    loungeOverheadLight.target.position.set(-0.2, 0.2, 0.0);
+    loungeGroup.add(loungeOverheadLight);
+    loungeGroup.add(loungeOverheadLight.target);
+
+    // 2. Under-sofa Cyberpunk yellow LED base runner strip
+    const underSofaGeo = new THREE.BoxGeometry(2.05, 0.04, 0.04);
+    const underSofaMesh = new THREE.Mesh(underSofaGeo, this.yellowAccentMaterial);
+    underSofaMesh.position.set(-0.15, 0.03, -0.36);
+    loungeGroup.add(underSofaMesh);
+
+    const underSofaLight = new THREE.PointLight(0xFCEE09, 1.5, 2.5, 1.6);
+    underSofaLight.position.set(-0.15, 0.1, -0.3);
+    loungeGroup.add(underSofaLight);
+
+    // 3. Cyberpunk drink / datapad prop on coffee table with soft cyan ambient light
+    const datapadGeo = new THREE.BoxGeometry(0.18, 0.015, 0.12);
+    const datapadMesh = new THREE.Mesh(datapadGeo, this.cyanEmissive);
+    datapadMesh.position.set(-0.1, 0.28, 0.25);
+    loungeGroup.add(datapadMesh);
+
+    const tableLight = new THREE.PointLight(0x00f0ff, 1.2, 2.0);
+    tableLight.position.set(-0.1, 0.35, 0.25);
+    loungeGroup.add(tableLight);
 
     loungeGroup.add(tvGroup);
     this.group.add(loungeGroup);

@@ -91,19 +91,24 @@ class App {
   }
 
   initLights() {
-    // Ambient light - dark cyberpunk base
-    const ambientLight = new THREE.AmbientLight(0x1a1622, 1.4);
+    // Ambient light - rich dark cyberpunk base
+    const ambientLight = new THREE.AmbientLight(0x221e2c, 1.8);
     this.scene.add(ambientLight);
 
-    // Warm ceiling interior bounce light (simulating apartment lamps)
+    // Warm ceiling interior bounce light (simulating left side apartment lamps)
     const interiorLight = new THREE.PointLight(0xffa24c, 2.2, 10, 1.2);
     interiorLight.position.set(-1.0, 2.8, 0.5);
     interiorLight.castShadow = true;
     this.scene.add(interiorLight);
 
-    // Subtle cool fill from opposite side
+    // Warm lounge ceiling fill light (illuminating right lounge area from above)
+    const loungeCeilingLight = new THREE.PointLight(0xffc27a, 2.0, 9, 1.2);
+    loungeCeilingLight.position.set(2.6, 2.7, -1.2);
+    this.scene.add(loungeCeilingLight);
+
+    // Subtle cool fill from front-right side
     const fillLight = new THREE.PointLight(0x00d4ff, 1.2, 8, 1.4);
-    fillLight.position.set(2.5, 2.2, 1.0);
+    fillLight.position.set(2.5, 2.2, 1.5);
     this.scene.add(fillLight);
   }
 

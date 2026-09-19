@@ -644,12 +644,6 @@ export class ApartmentRoom {
     const colBR = new THREE.Mesh(colGeo, colMat);
     colBR.position.set(this.width / 2 - 0.175, this.height / 2, -this.depth / 2 + 0.175);
     this.group.add(colBR);
-
-    // Architectural partition beam separating sleeping pod and main space
-    const partitionGeo = new THREE.BoxGeometry(0.12, this.height, 1.6);
-    const partition = new THREE.Mesh(partitionGeo, colMat);
-    partition.position.set(-1.5, this.height / 2, -2.7);
-    this.group.add(partition);
   }
 
   createFurniture() {
