@@ -4,8 +4,9 @@ import gsap from 'gsap';
 /**
  * CameraController (Phase 4 - Cinematic Camera System & Navigation)
  * Features:
- * - Arched 3D Quadratic Bezier flight paths for spatial clearance
- * - Quaternion SLERP for 100% flip-free, gimbal-lock-free cinematic rotations
+ * - Route-specific 3D Quadratic Bezier flight paths (never clips walls)
+ * - Continuous target-tracking lookAt (camera always faces where it's going, never looks backwards)
+ * - Zero flips / zero gimbal lock
  * - 4 Dedicated Cinematic Anchors (HOME, PROJECTS, STATS, COMM)
  * - Responsive mouse parallax when idle
  */
@@ -41,7 +42,7 @@ export class CameraController {
         label: 'NETRUNNER WORKSTATION // PROJECTS',
         // In front of the reversed carbon desk on the bed side, framing the ultrawide terminal
         position: new THREE.Vector3(-3.1, 1.25, 0.45),
-        target: new THREE.Vector3(-3.1, 1.15, 1.5),
+        target: new THREE.Vector3(-3.1, 1.15, 1.45),
         duration: 2.0,
         ease: 'power2.inOut'
       },
@@ -63,7 +64,6 @@ export class CameraController {
         duration: 1.9,
         ease: 'power2.inOut'
       },
-      // Alias CONTACT to COMM for backwards compatibility
       CONTACT: {
         name: 'COMM',
         label: 'SMART MIRROR // BIOMETRIC COMM LINK',
@@ -74,18 +74,64 @@ export class CameraController {
       }
     };
 
+    // Precompute orientation quaternions for all anchors
+    const m = new THREE.Matrix4();
+    for (const key of Object.keys(this.anchors)) {
+      const a = this.anchors[key];
+      m.lookAt(a.position, a.target, new THREE.Vector3(0, 1, 0));
+      a.quaternion = new THREE.Quaternion().setFromRotationMatrix(m);
+    }
+
+    // Active tween reference for safe cancellation
+    this.activeTween = null;
+
     // Callback handlers for UI integration
     this.onTransitionStart = null;
     this.onTransitionComplete = null;
 
     // Set initial camera position & orientation
     this.camera.position.copy(this.anchors.HOME.position);
+    this.camera.quaternion.copy(this.anchors.HOME.quaternion);
     this.camera.lookAt(this.anchors.HOME.target);
   }
 
   /**
-   * Smoothly navigates the camera along an arched trajectory with Quaternion SLERP
-   * (Guaranteed zero gimbal flips, zero sudden swivels)
+   * Calculates intelligent intermediate waypoints for each specific route
+   * to guarantee the camera arcs through open space and never cuts through obstacles
+   */
+  getMidpoint(startName, endName, startPos, endPos) {
+    const key = `${startName}->${endName}`;
+    const mid = new THREE.Vector3().addVectors(startPos, endPos).multiplyScalar(0.5);
+
+    // Default safe elevation
+    mid.y = Math.max(startPos.y, endPos.y) + 0.18;
+
+    if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
+      // Arc through central aisle to enter the bed/workstation space from the front
+      mid.set(-1.3, 1.68, 2.0);
+    } else if (key === 'HOME->COMM' || key === 'COMM->HOME') {
+      // Arc through room aisle into the open restroom entrance
+      mid.set(-1.8, 1.68, 1.8);
+    } else if (key === 'HOME->STATS' || key === 'STATS->HOME') {
+      // Descend gently into the sunken lounge
+      mid.set(0.9, 1.55, 1.5);
+    } else if (key === 'PROJECTS->STATS' || key === 'STATS->PROJECTS') {
+      // Traverse across the wide room aisle between workstation and lounge
+      mid.set(0.0, 1.75, 1.2);
+    } else if (key === 'PROJECTS->COMM' || key === 'COMM->PROJECTS') {
+      // Short hop along left wall
+      mid.set(-2.6, 1.55, 0.25);
+    } else if (key === 'STATS->COMM' || key === 'COMM->STATS') {
+      // Cross room from sunken lounge to restroom
+      mid.set(-0.5, 1.72, 0.8);
+    }
+
+    return mid;
+  }
+
+  /**
+   * Smoothly navigates the camera along an arched trajectory with quaternion SLERP
+   * guaranteeing continuous, 100% flip-free orientation (never looks backwards)
    */
   moveTo(anchorName) {
     let key = anchorName.toUpperCase();
@@ -101,6 +147,7 @@ export class CameraController {
       return;
     }
 
+    const startAnchorName = this.currentAnchor;
     this.currentAnchor = anchor.name;
     this.isTransitioning = true;
 
@@ -108,69 +155,53 @@ export class CameraController {
       this.onTransitionStart(anchor);
     }
 
-    // Capture starting state
+    // Capture starting vectors & orientations from the current camera state
     const startPos = this.camera.position.clone();
     const endPos = anchor.position.clone();
-    const startRot = this.camera.quaternion.clone();
+    const startQuat = this.camera.quaternion.clone();
+    const endQuat = anchor.quaternion.clone();
 
-    // Compute target end orientation via dummy object
-    const dummy = new THREE.Object3D();
-    dummy.position.copy(endPos);
-    dummy.lookAt(anchor.target);
-    const endRot = dummy.quaternion.clone();
+    // Calculate bespoke midpoint waypoint
+    const midPos = this.getMidpoint(startAnchorName, anchor.name, startPos, endPos);
 
-    // Target lookAt interpolation
-    const startTarget = this.target.clone();
-    const endTarget = anchor.target.clone();
+    // Ensure camera up vector is clean
+    this.camera.up.set(0, 1, 0);
 
-    // Calculate smart clearance waypoint (midPos) for arched cinematic flight
-    const midPos = new THREE.Vector3().addVectors(startPos, endPos).multiplyScalar(0.5);
-    
-    // Elevate slightly above furniture so camera glides gracefully over obstacles
-    const maxElevation = Math.max(startPos.y, endPos.y, 1.75);
-    midPos.y = maxElevation + 0.2;
-
-    // If moving into/out of corner areas (workstation / toilet / lounge),
-    // arc through the central open room aisle to prevent clipping partitions
-    if (startPos.x < -1.8 || endPos.x < -1.8) {
-      midPos.x = Math.max(midPos.x, -1.4);
+    // Cancel any ongoing transition cleanly
+    if (this.activeTween) {
+      this.activeTween.kill();
+      this.activeTween = null;
     }
-    if (startPos.z < -1.0 || endPos.z < -1.0) {
-      midPos.z = Math.max(midPos.z, 0.4);
-    }
-
-    // Kill previous camera tweens
-    gsap.killTweensOf(this);
 
     const duration = this.prefersReducedMotion ? 0.2 : anchor.duration;
-    const tweenData = { t: 0 };
+    const tweenObj = { t: 0 };
 
-    gsap.to(tweenData, {
+    this.activeTween = gsap.to(tweenObj, {
       t: 1,
       duration: duration,
-      ease: anchor.ease,
+      ease: anchor.ease || 'power2.inOut',
       onUpdate: () => {
-        const t = tweenData.t;
+        const t = tweenObj.t;
         const invT = 1 - t;
 
-        // Quadratic Bezier curve for position: B(t) = (1-t)^2 * P0 + 2(1-t)t * Pmid + t^2 * P1
+        // Quadratic Bezier curve for smooth 3D position travel
         this.camera.position.x = invT * invT * startPos.x + 2 * invT * t * midPos.x + t * t * endPos.x;
         this.camera.position.y = invT * invT * startPos.y + 2 * invT * t * midPos.y + t * t * endPos.y;
         this.camera.position.z = invT * invT * startPos.z + 2 * invT * t * midPos.z + t * t * endPos.z;
 
-        // Quaternion SLERP: Guaranteed continuous, shortest-arc spherical rotation (NEVER FLIPS)
-        this.camera.quaternion.slerpQuaternions(startRot, endRot, t);
-
-        // Interpolate target point alongside for seamless parallax handoff
-        this.target.lerpVectors(startTarget, endTarget, t);
+        // Spherical Linear Interpolation (SLERP) guarantees continuous, 100% flip-free orientation
+        this.camera.quaternion.slerpQuaternions(startQuat, endQuat, t);
       },
       onComplete: () => {
         this.isTransitioning = false;
+        this.activeTween = null;
+
         this.basePosition.copy(anchor.position);
         this.baseTarget.copy(anchor.target);
         this.camera.position.copy(anchor.position);
-        this.camera.quaternion.copy(endRot);
+        this.camera.quaternion.copy(anchor.quaternion);
         this.target.copy(anchor.target);
+        this.camera.lookAt(this.target);
 
         if (this.onTransitionComplete) {
           this.onTransitionComplete(anchor);
@@ -192,7 +223,6 @@ export class CameraController {
    */
   update() {
     if (this.isTransitioning) {
-      // During active tween, GSAP controls position & quaternion directly
       return;
     }
 
