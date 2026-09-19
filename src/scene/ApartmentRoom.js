@@ -67,14 +67,12 @@ export class ApartmentRoom {
     });
 
     // Window glass material (tinted, semi-reflective)
-    this.glassMaterial = new THREE.MeshPhysicalMaterial({
+    this.glassMaterial = new THREE.MeshStandardMaterial({
       color: 0x88ccff,
       transparent: true,
-      opacity: 0.25,
+      opacity: 0.3,
       roughness: 0.1,
-      metalness: 0.1,
-      transmission: 0.85,
-      ior: 1.5
+      metalness: 0.4
     });
   }
 

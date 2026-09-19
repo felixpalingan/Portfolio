@@ -14,14 +14,52 @@ class App {
     this.clock = new THREE.Clock();
     this.mouse = new THREE.Vector2(0, 0);
 
-    this.initScene();
-    this.initCamera();
-    this.initRenderer();
-    this.initLights();
-    this.initRoom();
-    this.initEvents();
-    this.initLoadingSequence();
-    this.animate();
+    try {
+      console.log("[CYBERPUNK] Booting Megabuilding H10 matrix...");
+      this.updateProgress(20, "INITIALIZING WEBGL 3D PIPELINE [20%]");
+      
+      this.initScene();
+      this.initCamera();
+      this.initRenderer();
+      this.initLights();
+
+      this.updateProgress(60, "GENERATING APARTMENT GEOMETRY [60%]");
+      this.initRoom();
+
+      this.updateProgress(85, "CONNECTING NIGHT CITY SKYLINE [85%]");
+      this.initEvents();
+
+      this.updateProgress(100, "NEURAL LINK ESTABLISHED [100%]");
+      this.finishLoading();
+
+      this.animate();
+    } catch (err) {
+      console.error("[CYBERPUNK CRITICAL ERROR]", err);
+      if (this.loadingStatus) {
+        this.loadingStatus.innerHTML = `<span style="color:#FF003C;font-weight:bold;">SYSTEM FAULT: ${err.message}</span>`;
+      }
+    }
+  }
+
+  updateProgress(percent, label) {
+    if (this.progressBar) this.progressBar.style.width = `${percent}%`;
+    if (this.loadingStatus) this.loadingStatus.textContent = label;
+  }
+
+  finishLoading() {
+    setTimeout(() => {
+      if (this.loadingScreen) {
+        gsap.to(this.loadingScreen, {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          onComplete: () => {
+            this.loadingScreen.classList.add('fade-out');
+            this.loadingScreen.style.display = 'none';
+          }
+        });
+      }
+    }, 350);
   }
 
   initScene() {
@@ -94,40 +132,6 @@ class App {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 
-  initLoadingSequence() {
-    let currentStep = 0;
-    const steps = [
-      { p: 25, label: "CALIBRATING ROOM SHELL MATRIX [25%]" },
-      { p: 60, label: "COMPUTING HEXAGONAL TILE SHADERS [60%]" },
-      { p: 85, label: "SYNCHRONIZING NIGHT CITY SKYLINE [85%]" },
-      { p: 100, label: "MEGABUILDING H10 INITIALIZED [100%]" }
-    ];
-
-    const interval = setInterval(() => {
-      if (currentStep < steps.length) {
-        const step = steps[currentStep];
-        if (this.progressBar) this.progressBar.style.width = `${step.p}%`;
-        if (this.loadingStatus) this.loadingStatus.textContent = step.label;
-        currentStep++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          if (this.loadingScreen) {
-            gsap.to(this.loadingScreen, {
-              opacity: 0,
-              duration: 0.6,
-              ease: "power2.out",
-              onComplete: () => {
-                this.loadingScreen.classList.add('fade-out');
-                this.loadingScreen.style.display = 'none';
-              }
-            });
-          }
-        }, 200);
-      }
-    }, 120);
-  }
-
   animate() {
     requestAnimationFrame(() => this.animate());
 
@@ -144,12 +148,17 @@ class App {
   }
 }
 
-// Boot application immediately (ES module is executed after DOM is available)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
+// Boot application
+function boot() {
+  try {
     new App();
-  });
-} else {
-  new App();
+  } catch (err) {
+    console.error("[FATAL BOOT ERROR]", err);
+  }
 }
 
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
