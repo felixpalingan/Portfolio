@@ -26,6 +26,42 @@
 
     <!-- Main Application UI / HUD Layer -->
     <div id="app">
+      <!-- Cyberpunk HUD Header -->
+      <header id="hud-header">
+        <div class="hud-brand">
+          <span class="hud-tag">[FP]</span>
+          <span class="hud-title">FELIX PALINGAN</span>
+          <span class="hud-subtitle">// FULL STACK NETRUNNER</span>
+        </div>
+        <div id="hud-status-pill" class="hud-pill">
+          <span class="pulse-dot"></span>
+          <span id="current-location-text">MEGABUILDING H10 // ROOM 1214</span>
+        </div>
+      </header>
+
+      <!-- HUD Navigation Bar (Controls Camera Anchors) -->
+      <nav id="hud-nav" aria-label="Apartment Camera Navigation">
+        <button class="hud-nav-btn active" data-nav="HOME" id="nav-btn-home">
+          <span class="btn-index">01</span>
+          <span class="btn-text">HOME</span>
+        </button>
+        <button class="hud-nav-btn" data-nav="PROJECTS" id="nav-btn-projects">
+          <span class="btn-index">02</span>
+          <span class="btn-text">PROJECTS</span>
+        </button>
+        <button class="hud-nav-btn" data-nav="STATS" id="nav-btn-stats">
+          <span class="btn-index">03</span>
+          <span class="btn-text">STATS</span>
+        </button>
+        <button class="hud-nav-btn" data-nav="CONTACT" id="nav-btn-contact">
+          <span class="btn-index">04</span>
+          <span class="btn-text">COMM</span>
+        </button>
+      </nav>
+
+      <!-- CRT Scanline Screen Overlay -->
+      <div class="hud-scanlines" aria-hidden="true"></div>
+
       <!-- Loading Screen -->
       <div id="loading-screen">
         <div class="loader-content">

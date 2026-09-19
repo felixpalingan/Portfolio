@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { portfolioData } from './data/portfolioData.js';
 import { ApartmentRoom } from './scene/ApartmentRoom.js';
+import { CameraController } from './scene/CameraController.js';
 
 class App {
   constructor() {
@@ -71,9 +72,7 @@ class App {
   initCamera() {
     const aspect = window.innerWidth / window.innerHeight;
     this.camera = new THREE.PerspectiveCamera(52, aspect, 0.1, 100);
-    // HOME Anchor: Wide establishing shot looking into the apartment
-    this.camera.position.set(0, 1.85, 4.4);
-    this.camera.lookAt(0, 1.25, -0.5);
+    this.cameraController = new CameraController(this.camera);
   }
 
   initRenderer() {
@@ -119,6 +118,41 @@ class App {
     window.addEventListener('mousemove', (e) => {
       this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      if (this.cameraController) {
+        this.cameraController.setMouse(this.mouse.x, this.mouse.y);
+      }
+    });
+
+    // Navigation buttons (Controls Cinematic Camera Anchors)
+    const navButtons = document.querySelectorAll('.hud-nav-btn');
+    const locationText = document.getElementById('current-location-text');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const anchor = btn.getAttribute('data-nav');
+        if (this.cameraController) {
+          this.cameraController.moveTo(anchor);
+        }
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (locationText && this.cameraController.anchors[anchor]) {
+          locationText.textContent = this.cameraController.anchors[anchor].label;
+        }
+      });
+    });
+
+    // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, Escape: HOME)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '1' || e.key === 'Escape') {
+        document.getElementById('nav-btn-home')?.click();
+      } else if (e.key === '2') {
+        document.getElementById('nav-btn-projects')?.click();
+      } else if (e.key === '3') {
+        document.getElementById('nav-btn-stats')?.click();
+      } else if (e.key === '4') {
+        document.getElementById('nav-btn-contact')?.click();
+      }
     });
   }
 
@@ -138,17 +172,15 @@ class App {
 
     const delta = this.clock.getDelta();
 
-    // Update animated room elements
+    // Update animated room elements (ceiling fan, 360 ticker, vinyl turntable, server LEDs)
     if (this.room) {
       this.room.update();
     }
 
-    // Subtle responsive camera parallax
-    const targetX = this.mouse.x * 0.35;
-    const targetY = 1.85 + this.mouse.y * 0.15;
-    this.camera.position.x += (targetX - this.camera.position.x) * 0.04;
-    this.camera.position.y += (targetY - this.camera.position.y) * 0.04;
-    this.camera.lookAt(0, 1.25, -0.5);
+    // Update camera controller (GSAP transitions & smooth parallax)
+    if (this.cameraController) {
+      this.cameraController.update();
+    }
 
     this.renderer.render(this.scene, this.camera);
   }
