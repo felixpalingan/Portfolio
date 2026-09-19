@@ -66,13 +66,15 @@ export class ApartmentRoom {
       metalness: 0.7
     });
 
-    // Window glass material (tinted, semi-reflective)
+    // Window glass material (tinted, semi-reflective with realistic micro-imperfections)
+    const glassRoughnessMap = TextureGenerator.createGlassRoughnessTexture();
     this.glassMaterial = new THREE.MeshStandardMaterial({
-      color: 0x88ccff,
+      color: 0x77b8d8,
       transparent: true,
-      opacity: 0.3,
-      roughness: 0.1,
-      metalness: 0.4
+      opacity: 0.28,
+      roughness: 0.25,
+      roughnessMap: glassRoughnessMap,
+      metalness: 0.3
     });
   }
 
@@ -280,113 +282,249 @@ export class ApartmentRoom {
 
     // Deep atmospheric Night City sky with toxic smog gradient
     const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-    skyGrad.addColorStop(0.0, '#03050a');
-    skyGrad.addColorStop(0.4, '#080d1d');
-    skyGrad.addColorStop(0.7, '#1a0d24');
-    skyGrad.addColorStop(0.9, '#301314');
-    skyGrad.addColorStop(1.0, '#4a1e12');
+    skyGrad.addColorStop(0.0, '#020409');
+    skyGrad.addColorStop(0.35, '#070c1b');
+    skyGrad.addColorStop(0.65, '#160d22');
+    skyGrad.addColorStop(0.85, '#2e1215');
+    skyGrad.addColorStop(1.0, '#461c10');
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, 2048, 1024);
 
-    // Distant Megabuilding monolithic silhouettes (Layer 1 - deep background)
-    ctx.fillStyle = '#060812';
-    // Colossal Megabuilding H8 / H10 silhouette
+    // Distant Megabuilding monolithic pyramids (Deep Background Layer)
+    ctx.fillStyle = '#050711';
     ctx.beginPath();
-    ctx.moveTo(100, 1024);
-    ctx.lineTo(100, 220);
-    ctx.lineTo(260, 140);
-    ctx.lineTo(420, 220);
-    ctx.lineTo(420, 1024);
+    ctx.moveTo(80, 1024);
+    ctx.lineTo(80, 240);
+    ctx.lineTo(240, 150);
+    ctx.lineTo(400, 240);
+    ctx.lineTo(400, 1024);
     ctx.fill();
 
-    // Antenna on mega structure with flashing beacon
-    ctx.strokeStyle = '#0b0f1e';
+    // Towering Communications Spire on Megabuilding H8
+    ctx.strokeStyle = '#090e1c';
     ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(260, 140);
-    ctx.lineTo(260, 40);
+    ctx.moveTo(240, 150);
+    ctx.lineTo(240, 35);
     ctx.stroke();
 
     // Red warning beacon at antenna peak
     ctx.fillStyle = '#FF003C';
     ctx.shadowColor = '#FF003C';
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 16;
     ctx.beginPath();
-    ctx.arc(260, 40, 6, 0, Math.PI * 2);
+    ctx.arc(240, 35, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
 
-    // Arasaka Tower silhouette in center
-    ctx.fillStyle = '#070a16';
+    // Arasaka Tower Obelisk silhouette in center
+    ctx.fillStyle = '#060914';
     ctx.beginPath();
-    ctx.moveTo(900, 1024);
-    ctx.lineTo(900, 180);
-    ctx.lineTo(970, 70);
-    ctx.lineTo(1040, 180);
+    ctx.moveTo(920, 1024);
+    ctx.lineTo(920, 160);
+    ctx.lineTo(980, 60);
+    ctx.lineTo(1040, 160);
     ctx.lineTo(1040, 1024);
     ctx.fill();
 
-    // Midground & Foreground Skyscraper Matrix with varied architecture
+    // Midground & Foreground Skyscraper Matrix with completely unique facade styles
     const towers = [
-      { x: 20, w: 140, h: 680, type: 'stepped', color: '#090d1c' },
-      { x: 190, w: 160, h: 580, type: 'slanted', color: '#0c1224' },
-      { x: 380, w: 120, h: 740, type: 'twin', color: '#0a0e20' },
-      { x: 530, w: 190, h: 620, type: 'angled', color: '#0d1326' },
-      { x: 740, w: 130, h: 700, type: 'spire', color: '#0b1022' },
-      { x: 1100, w: 180, h: 640, type: 'stepped', color: '#0d1326' },
-      { x: 1310, w: 140, h: 720, type: 'cylinder', color: '#0a0f22' },
-      { x: 1480, w: 200, h: 560, type: 'blocks', color: '#0c1125' },
-      { x: 1710, w: 150, h: 750, type: 'slanted', color: '#090e1f' },
-      { x: 1890, w: 150, h: 610, type: 'spire', color: '#0a0d1e' }
+      { id: 1, x: 20, w: 150, h: 680, style: 'ribbon', baseColor: '#090d1c' },
+      { id: 2, x: 190, w: 170, h: 590, style: 'residential-pod', baseColor: '#0c1122' },
+      { id: 3, x: 380, w: 130, h: 760, style: 'vertical-fin', baseColor: '#0a0e20' },
+      { id: 4, x: 530, w: 200, h: 630, style: 'ribbon', baseColor: '#0d1326' },
+      { id: 5, x: 750, w: 140, h: 710, style: 'residential-pod', baseColor: '#0a0f22' },
+      { id: 6, x: 1080, w: 190, h: 650, style: 'stepped-corp', baseColor: '#0d1326' },
+      { id: 7, x: 1290, w: 150, h: 730, style: 'vertical-fin', baseColor: '#0b1024' },
+      { id: 8, x: 1460, w: 220, h: 570, style: 'residential-pod', baseColor: '#0c1125' },
+      { id: 9, x: 1700, w: 160, h: 760, style: 'ribbon', baseColor: '#090e1f' },
+      { id: 10, x: 1880, w: 155, h: 620, style: 'stepped-corp', baseColor: '#0a0d1e' }
     ];
 
     towers.forEach((t) => {
-      ctx.fillStyle = t.color;
       const topY = 1024 - t.h;
+      ctx.fillStyle = t.baseColor;
 
-      if (t.type === 'slanted') {
+      // Silhouette Shape
+      if (t.style === 'vertical-fin') {
+        // Angled architectural crown
         ctx.beginPath();
         ctx.moveTo(t.x, 1024);
-        ctx.lineTo(t.x, topY + 40);
+        ctx.lineTo(t.x, topY + 45);
         ctx.lineTo(t.x + t.w, topY);
         ctx.lineTo(t.x + t.w, 1024);
         ctx.fill();
-      } else if (t.type === 'stepped') {
+      } else if (t.style === 'stepped-corp') {
         ctx.fillRect(t.x, topY + 60, t.w, t.h - 60);
-        ctx.fillRect(t.x + 20, topY, t.w - 40, 60);
+        ctx.fillRect(t.x + 25, topY, t.w - 50, 60);
       } else {
         ctx.fillRect(t.x, topY, t.w, t.h);
       }
 
-      // Tower Windows Matrix (cyber yellow, cyan, soft white)
-      for (let wy = topY + 30; wy < 950; wy += 18) {
-        for (let wx = t.x + 12; wx < t.x + t.w - 12; wx += 16) {
-          const rand = Math.sin(wx * 4.3 + wy * 8.7);
-          if (rand > 0.25) {
-            if (rand > 0.8) {
-              ctx.fillStyle = 'rgba(0, 240, 255, 0.7)'; // Cyan
-            } else if (rand > 0.5) {
-              ctx.fillStyle = 'rgba(252, 238, 9, 0.65)'; // Cyber Yellow
-            } else {
-              ctx.fillStyle = 'rgba(255, 180, 120, 0.45)'; // Amber
+      // Rooftop Helipad / Antennas
+      if (t.h > 650) {
+        ctx.strokeStyle = '#00F0FF';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(t.x + t.w / 2, topY - 12, 9, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // -----------------------------------------------------------------------
+      // NATURAL, HIGHLY DIVERSE WINDOW ARCHITECTURES:
+      // -----------------------------------------------------------------------
+
+      if (t.style === 'ribbon') {
+        // 1. Sleek corporate tower with continuous horizontal glass ribbons
+        const floorHeight = 26;
+        for (let y = topY + 35; y < 960; y += floorHeight) {
+          const floorSeed = Math.sin(t.x * 3.1 + y * 7.9);
+          // Realistic office floor logic: some floors full, some half, some dark
+          if (floorSeed > 0.1) {
+            const isWarm = floorSeed > 0.6;
+            ctx.fillStyle = isWarm ? 'rgba(255, 215, 140, 0.65)' : 'rgba(120, 220, 255, 0.55)';
+
+            // Draw segmented ribbon window strip
+            const segCount = 6;
+            const segWidth = (t.w - 24) / segCount;
+            for (let s = 0; s < segCount; s++) {
+              if (Math.sin(s * 5.3 + y) > -0.3) {
+                ctx.fillRect(t.x + 12 + s * segWidth, y, segWidth - 3, 9);
+              }
             }
-            ctx.fillRect(wx, wy, 6, 8);
+          } else {
+            // Dark floor with subtle ambient reflection
+            ctx.fillStyle = 'rgba(10, 25, 45, 0.4)';
+            ctx.fillRect(t.x + 12, y, t.w - 24, 6);
+          }
+        }
+      } else if (t.style === 'residential-pod') {
+        // 2. Megabuilding / residential arcology: irregular mosaic of living units
+        const podH = 14;
+        const podW = 12;
+        for (let y = topY + 25; y < 960; y += 22) {
+          // Horizontal balcony slab every 4 floors
+          if (Math.floor(y / 22) % 4 === 0) {
+            ctx.fillStyle = 'rgba(30, 20, 16, 0.9)';
+            ctx.fillRect(t.x + 8, y - 4, t.w - 16, 3);
+          }
+
+          for (let x = t.x + 10; x < t.x + t.w - 10; x += podW + 6) {
+            const unitRandom = Math.sin(x * 11.3 + y * 19.7);
+            if (unitRandom > 0.45) {
+              if (unitRandom > 0.85) {
+                ctx.fillStyle = 'rgba(252, 238, 9, 0.75)'; // Warm cyberpunk yellow
+              } else if (unitRandom > 0.7) {
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';  // TV cyan glow
+              } else if (unitRandom > 0.58) {
+                ctx.fillStyle = 'rgba(255, 100, 60, 0.6)'; // Amber lamp
+              } else {
+                ctx.fillStyle = 'rgba(180, 200, 240, 0.35)'; // Dim white
+              }
+              ctx.fillRect(x, y, podW, podH);
+            }
+          }
+        }
+      } else if (t.style === 'vertical-fin') {
+        // 3. High-tech tower with vertical illuminated structural neon fins
+        const finCount = 5;
+        const finSpacing = t.w / (finCount + 1);
+
+        // Lit vertical structural fins
+        for (let f = 1; f <= finCount; f++) {
+          const finX = t.x + f * finSpacing;
+          ctx.strokeStyle = (f % 2 === 0) ? 'rgba(0, 240, 255, 0.8)' : 'rgba(252, 238, 9, 0.7)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(finX, topY + 50);
+          ctx.lineTo(finX, 960);
+          ctx.stroke();
+        }
+
+        // Structural diagonal cross-braces (giant X-trusses)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 2;
+        for (let y = topY + 60; y < 900; y += 120) {
+          ctx.beginPath();
+          ctx.moveTo(t.x + 10, y);
+          ctx.lineTo(t.x + t.w - 10, y + 120);
+          ctx.moveTo(t.x + t.w - 10, y);
+          ctx.lineTo(t.x + 10, y + 120);
+          ctx.stroke();
+        }
+
+        // Floor-to-ceiling corner glass suites
+        for (let y = topY + 70; y < 940; y += 28) {
+          if (Math.sin(y * 3.3) > 0.1) {
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+            ctx.fillRect(t.x + 8, y, 14, 16);
+            ctx.fillRect(t.x + t.w - 22, y, 14, 16);
+          }
+        }
+      } else if (t.style === 'stepped-corp') {
+        // 4. Stepped commercial complex with large panoramic bay windows
+        for (let y = topY + 40; y < 950; y += 32) {
+          const isFloorLit = Math.sin(t.x * 2 + y * 5) > 0.0;
+          if (isFloorLit) {
+            ctx.fillStyle = 'rgba(255, 230, 170, 0.6)';
+            ctx.fillRect(t.x + 14, y, t.w - 28, 16);
+            // Window frame mullions
+            ctx.fillStyle = t.baseColor;
+            for (let mx = t.x + 35; mx < t.x + t.w - 20; mx += 28) {
+              ctx.fillRect(mx, y, 3, 16);
+            }
           }
         }
       }
     });
 
-    // Skybridges between towers with vehicle headlight streams
+    // Skybridges between towers with vehicle headlights & taillights
     function drawSkybridge(x1, y1, x2, y2) {
-      ctx.fillStyle = '#080c18';
-      ctx.fillRect(x1, y1, x2 - x1, 14);
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
-      ctx.fillRect(x1, y1 + 3, x2 - x1, 2);
-      ctx.fillStyle = 'rgba(255, 0, 60, 0.7)';
-      ctx.fillRect(x1, y1 + 9, x2 - x1, 2);
+      ctx.fillStyle = '#060914';
+      ctx.fillRect(x1, y1, x2 - x1, 16);
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.8)';
+      ctx.fillRect(x1, y1 + 3, x2 - x1, 2.5);
+      ctx.fillStyle = 'rgba(255, 0, 60, 0.8)';
+      ctx.fillRect(x1, y1 + 10, x2 - x1, 2.5);
     }
-    drawSkybridge(310, 540, 530, 540);
-    drawSkybridge(1240, 480, 1480, 480);
+    drawSkybridge(320, 560, 530, 560);
+    drawSkybridge(1230, 500, 1460, 500);
+
+    // =========================================================================
+    // FLYING AERODYNES (AVs / HOVER CARS) WITH LIGHT TRAILS IN SKY
+    // =========================================================================
+    const avs = [
+      { x: 340, y: 320, dir: 1, color: '#00F0FF', len: 140 },
+      { x: 1200, y: 260, dir: -1, color: '#FF003C', len: 180 },
+      { x: 720, y: 440, dir: 1, color: '#FCEE09', len: 90 },
+      { x: 1650, y: 370, dir: -1, color: '#00F0FF', len: 150 }
+    ];
+
+    avs.forEach((av) => {
+      // Light trail streak
+      const trailGrad = ctx.createLinearGradient(
+        av.x, av.y,
+        av.x - av.dir * av.len, av.y + 4
+      );
+      trailGrad.addColorStop(0, av.color);
+      trailGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.strokeStyle = trailGrad;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(av.x, av.y);
+      ctx.lineTo(av.x - av.dir * av.len, av.y + 4);
+      ctx.stroke();
+
+      // AV Vehicle head/cabin dot
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowColor = av.color;
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(av.x, av.y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
 
     // =========================================================================
     // HOLOGRAPHIC NEON BILLBOARDS & ADVERTISEMENTS

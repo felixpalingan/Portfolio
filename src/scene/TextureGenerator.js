@@ -111,4 +111,43 @@ export class TextureGenerator {
     texture.repeat.set(3, 2);
     return texture;
   }
+
+  /**
+   * Generates natural window glass surface texture (fine condensation streaks, subtle corner grime)
+   */
+  static createGlassRoughnessTexture() {
+    const w = 512;
+    const h = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // Base glass roughness (low roughness = glossy reflection)
+    ctx.fillStyle = '#222222';
+    ctx.fillRect(0, 0, w, h);
+
+    // Subtle edge / corner dust (higher roughness around edges)
+    const edgeGrad = ctx.createRadialGradient(w / 2, h / 2, h * 0.35, w / 2, h / 2, w * 0.55);
+    edgeGrad.addColorStop(0, 'rgba(34, 34, 34, 0)');
+    edgeGrad.addColorStop(1, 'rgba(90, 80, 70, 0.45)');
+    ctx.fillStyle = edgeGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Faint vertical rain / condensation drip streaks
+    ctx.strokeStyle = 'rgba(160, 180, 200, 0.1)';
+    ctx.lineWidth = 1;
+    for (let x = 12; x < w; x += 18 + Math.random() * 24) {
+      ctx.beginPath();
+      const startY = Math.random() * 80;
+      const len = 60 + Math.random() * 120;
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x + (Math.random() - 0.5) * 3, startY + len);
+      ctx.stroke();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }
 }
+
