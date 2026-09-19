@@ -95,15 +95,15 @@ class App {
     const ambientLight = new THREE.AmbientLight(0x0e1322, 1.1);
     this.scene.add(ambientLight);
 
-    // Primary apartment light source: Ultra-dim cool neon inward stream (dark moody exterior)
-    const windowStreamLight = new THREE.DirectionalLight(0xdcf0ff, 0.06);
+    // Primary apartment light source: Cool neon inward stream (balanced, 30% brighter)
+    const windowStreamLight = new THREE.DirectionalLight(0xdcf0ff, 0.18);
     windowStreamLight.position.set(0.15, 2.4, -4.6);
     windowStreamLight.target.position.set(0.15, 0.5, 0.5);
     this.scene.add(windowStreamLight);
     this.scene.add(windowStreamLight.target);
 
-    // Ultra-dim window neon spill onto the apartment floor
-    const windowSpillLight = new THREE.PointLight(0xcde6fc, 0.06, 9, 1.2);
+    // Window neon spill onto the apartment floor
+    const windowSpillLight = new THREE.PointLight(0xcde6fc, 0.18, 10, 1.2);
     windowSpillLight.position.set(0.15, 1.8, -3.2);
     this.scene.add(windowSpillLight);
   }

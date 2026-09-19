@@ -149,5 +149,54 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas);
     return texture;
   }
+
+  /**
+   * Generates authentic 2x2 twill weave carbon fiber texture
+   */
+  static createCarbonFiberTexture() {
+    const size = 128;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    // Base dark carbon substrate
+    ctx.fillStyle = '#101216';
+    ctx.fillRect(0, 0, size, size);
+
+    const step = 8;
+    for (let y = 0; y < size; y += step) {
+      for (let x = 0; x < size; x += step) {
+        const isOddRow = Math.floor(y / step) % 2 === 0;
+        const isOddCol = Math.floor(x / step) % 2 === 0;
+
+        // Alternating directional twill fibers
+        const grad = ctx.createLinearGradient(x, y, x + step, y + step);
+        if ((isOddRow && isOddCol) || (!isOddRow && !isOddCol)) {
+          grad.addColorStop(0.0, '#2e323b');
+          grad.addColorStop(0.5, '#1e2026');
+          grad.addColorStop(1.0, '#131519');
+        } else {
+          grad.addColorStop(0.0, '#15171c');
+          grad.addColorStop(0.5, '#252932');
+          grad.addColorStop(1.0, '#1a1c22');
+        }
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, step, step);
+
+        // Subtle weave groove border
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(x, y, step, step);
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(16, 8);
+    return texture;
+  }
 }
 

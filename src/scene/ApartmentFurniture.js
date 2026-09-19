@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { TextureGenerator } from './TextureGenerator.js';
 
 /**
  * ApartmentFurniture (Phase 2 - Complete Apartment Furniture & Interior Elements)
@@ -40,11 +41,13 @@ export class ApartmentFurniture {
       metalness: 0.6
     });
 
-    // Workstation desk surface (Warm industrial cyber laminate)
+    // Workstation desk surface (Authentic 2x2 Twill Weave Carbon Fiber)
+    const carbonTexture = TextureGenerator.createCarbonFiberTexture();
     this.deskMaterial = new THREE.MeshStandardMaterial({
-      color: 0x987456,
-      roughness: 0.35,
-      metalness: 0.15
+      map: carbonTexture,
+      color: 0x242730,
+      roughness: 0.28,
+      metalness: 0.55
     });
 
     // Fabric / Sofa cushion material
@@ -218,9 +221,11 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildNetrunnerWorkstation() {
     const deskGroup = new THREE.Group();
-    deskGroup.position.set(-3.0, 0, 1.5);
+    // Positioned in bottom-left, rotated 180 deg to face bed (back turned to camera)
+    deskGroup.position.set(-3.1, 0, 1.35);
+    deskGroup.rotation.y = Math.PI;
 
-    // Main Desk Tabletop (warm industrial birch laminate)
+    // Main Desk Tabletop (Matte Carbon Fiber weave)
     const topGeo = new THREE.BoxGeometry(2.1, 0.08, 1.0);
     const deskTop = new THREE.Mesh(topGeo, this.deskMaterial);
     deskTop.position.set(0, 0.72, 0);
@@ -228,10 +233,15 @@ export class ApartmentFurniture {
     deskTop.receiveShadow = true;
     deskGroup.add(deskTop);
 
-    // Front edge cyan neon trim strip (makes desk perimeter crystal clear)
+    // Front edge cyan neon trim strip (facing bed)
     const deskFrontEdge = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.025, 0.025), this.cyanEmissive);
     deskFrontEdge.position.set(0, 0.74, 0.51);
     deskGroup.add(deskFrontEdge);
+
+    // Rear edge neon accent strip (facing camera)
+    const deskRearEdge = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.02, 0.02), this.cyanEmissive);
+    deskRearEdge.position.set(0, 0.74, -0.51);
+    deskGroup.add(deskRearEdge);
 
     // Sturdy industrial metal frame legs
     const legGeo = new THREE.BoxGeometry(0.08, 0.72, 0.9);
@@ -322,6 +332,14 @@ export class ApartmentFurniture {
     bezel.position.set(0, 1.15, -0.17);
     deskGroup.add(bezel);
 
+    // Sleek rear monitor chassis accent stripe (visible from camera)
+    const rearMonitorEmblem = new THREE.Mesh(
+      new THREE.BoxGeometry(0.85, 0.025, 0.02),
+      this.cyanEmissive
+    );
+    rearMonitorEmblem.position.set(0, 1.25, -0.19);
+    deskGroup.add(rearMonitorEmblem);
+
     // Monitor heavy duty metal stand
     const standPoleGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.45, 8);
     const standPole = new THREE.Mesh(standPoleGeo, this.darkMetal);
@@ -403,36 +421,36 @@ export class ApartmentFurniture {
       }
     });
 
-    // Shelves mounted on wall above desk
-    const shelfGeo = new THREE.BoxGeometry(1.8, 0.05, 0.35);
-    const shelf1 = new THREE.Mesh(shelfGeo, this.tanMetal);
-    shelf1.position.set(0, 1.8, -0.45);
+    // Shelves mounted along left apartment wall beside desk
+    const shelfGeo = new THREE.BoxGeometry(0.35, 0.05, 1.6);
+    const shelf1 = new THREE.Mesh(shelfGeo, this.darkMetal);
+    shelf1.position.set(1.15, 1.8, 0);
     deskGroup.add(shelf1);
 
-    const shelf2 = new THREE.Mesh(shelfGeo, this.tanMetal);
-    shelf2.position.set(0, 2.25, -0.45);
+    const shelf2 = new THREE.Mesh(shelfGeo, this.darkMetal);
+    shelf2.position.set(1.15, 2.25, 0);
     deskGroup.add(shelf2);
 
     // Warm shelf strip light
-    const shelfLightMesh = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.03, 0.03), this.warmOrangeEmissive);
-    shelfLightMesh.position.set(0, 1.76, -0.4);
+    const shelfLightMesh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 1.4), this.warmOrangeEmissive);
+    shelfLightMesh.position.set(1.12, 1.76, 0);
     deskGroup.add(shelfLightMesh);
 
     const shelfPoint = new THREE.PointLight(0xff7722, 1.4, 2.2);
-    shelfPoint.position.set(0, 1.7, -0.3);
+    shelfPoint.position.set(0.9, 1.7, 0);
     deskGroup.add(shelfPoint);
 
     // Props on shelves: server drive arrays & datashards
-    for (let s = -0.6; s <= 0.6; s += 0.3) {
-      const box = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.18, 0.2), this.darkMetal);
-      box.position.set(s, 1.92, -0.45);
+    for (let s = -0.5; s <= 0.5; s += 0.25) {
+      const box = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.16, 0.18), this.darkMetal);
+      box.position.set(1.15, 1.92, s);
       deskGroup.add(box);
     }
 
-    // Swivel Chair (Egg / Pilot swivel bucket seat)
+    // Swivel Chair (tucked on the bed side, facing into the desk)
     const chairGroup = new THREE.Group();
     chairGroup.position.set(0, 0, 0.75);
-    chairGroup.rotation.y = -0.35; // Angled slightly into room for clear visibility
+    chairGroup.rotation.y = 0.15; // Angled naturally towards the screen
 
     // Chair base star & piston
     const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), this.darkMetal);
@@ -452,16 +470,16 @@ export class ApartmentFurniture {
 
     deskGroup.add(chairGroup);
 
-    // Samurai Bomber Jacket hanging on the wall hook near desk
+    // Samurai Bomber Jacket hanging on the left wall
     const jacketGroup = new THREE.Group();
-    jacketGroup.position.set(-1.15, 1.6, 0.6);
+    jacketGroup.position.set(1.2, 1.6, 0.85);
 
     const jacketHook = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.12, 6), this.darkMetal);
     jacketHook.rotation.z = Math.PI / 2;
     jacketGroup.add(jacketHook);
 
     // Leather jacket silhouette (dark leather with yellow Samurai collar)
-    const jacketBody = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.65, 0.18), new THREE.MeshStandardMaterial({
+    const jacketBody = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.65, 0.28), new THREE.MeshStandardMaterial({
       color: 0x1f1917,
       roughness: 0.6,
       metalness: 0.15
@@ -470,7 +488,7 @@ export class ApartmentFurniture {
     jacketGroup.add(jacketBody);
 
     // Glowing Samurai collar neon rim
-    const collar = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.06, 0.2), this.yellowAccentMaterial);
+    const collar = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.06, 0.24), this.yellowAccentMaterial);
     collar.position.set(0, -0.05, 0);
     jacketGroup.add(collar);
 

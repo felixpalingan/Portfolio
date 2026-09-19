@@ -64,13 +64,13 @@ export class ApartmentRoom {
       metalness: 0.7
     });
 
-    // Window glass material (tinted dark cyber glass, semi-reflective)
+    // Window glass material (30% less dark, clear tinted glass with reflections)
     const glassRoughnessMap = TextureGenerator.createGlassRoughnessTexture();
     this.glassMaterial = new THREE.MeshStandardMaterial({
-      color: 0x14202c,
+      color: 0x33485c,
       transparent: true,
-      opacity: 0.38,
-      roughness: 0.35,
+      opacity: 0.22,
+      roughness: 0.28,
       roughnessMap: glassRoughnessMap,
       metalness: 0.25
     });
@@ -626,23 +626,23 @@ export class ApartmentRoom {
     const skylineGeo = new THREE.PlaneGeometry(12.0, 6.0);
     const skylineMat = new THREE.MeshBasicMaterial({
       map: skylineTexture,
-      color: 0x667788,
+      color: 0xabbcd0,
       fog: false
     });
     const skylineMesh = new THREE.Mesh(skylineGeo, skylineMat);
     skylineMesh.position.set(0.15, centerY + 0.3, backdropZ);
     this.group.add(skylineMesh);
 
-    // Ultra-dim cool neon rim light from the window (subtle atmospheric ambient)
+    // Cool neon rim light from the window (balanced, 30% brighter than ultra-dim)
     const windowZ = -this.depth / 2;
-    const windowLight = new THREE.SpotLight(0x00F0FF, 0.08, 8, Math.PI / 3, 0.5, 1.2);
+    const windowLight = new THREE.SpotLight(0x00F0FF, 0.22, 9, Math.PI / 3, 0.45, 1.2);
     windowLight.position.set(0.15, centerY + 0.5, windowZ - 0.2);
     windowLight.target.position.set(0.15, 1.0, 0);
     this.group.add(windowLight);
     this.group.add(windowLight.target);
 
-    // Faint warm neon bounce from bottom billboards
-    const cityAmberLight = new THREE.PointLight(0xff4411, 0.05, 5);
+    // Warm neon bounce from bottom billboards
+    const cityAmberLight = new THREE.PointLight(0xff5522, 0.16, 6);
     cityAmberLight.position.set(0.15, centerY - 0.4, windowZ - 0.5);
     this.group.add(cityAmberLight);
   }
