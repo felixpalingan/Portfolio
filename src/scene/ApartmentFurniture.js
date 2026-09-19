@@ -567,7 +567,7 @@ export class ApartmentFurniture {
     tctx.shadowBlur = 22;
     tctx.fillStyle = '#00FF66';
     tctx.font = 'bold 44px monospace';
-    const marqueeText = "⚡ FELIX PALINGAN // NETRUNNER OPERATIVE // WATSON DISTRICT // MEGABUILDING H10 // TECHNICAL ABILITY 95% // INTELLIGENCE 92% // REFLEXES 90% // COOL 88% // ARASAKA ICE: COMPROMISED // NEURAL MATRIX ONLINE // ⚡ ";
+    const marqueeText = "⚡ PORTO ALMAKIUS FELIX BARIQ HEKOPUNG ⚡ PORTO ALMAKIUS FELIX BARIQ HEKOPUNG ⚡ PORTO ALMAKIUS FELIX BARIQ HEKOPUNG ⚡ ";
     tctx.fillText(marqueeText, 30, 145);
 
     const tickerTexture = new THREE.CanvasTexture(tickerCanvas);
@@ -613,10 +613,10 @@ export class ApartmentFurniture {
     let tickerOffset = 0;
     this.animatedObjects.push({
       update: () => {
-        // Continuous running text around 360 degrees
-        tickerOffset += 0.0018;
+        // Slow, readable running text around 360 degrees
+        tickerOffset += 0.00045;
         tickerTexture.offset.x = tickerOffset;
-        this.cylScreen.rotation.y += 0.003;
+        this.cylScreen.rotation.y += 0.0008;
 
         // Subtle electric neon green breathing pulse
         const time = Date.now() * 0.002;

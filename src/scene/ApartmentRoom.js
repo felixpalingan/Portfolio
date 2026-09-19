@@ -111,14 +111,40 @@ export class ApartmentRoom {
     leftRiser.position.set(1.6, -0.19, -2.05);
     this.group.add(leftRiser);
 
-    // Step down stairs at pit entrance (x: 1.6 to 2.4, z: -0.6)
-    const stepGeo = new THREE.BoxGeometry(0.8, 0.19, 0.35);
-    const stepMesh = new THREE.Mesh(stepGeo, this.sunkenFloorMaterial);
-    stepMesh.position.set(2.1, -0.19, -0.6);
-    stepMesh.receiveShadow = true;
-    this.group.add(stepMesh);
+    // 2 Distinct Entrance Steps leading down into the sunken lounge arena (x: 1.9 to 2.8, z: -0.6)
+    // Step 1 (Upper stair: y = -0.13)
+    const step1Geo = new THREE.BoxGeometry(0.9, 0.13, 0.32);
+    const step1Mesh = new THREE.Mesh(step1Geo, this.sunkenFloorMaterial);
+    step1Mesh.position.set(2.35, -0.13, -0.66);
+    step1Mesh.receiveShadow = true;
+    this.group.add(step1Mesh);
 
-    // Illuminated step edge hazard trim (amber LED strip along the step edge)
+    // Step 1 LED edge trim
+    const step1Trim = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 0.04), new THREE.MeshStandardMaterial({
+      color: 0xFCEE09,
+      emissive: 0xFCEE09,
+      emissiveIntensity: 1.2
+    }));
+    step1Trim.position.set(2.35, -0.065, -0.5);
+    this.group.add(step1Trim);
+
+    // Step 2 (Lower stair: y = -0.26)
+    const step2Geo = new THREE.BoxGeometry(0.9, 0.13, 0.32);
+    const step2Mesh = new THREE.Mesh(step2Geo, this.sunkenFloorMaterial);
+    step2Mesh.position.set(2.35, -0.26, -0.98);
+    step2Mesh.receiveShadow = true;
+    this.group.add(step2Mesh);
+
+    // Step 2 LED edge trim
+    const step2Trim = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 0.04), new THREE.MeshStandardMaterial({
+      color: 0xFCEE09,
+      emissive: 0xFCEE09,
+      emissiveIntensity: 1.2
+    }));
+    step2Trim.position.set(2.35, -0.195, -0.82);
+    this.group.add(step2Trim);
+
+    // Illuminated step edge hazard trim along the top pit boundary
     const stepTrimGeo = new THREE.BoxGeometry(2.9, 0.04, 0.06);
     const stepTrimMat = new THREE.MeshStandardMaterial({
       color: 0xFCEE09,
@@ -252,41 +278,7 @@ export class ApartmentRoom {
     const windowCenterY = 1.8;
     const windowZ = -this.depth / 2;
 
-    // Window Frame outer border (sleek industrial frame without middle mullions)
-    const frameThickness = 0.06;
-    const frameDepth = 0.22;
-
-    // Sill (bottom ledge)
-    const sillGeo = new THREE.BoxGeometry(windowWidth + 0.2, frameThickness * 1.5, frameDepth + 0.1);
-    const sill = new THREE.Mesh(sillGeo, this.windowFrameMaterial);
-    sill.position.set(0.15, windowCenterY - windowHeight / 2, windowZ);
-    this.group.add(sill);
-
-    // Top lintel frame
-    const topFrame = new THREE.Mesh(
-      new THREE.BoxGeometry(windowWidth + 0.2, frameThickness, frameDepth),
-      this.windowFrameMaterial
-    );
-    topFrame.position.set(0.15, windowCenterY + windowHeight / 2, windowZ);
-    this.group.add(topFrame);
-
-    // Left outer jamb
-    const leftJamb = new THREE.Mesh(
-      new THREE.BoxGeometry(frameThickness, windowHeight, frameDepth),
-      this.windowFrameMaterial
-    );
-    leftJamb.position.set(0.15 - windowWidth / 2, windowCenterY, windowZ);
-    this.group.add(leftJamb);
-
-    // Right outer jamb
-    const rightJamb = new THREE.Mesh(
-      new THREE.BoxGeometry(frameThickness, windowHeight, frameDepth),
-      this.windowFrameMaterial
-    );
-    rightJamb.position.set(0.15 + windowWidth / 2, windowCenterY, windowZ);
-    this.group.add(rightJamb);
-
-    // Seamless Full Glass Panoramic Pane (no middle dividers)
+    // Pure Frameless Panoramic Glass Window (no surrounding borders or frames)
     const glassGeo = new THREE.PlaneGeometry(windowWidth, windowHeight);
     const glass = new THREE.Mesh(glassGeo, this.glassMaterial);
     glass.position.set(0.15, windowCenterY, windowZ + 0.02);
@@ -640,16 +632,16 @@ export class ApartmentRoom {
     skylineMesh.position.set(0.15, centerY + 0.3, backdropZ);
     this.group.add(skylineMesh);
 
-    // Cool neon rim light from the window
+    // Cool neon rim light from the window (reduced by 80%)
     const windowZ = -this.depth / 2;
-    const windowLight = new THREE.SpotLight(0x00F0FF, 3.5, 9, Math.PI / 3, 0.4, 1.2);
+    const windowLight = new THREE.SpotLight(0x00F0FF, 0.7, 9, Math.PI / 3, 0.4, 1.2);
     windowLight.position.set(0.15, centerY + 0.5, windowZ - 0.2);
     windowLight.target.position.set(0.15, 1.0, 0);
     this.group.add(windowLight);
     this.group.add(windowLight.target);
 
-    // Warm neon bounce from the bottom smog/amber billboards
-    const cityAmberLight = new THREE.PointLight(0xff4411, 2.0, 6);
+    // Warm neon bounce from the bottom smog/amber billboards (reduced by 80%)
+    const cityAmberLight = new THREE.PointLight(0xff4411, 0.4, 6);
     cityAmberLight.position.set(0.15, centerY - 0.4, windowZ - 0.5);
     this.group.add(cityAmberLight);
   }

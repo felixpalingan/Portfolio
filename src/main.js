@@ -92,18 +92,18 @@ class App {
 
   initLights() {
     // Dim atmospheric Cyberpunk base ambient
-    const ambientLight = new THREE.AmbientLight(0x0e1322, 1.3);
+    const ambientLight = new THREE.AmbientLight(0x0e1322, 1.1);
     this.scene.add(ambientLight);
 
-    // Primary apartment light source: Soft diffuse cool white neon streaming inward from outside panoramic window
-    const windowStreamLight = new THREE.DirectionalLight(0xdcf0ff, 2.2);
+    // Primary apartment light source: Soft, very dim cool white neon streaming inward from outside panoramic window (reduced by 80%)
+    const windowStreamLight = new THREE.DirectionalLight(0xdcf0ff, 0.44);
     windowStreamLight.position.set(0.15, 2.4, -4.6);
     windowStreamLight.target.position.set(0.15, 0.5, 0.5);
     this.scene.add(windowStreamLight);
     this.scene.add(windowStreamLight.target);
 
-    // Soft diffuse window neon spill onto the apartment floor
-    const windowSpillLight = new THREE.PointLight(0xcde6fc, 2.0, 11, 1.2);
+    // Soft, very dim window neon spill onto the apartment floor
+    const windowSpillLight = new THREE.PointLight(0xcde6fc, 0.4, 11, 1.2);
     windowSpillLight.position.set(0.15, 1.8, -3.2);
     this.scene.add(windowSpillLight);
   }
