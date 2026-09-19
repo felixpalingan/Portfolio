@@ -223,14 +223,14 @@ export class ApartmentRoom {
   }
 
   createPanoramicWindow() {
-    const windowWidth = 3.3;
+    const windowWidth = 3.6;
     const windowHeight = 1.6;
     const windowCenterY = 1.8;
     const windowZ = -this.depth / 2;
 
-    // Window Frame outer border
-    const frameThickness = 0.08;
-    const frameDepth = 0.25;
+    // Window Frame outer border (sleek industrial frame without middle mullions)
+    const frameThickness = 0.06;
+    const frameDepth = 0.22;
 
     // Sill (bottom ledge)
     const sillGeo = new THREE.BoxGeometry(windowWidth + 0.2, frameThickness * 1.5, frameDepth + 0.1);
@@ -246,95 +246,238 @@ export class ApartmentRoom {
     topFrame.position.set(0.15, windowCenterY + windowHeight / 2, windowZ);
     this.group.add(topFrame);
 
-    // Vertical window mullions (split into 3 horizontal panoramic panes)
-    const mullionGeo = new THREE.BoxGeometry(frameThickness, windowHeight, frameDepth);
-    const leftMullion = new THREE.Mesh(mullionGeo, this.windowFrameMaterial);
-    leftMullion.position.set(0.15 - windowWidth / 3 / 2, windowCenterY, windowZ);
-    this.group.add(leftMullion);
+    // Left outer jamb
+    const leftJamb = new THREE.Mesh(
+      new THREE.BoxGeometry(frameThickness, windowHeight, frameDepth),
+      this.windowFrameMaterial
+    );
+    leftJamb.position.set(0.15 - windowWidth / 2, windowCenterY, windowZ);
+    this.group.add(leftJamb);
 
-    const rightMullion = new THREE.Mesh(mullionGeo, this.windowFrameMaterial);
-    rightMullion.position.set(0.15 + windowWidth / 3 / 2, windowCenterY, windowZ);
-    this.group.add(rightMullion);
+    // Right outer jamb
+    const rightJamb = new THREE.Mesh(
+      new THREE.BoxGeometry(frameThickness, windowHeight, frameDepth),
+      this.windowFrameMaterial
+    );
+    rightJamb.position.set(0.15 + windowWidth / 2, windowCenterY, windowZ);
+    this.group.add(rightJamb);
 
-    // Window Glass Pane
+    // Seamless Full Glass Panoramic Pane (no middle dividers)
     const glassGeo = new THREE.PlaneGeometry(windowWidth, windowHeight);
     const glass = new THREE.Mesh(glassGeo, this.glassMaterial);
     glass.position.set(0.15, windowCenterY, windowZ + 0.02);
     this.group.add(glass);
 
     // Outside Night City Backdrop
-    this.createNightCitySkyline(windowZ - 1.5, windowCenterY);
+    this.createNightCitySkyline(windowZ - 1.8, windowCenterY);
   }
 
   createNightCitySkyline(backdropZ, centerY) {
-    // Procedural canvas skyline with distant towering megastructures and neon billboards
     const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 512;
+    canvas.width = 2048;
+    canvas.height = 1024;
     const ctx = canvas.getContext('2d');
 
-    // Deep dark night sky gradient (cyber navy to smog amber)
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, 512);
-    skyGrad.addColorStop(0, '#04060d');
-    skyGrad.addColorStop(0.5, '#0a1024');
-    skyGrad.addColorStop(0.85, '#1e1124');
-    skyGrad.addColorStop(1, '#2c1410');
+    // Deep atmospheric Night City sky with toxic smog gradient
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+    skyGrad.addColorStop(0.0, '#03050a');
+    skyGrad.addColorStop(0.4, '#080d1d');
+    skyGrad.addColorStop(0.7, '#1a0d24');
+    skyGrad.addColorStop(0.9, '#301314');
+    skyGrad.addColorStop(1.0, '#4a1e12');
     ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, 1024, 512);
+    ctx.fillRect(0, 0, 2048, 1024);
 
-    // Distant Megabuildings / Skyscrapers (silhouettes with window grids)
-    const buildings = [
-      { x: 30, w: 90, h: 420 },
-      { x: 140, w: 120, h: 360 },
-      { x: 280, w: 80, h: 480 },
-      { x: 380, w: 140, h: 320 },
-      { x: 540, w: 100, h: 440 },
-      { x: 660, w: 150, h: 380 },
-      { x: 830, w: 160, h: 460 }
+    // Distant Megabuilding monolithic silhouettes (Layer 1 - deep background)
+    ctx.fillStyle = '#060812';
+    // Colossal Megabuilding H8 / H10 silhouette
+    ctx.beginPath();
+    ctx.moveTo(100, 1024);
+    ctx.lineTo(100, 220);
+    ctx.lineTo(260, 140);
+    ctx.lineTo(420, 220);
+    ctx.lineTo(420, 1024);
+    ctx.fill();
+
+    // Antenna on mega structure with flashing beacon
+    ctx.strokeStyle = '#0b0f1e';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(260, 140);
+    ctx.lineTo(260, 40);
+    ctx.stroke();
+
+    // Red warning beacon at antenna peak
+    ctx.fillStyle = '#FF003C';
+    ctx.shadowColor = '#FF003C';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.arc(260, 40, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Arasaka Tower silhouette in center
+    ctx.fillStyle = '#070a16';
+    ctx.beginPath();
+    ctx.moveTo(900, 1024);
+    ctx.lineTo(900, 180);
+    ctx.lineTo(970, 70);
+    ctx.lineTo(1040, 180);
+    ctx.lineTo(1040, 1024);
+    ctx.fill();
+
+    // Midground & Foreground Skyscraper Matrix with varied architecture
+    const towers = [
+      { x: 20, w: 140, h: 680, type: 'stepped', color: '#090d1c' },
+      { x: 190, w: 160, h: 580, type: 'slanted', color: '#0c1224' },
+      { x: 380, w: 120, h: 740, type: 'twin', color: '#0a0e20' },
+      { x: 530, w: 190, h: 620, type: 'angled', color: '#0d1326' },
+      { x: 740, w: 130, h: 700, type: 'spire', color: '#0b1022' },
+      { x: 1100, w: 180, h: 640, type: 'stepped', color: '#0d1326' },
+      { x: 1310, w: 140, h: 720, type: 'cylinder', color: '#0a0f22' },
+      { x: 1480, w: 200, h: 560, type: 'blocks', color: '#0c1125' },
+      { x: 1710, w: 150, h: 750, type: 'slanted', color: '#090e1f' },
+      { x: 1890, w: 150, h: 610, type: 'spire', color: '#0a0d1e' }
     ];
 
-    buildings.forEach((b) => {
-      // Silhouette
-      ctx.fillStyle = '#060812';
-      ctx.fillRect(b.x, 512 - b.h, b.w, b.h);
+    towers.forEach((t) => {
+      ctx.fillStyle = t.color;
+      const topY = 1024 - t.h;
 
-      // Lit window dots
-      ctx.fillStyle = 'rgba(252, 238, 9, 0.4)';
-      for (let wy = 512 - b.h + 20; wy < 500; wy += 14) {
-        for (let wx = b.x + 8; wx < b.x + b.w - 8; wx += 12) {
-          if (Math.sin(wx * 3 + wy * 7) > 0.3) {
-            ctx.fillStyle = (wx % 2 === 0) ? 'rgba(0, 240, 255, 0.45)' : 'rgba(252, 238, 9, 0.45)';
-            ctx.fillRect(wx, wy, 4, 6);
+      if (t.type === 'slanted') {
+        ctx.beginPath();
+        ctx.moveTo(t.x, 1024);
+        ctx.lineTo(t.x, topY + 40);
+        ctx.lineTo(t.x + t.w, topY);
+        ctx.lineTo(t.x + t.w, 1024);
+        ctx.fill();
+      } else if (t.type === 'stepped') {
+        ctx.fillRect(t.x, topY + 60, t.w, t.h - 60);
+        ctx.fillRect(t.x + 20, topY, t.w - 40, 60);
+      } else {
+        ctx.fillRect(t.x, topY, t.w, t.h);
+      }
+
+      // Tower Windows Matrix (cyber yellow, cyan, soft white)
+      for (let wy = topY + 30; wy < 950; wy += 18) {
+        for (let wx = t.x + 12; wx < t.x + t.w - 12; wx += 16) {
+          const rand = Math.sin(wx * 4.3 + wy * 8.7);
+          if (rand > 0.25) {
+            if (rand > 0.8) {
+              ctx.fillStyle = 'rgba(0, 240, 255, 0.7)'; // Cyan
+            } else if (rand > 0.5) {
+              ctx.fillStyle = 'rgba(252, 238, 9, 0.65)'; // Cyber Yellow
+            } else {
+              ctx.fillStyle = 'rgba(255, 180, 120, 0.45)'; // Amber
+            }
+            ctx.fillRect(wx, wy, 6, 8);
           }
         }
       }
     });
 
-    // Holographic Billboards (Kiroshi Optics & Brooklyn Barista)
-    // Kiroshi (Cyan glow)
-    ctx.fillStyle = 'rgba(0, 240, 255, 0.85)';
+    // Skybridges between towers with vehicle headlight streams
+    function drawSkybridge(x1, y1, x2, y2) {
+      ctx.fillStyle = '#080c18';
+      ctx.fillRect(x1, y1, x2 - x1, 14);
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
+      ctx.fillRect(x1, y1 + 3, x2 - x1, 2);
+      ctx.fillStyle = 'rgba(255, 0, 60, 0.7)';
+      ctx.fillRect(x1, y1 + 9, x2 - x1, 2);
+    }
+    drawSkybridge(310, 540, 530, 540);
+    drawSkybridge(1240, 480, 1480, 480);
+
+    // =========================================================================
+    // HOLOGRAPHIC NEON BILLBOARDS & ADVERTISEMENTS
+    // =========================================================================
+
+    // 1. KIROSHI OPTICS (Cyan holographic eye & banner)
     ctx.shadowColor = '#00F0FF';
-    ctx.shadowBlur = 18;
-    ctx.font = 'bold 24px monospace';
-    ctx.fillText('KIROSHI OPTICS', 300, 180);
+    ctx.shadowBlur = 24;
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 36px monospace';
+    ctx.fillText('KIROSHI OPTICS', 550, 440);
+    // Eye icon
+    ctx.beginPath();
+    ctx.arc(510, 428, 16, 0, Math.PI * 2);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#00F0FF';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(510, 428, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#FCEE09';
+    ctx.fill();
 
-    // Brooklyn Barista / Cyberpunk Kanji
-    ctx.fillStyle = 'rgba(255, 0, 60, 0.85)';
+    // 2. ARASAKA (Crimson Red Kanji & Corporate Logo)
     ctx.shadowColor = '#FF003C';
-    ctx.shadowBlur = 18;
-    ctx.fillText('BROOKLYN BARISTA // ブルックリン', 560, 240);
+    ctx.shadowBlur = 28;
+    ctx.fillStyle = '#FF003C';
+    ctx.font = '900 44px sans-serif';
+    ctx.fillText('ARASAKA  荒 坂', 910, 310);
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText('// SECURITY & DEFENSE SYSTEMS', 915, 335);
 
-    // Reset shadow
+    // 3. BROOKLYN BARISTA (Warm Amber Coffee Neon)
+    ctx.shadowColor = '#FF9900';
+    ctx.shadowBlur = 22;
+    ctx.fillStyle = '#FFAA22';
+    ctx.font = 'bold 32px monospace';
+    ctx.fillText('BROOKLYN BARISTA', 1330, 390);
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('ブルックリン バリスタ ☕ 24H', 1335, 420);
+
+    // 4. TRAUMA TEAM (Emergency White / Red Cross)
+    ctx.shadowColor = '#FFFFFF';
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 30px monospace';
+    ctx.fillText('TRAUMA TEAM', 210, 480);
+    ctx.fillStyle = '#FF003C';
+    ctx.shadowColor = '#FF003C';
+    ctx.fillText('+ MEDICAL EVAC +', 210, 510);
+
+    // 5. KANG TAO (Emerald Neon High-Tech)
+    ctx.shadowColor = '#00FF88';
+    ctx.shadowBlur = 24;
+    ctx.fillStyle = '#00FF88';
+    ctx.font = 'bold 32px sans-serif';
+    ctx.fillText('康 陶 // KANG TAO', 1520, 520);
+    ctx.font = '14px monospace';
+    ctx.fillText('SMART WEAPONRY SYSTEMS', 1520, 545);
+
+    // 6. Vertical Cyberpunk Kanji Strips (hanging on skyscraper flanks)
+    function drawVerticalKanji(text, x, startY, color, blur) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = blur;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 26px sans-serif';
+      for (let i = 0; i < text.length; i++) {
+        ctx.fillText(text[i], x, startY + i * 36);
+      }
+    }
+    drawVerticalKanji('ナイトシティ', 750, 420, '#FCEE09', 20); // "Night City" in Cyber Yellow
+    drawVerticalKanji('電脳空間', 1270, 520, '#00F0FF', 22);     // "Cyber Space" in Cyan
+    drawVerticalKanji('サイバー', 400, 530, '#FF003C', 20);     // "Cyber" in Neon Pink
+    drawVerticalKanji('２０７７', 1730, 460, '#FCEE09', 20);     // "2077"
+
+    // Toxic Smog & Low Fog at base of skyline
     ctx.shadowBlur = 0;
+    const smogGrad = ctx.createLinearGradient(0, 750, 0, 1024);
+    smogGrad.addColorStop(0, 'rgba(30, 14, 10, 0)');
+    smogGrad.addColorStop(0.5, 'rgba(60, 20, 12, 0.6)');
+    smogGrad.addColorStop(1, 'rgba(20, 8, 5, 0.95)');
+    ctx.fillStyle = smogGrad;
+    ctx.fillRect(0, 750, 2048, 274);
 
     const skylineTexture = new THREE.CanvasTexture(canvas);
-    const skylineGeo = new THREE.PlaneGeometry(10.0, 5.0);
+    const skylineGeo = new THREE.PlaneGeometry(12.0, 6.0);
     const skylineMat = new THREE.MeshBasicMaterial({
       map: skylineTexture,
       fog: false
     });
     const skylineMesh = new THREE.Mesh(skylineGeo, skylineMat);
-    skylineMesh.position.set(0.15, centerY + 0.2, backdropZ);
+    skylineMesh.position.set(0.15, centerY + 0.3, backdropZ);
     this.group.add(skylineMesh);
 
     // Cool neon rim light from the window
@@ -344,6 +487,11 @@ export class ApartmentRoom {
     windowLight.target.position.set(0.15, 1.0, 0);
     this.group.add(windowLight);
     this.group.add(windowLight.target);
+
+    // Warm neon bounce from the bottom smog/amber billboards
+    const cityAmberLight = new THREE.PointLight(0xff4411, 2.0, 6);
+    cityAmberLight.position.set(0.15, centerY - 0.4, windowZ - 0.5);
+    this.group.add(cityAmberLight);
   }
 
   createStructuralBeams() {
