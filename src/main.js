@@ -137,6 +137,11 @@ class App {
 
     const delta = this.clock.getDelta();
 
+    // Update animated furniture elements (ceiling fan, vinyl record, etc.)
+    if (this.room) {
+      this.room.update();
+    }
+
     // Subtle responsive camera parallax
     const targetX = this.mouse.x * 0.35;
     const targetY = 1.85 + this.mouse.y * 0.15;

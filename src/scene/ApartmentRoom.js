@@ -1,13 +1,10 @@
 import * as THREE from 'three';
 import { TextureGenerator } from './TextureGenerator.js';
+import { ApartmentFurniture } from './ApartmentFurniture.js';
 
 /**
- * ApartmentRoom (Room Shell - Phase 1)
- * Builds the architectural geometry of V's Megabuilding H10 apartment:
- * - Hexagonal tiled floor with reflective finish
- * - Industrial panel walls with cutouts (Panoramic window, Sleeping pod alcove)
- * - Industrial ceiling with structural girders
- * - Panoramic window frame and distant Night City skyline backdrop
+ * ApartmentRoom (Room Shell & Interior - Phase 1 & 2)
+ * Builds the architectural geometry and integrated interior furniture of V's Megabuilding H10 apartment.
  */
 export class ApartmentRoom {
   constructor() {
@@ -24,6 +21,7 @@ export class ApartmentRoom {
     this.createCeiling();
     this.createPanoramicWindow();
     this.createStructuralBeams();
+    this.createFurniture();
   }
 
   initMaterials() {
@@ -653,4 +651,16 @@ export class ApartmentRoom {
     partition.position.set(-1.5, this.height / 2, -2.7);
     this.group.add(partition);
   }
+
+  createFurniture() {
+    this.furniture = new ApartmentFurniture();
+    this.group.add(this.furniture.group);
+  }
+
+  update() {
+    if (this.furniture) {
+      this.furniture.update();
+    }
+  }
 }
+
