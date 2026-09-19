@@ -86,28 +86,46 @@ export class ApartmentRoom {
     floorMesh.receiveShadow = true;
     this.group.add(floorMesh);
 
-    // Sunken Lounge Pit Border / Steps in top-right (x: 1.6 to 4.4, z: -3.4 to -0.6)
-    // Step platform inside sunken area (lowered by 0.18 units)
-    const sunkenGeo = new THREE.BoxGeometry(2.8, 0.1, 2.8);
+    // Sunken Lounge Pit (Lowered arena floor at y = -0.38)
+    const sunkenGeo = new THREE.BoxGeometry(2.9, 0.1, 2.9);
     const sunkenMesh = new THREE.Mesh(sunkenGeo, this.sunkenFloorMaterial);
-    sunkenMesh.position.set(3.0, -0.05, -2.0);
+    sunkenMesh.position.set(3.05, -0.38, -2.05);
     sunkenMesh.receiveShadow = true;
     this.group.add(sunkenMesh);
 
-    // Step edge trim (industrial yellow/black hazard trim accent)
-    const stepTrimGeo = new THREE.BoxGeometry(2.9, 0.04, 0.08);
+    // Sunken pit step riser walls (vertical walls dropping down from main floor to sunken floor)
+    const riserMat = this.trimMaterial;
+    // Front riser wall (z = -0.6)
+    const frontRiser = new THREE.Mesh(new THREE.BoxGeometry(2.9, 0.38, 0.06), riserMat);
+    frontRiser.position.set(3.05, -0.19, -0.6);
+    this.group.add(frontRiser);
+
+    // Left riser wall (x = 1.6)
+    const leftRiser = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.38, 2.9), riserMat);
+    leftRiser.position.set(1.6, -0.19, -2.05);
+    this.group.add(leftRiser);
+
+    // Step down stairs at pit entrance (x: 1.6 to 2.4, z: -0.6)
+    const stepGeo = new THREE.BoxGeometry(0.8, 0.19, 0.35);
+    const stepMesh = new THREE.Mesh(stepGeo, this.sunkenFloorMaterial);
+    stepMesh.position.set(2.1, -0.19, -0.6);
+    stepMesh.receiveShadow = true;
+    this.group.add(stepMesh);
+
+    // Illuminated step edge hazard trim (amber LED strip along the step edge)
+    const stepTrimGeo = new THREE.BoxGeometry(2.9, 0.04, 0.06);
     const stepTrimMat = new THREE.MeshStandardMaterial({
-      color: 0x2a221a,
-      roughness: 0.5,
-      metalness: 0.5
+      color: 0xFCEE09,
+      emissive: 0xFCEE09,
+      emissiveIntensity: 1.2
     });
     const stepTrimZ = new THREE.Mesh(stepTrimGeo, stepTrimMat);
-    stepTrimZ.position.set(3.0, 0.02, -0.6);
+    stepTrimZ.position.set(3.05, 0.01, -0.6);
     this.group.add(stepTrimZ);
 
-    const stepTrimXGeo = new THREE.BoxGeometry(0.08, 0.04, 2.9);
+    const stepTrimXGeo = new THREE.BoxGeometry(0.06, 0.04, 2.9);
     const stepTrimX = new THREE.Mesh(stepTrimXGeo, stepTrimMat);
-    stepTrimX.position.set(1.56, 0.02, -2.0);
+    stepTrimX.position.set(1.6, 0.01, -2.05);
     this.group.add(stepTrimX);
   }
 

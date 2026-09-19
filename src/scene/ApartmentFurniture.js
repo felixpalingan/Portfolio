@@ -442,13 +442,13 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildSunkenLounge() {
     const loungeGroup = new THREE.Group();
-    // Positioned inside the sunken floor platform
-    loungeGroup.position.set(3.0, 0, -2.0);
+    // Positioned down inside the deepened sunken arena (y = -0.38)
+    loungeGroup.position.set(3.05, -0.38, -2.05);
 
-    // Carpet rug (patterned warm dark fabric)
-    const rugGeo = new THREE.PlaneGeometry(2.5, 2.5);
+    // Carpet rug (patterned dark cyber fabric)
+    const rugGeo = new THREE.PlaneGeometry(2.7, 2.7);
     const rugMat = new THREE.MeshStandardMaterial({
-      color: 0x1a151b,
+      color: 0x18141f,
       roughness: 0.95
     });
     const rug = new THREE.Mesh(rugGeo, rugMat);
@@ -457,51 +457,73 @@ export class ApartmentFurniture {
     rug.receiveShadow = true;
     loungeGroup.add(rug);
 
-    // L-Shaped Sectional Lounge Sofa
-    // Main back section along back wall
-    const sofaBackGeo = new THREE.BoxGeometry(2.0, 0.45, 0.85);
-    const sofaMain = new THREE.Mesh(sofaBackGeo, this.cushionMaterial);
-    sofaMain.position.set(-0.15, 0.22, -0.8);
-    sofaMain.castShadow = true;
-    sofaMain.receiveShadow = true;
-    loungeGroup.add(sofaMain);
+    // =========================================================================
+    // COUCH FLUSH TO WALLS (Back wall at z = -1.45, Right wall at x = +1.45)
+    // =========================================================================
+    // 1. Main back sofa seat (flush to back wall)
+    const sofaBackSeatGeo = new THREE.BoxGeometry(2.4, 0.42, 0.85);
+    const sofaBackSeat = new THREE.Mesh(sofaBackSeatGeo, this.cushionMaterial);
+    sofaBackSeat.position.set(-0.25, 0.21, -1.025);
+    sofaBackSeat.castShadow = true;
+    sofaBackSeat.receiveShadow = true;
+    loungeGroup.add(sofaBackSeat);
 
-    // Backrest cushions
-    const backRest1 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.4, 0.2), this.cushionMaterial);
-    backRest1.position.set(-0.15, 0.55, -1.15);
-    loungeGroup.add(backRest1);
+    // Backrest along back wall (touching wall at z = -1.45)
+    const backRestWall = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.46, 0.16), this.cushionMaterial);
+    backRestWall.position.set(-0.25, 0.58, -1.37);
+    loungeGroup.add(backRestWall);
 
-    // Side L-extension wing
-    const sofaSideGeo = new THREE.BoxGeometry(0.85, 0.45, 1.4);
-    const sofaSide = new THREE.Mesh(sofaSideGeo, this.cushionMaterial);
-    sofaSide.position.set(0.75, 0.22, 0.1);
-    sofaSide.castShadow = true;
-    loungeGroup.add(sofaSide);
+    // 2. Side sofa seat (flush to right wall)
+    const sofaSideSeatGeo = new THREE.BoxGeometry(0.85, 0.42, 1.8);
+    const sofaSideSeat = new THREE.Mesh(sofaSideSeatGeo, this.cushionMaterial);
+    sofaSideSeat.position.set(1.025, 0.21, 0.2);
+    sofaSideSeat.castShadow = true;
+    sofaSideSeat.receiveShadow = true;
+    loungeGroup.add(sofaSideSeat);
 
-    // Accent Cushions (Cyber Yellow & Crimson)
-    const pillowY = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.12), this.yellowAccentMaterial);
-    pillowY.position.set(-0.7, 0.52, -0.9);
-    pillowY.rotation.z = 0.2;
+    // Side backrest along right wall (touching wall at x = +1.45)
+    const sideRestWall = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.46, 1.8), this.cushionMaterial);
+    sideRestWall.position.set(1.37, 0.58, 0.2);
+    loungeGroup.add(sideRestWall);
+
+    // Pillows NESTLED AGAINST BACKRESTS (fixed position and natural angle)
+    // Pillow 1: Cyber Yellow nestled on backrest
+    const pillowY = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.32, 0.12), this.yellowAccentMaterial);
+    pillowY.position.set(-0.7, 0.52, -1.24);
+    pillowY.rotation.x = -0.12;
+    pillowY.rotation.z = 0.08;
     loungeGroup.add(pillowY);
 
-    const pillowR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.12), new THREE.MeshStandardMaterial({
-      color: 0xcc0033,
-      roughness: 0.8
+    // Pillow 2: Crimson red nestled on side backrest
+    const pillowR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.32, 0.38), new THREE.MeshStandardMaterial({
+      color: 0xd4083a,
+      roughness: 0.75
     }));
-    pillowR.position.set(0.7, 0.52, 0.5);
-    pillowR.rotation.y = -0.3;
+    pillowR.position.set(1.24, 0.52, 0.4);
+    pillowR.rotation.z = 0.12;
+    pillowR.rotation.y = 0.05;
     loungeGroup.add(pillowR);
 
-    // Curved Modern Coffee Table
+    // Pillow 3: Corner cushion resting in the L-corner
+    const pillowCorner = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.3, 0.12), new THREE.MeshStandardMaterial({
+      color: 0x2e3547,
+      roughness: 0.85
+    }));
+    pillowCorner.position.set(0.75, 0.52, -1.18);
+    pillowCorner.rotation.y = -0.78; // 45 degree angle into corner
+    pillowCorner.rotation.x = -0.1;
+    loungeGroup.add(pillowCorner);
+
+    // Modern Low Coffee Table
     const tableGeo = new THREE.CylinderGeometry(0.55, 0.5, 0.26, 24);
     const table = new THREE.Mesh(tableGeo, this.tanMetal);
-    table.position.set(-0.25, 0.13, 0.1);
+    table.position.set(-0.15, 0.13, 0.1);
     table.castShadow = true;
     loungeGroup.add(table);
 
     // Props on Coffee Table: Vinyl Record Player Turntable
     const ttBase = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.04, 0.32), this.darkMetal);
-    ttBase.position.set(-0.25, 0.28, 0.1);
+    ttBase.position.set(-0.15, 0.28, 0.1);
     loungeGroup.add(ttBase);
 
     // Spinning Vinyl Record
@@ -512,7 +534,7 @@ export class ApartmentFurniture {
       metalness: 0.8
     });
     this.vinyl = new THREE.Mesh(vinylGeo, vinylMat);
-    this.vinyl.position.set(-0.25, 0.305, 0.1);
+    this.vinyl.position.set(-0.15, 0.305, 0.1);
     loungeGroup.add(this.vinyl);
     this.animatedObjects.push({
       update: () => {
@@ -520,97 +542,109 @@ export class ApartmentFurniture {
       }
     });
 
-    // Braindance (BD) Headset Unit suspended from the ceiling
-    const bdGroup = new THREE.Group();
-    bdGroup.position.set(-0.25, 2.2, 0.1);
+    // =========================================================================
+    // 360-DEGREE CYLINDRICAL RUNNING TEXT MONITOR & NEON LIGHT EMITTER
+    // =========================================================================
+    const tickerCanvas = document.createElement('canvas');
+    tickerCanvas.width = 2048;
+    tickerCanvas.height = 256;
+    const tctx = tickerCanvas.getContext('2d');
 
-    // Ceiling cord
-    const cordGeo = new THREE.CylinderGeometry(0.008, 0.008, 1.2, 6);
-    const cord = new THREE.Mesh(cordGeo, this.darkMetal);
-    cord.position.y = 0.6;
+    // Cyberpunk semi-transparent glowing holographic background
+    tctx.fillStyle = '#060a14';
+    tctx.fillRect(0, 0, 2048, 256);
+
+    // Neon borders top and bottom
+    tctx.fillStyle = '#00F0FF';
+    tctx.fillRect(0, 0, 2048, 8);
+    tctx.fillRect(0, 248, 2048, 8);
+    tctx.fillStyle = '#FCEE09';
+    tctx.fillRect(0, 8, 2048, 3);
+    tctx.fillRect(0, 245, 2048, 3);
+
+    // Running text marquee pattern
+    tctx.shadowColor = '#00F0FF';
+    tctx.shadowBlur = 18;
+    tctx.fillStyle = '#00F0FF';
+    tctx.font = 'bold 44px monospace';
+    const marqueeText = "⚡ FELIX PALINGAN // NETRUNNER OPERATIVE // WATSON DISTRICT // MEGABUILDING H10 // TECHNICAL ABILITY 95% // INTELLIGENCE 92% // REFLEXES 90% // COOL 88% // ARASAKA ICE: COMPROMISED // NEURAL MATRIX ONLINE // ⚡ ";
+    tctx.fillText(marqueeText, 30, 145);
+
+    const tickerTexture = new THREE.CanvasTexture(tickerCanvas);
+    tickerTexture.wrapS = THREE.RepeatWrapping;
+    tickerTexture.wrapT = THREE.ClampToEdgeWrapping;
+
+    // 360 Cylindrical Screen Geometry (open-ended cylinder visible from all 360 degrees)
+    const cylGeo = new THREE.CylinderGeometry(0.72, 0.72, 0.38, 48, 1, true);
+    const cylMat = new THREE.MeshBasicMaterial({
+      map: tickerTexture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.92
+    });
+    this.cylScreen = new THREE.Mesh(cylGeo, cylMat);
+    this.cylScreen.position.set(-0.15, 1.45, 0.1);
+    loungeGroup.add(this.cylScreen);
+
+    // Screen top & bottom metallic mounting rings
+    const ringGeo = new THREE.CylinderGeometry(0.73, 0.73, 0.03, 48, 1, true);
+    const ringTop = new THREE.Mesh(ringGeo, this.darkMetal);
+    ringTop.position.set(-0.15, 1.64, 0.1);
+    loungeGroup.add(ringTop);
+
+    const ringBot = new THREE.Mesh(ringGeo, this.darkMetal);
+    ringBot.position.set(-0.15, 1.26, 0.1);
+    loungeGroup.add(ringBot);
+
+    // Suspension ceiling rod for 360 monitor
+    const rodGeo = new THREE.CylinderGeometry(0.015, 0.015, 1.4, 8);
+    const rod = new THREE.Mesh(rodGeo, this.darkMetal);
+    rod.position.set(-0.15, 2.34, 0.1);
+    loungeGroup.add(rod);
+
+    // =========================================================================
+    // DYNAMIC 360° NEON LIGHT EMANATING DIRECTLY FROM THE MONITOR
+    // =========================================================================
+    this.loungeNeonLight = new THREE.PointLight(0x00F0FF, 3.8, 6.0, 1.1);
+    this.loungeNeonLight.position.set(-0.15, 1.45, 0.1);
+    loungeGroup.add(this.loungeNeonLight);
+
+    const loungeAmberLight = new THREE.PointLight(0xffa233, 2.2, 5.0, 1.2);
+    loungeAmberLight.position.set(-0.15, 1.2, 0.1);
+    loungeGroup.add(loungeAmberLight);
+
+    // Register animation loop: Continuous 360 text scroll and gentle neon pulsing
+    let tickerOffset = 0;
+    this.animatedObjects.push({
+      update: () => {
+        // Continuous running text around 360 degrees
+        tickerOffset += 0.0018;
+        tickerTexture.offset.x = tickerOffset;
+        this.cylScreen.rotation.y += 0.003;
+
+        // Subtle neon breathing pulse
+        const time = Date.now() * 0.002;
+        this.loungeNeonLight.intensity = 3.6 + Math.sin(time) * 0.6;
+      }
+    });
+
+    // Braindance (BD) Headset Unit suspended nearby
+    const bdGroup = new THREE.Group();
+    bdGroup.position.set(0.65, 1.9, -0.4);
+
+    const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 1.0, 6), this.darkMetal);
+    cord.position.y = 0.5;
     bdGroup.add(cord);
 
-    // BD Visor unit
-    const visorGeo = new THREE.BoxGeometry(0.24, 0.1, 0.14);
-    const visor = new THREE.Mesh(visorGeo, this.darkMetal);
+    const visor = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.1, 0.14), this.darkMetal);
     bdGroup.add(visor);
 
-    // Glowing cyan optic lens on BD visor
-    const lensGeo = new THREE.BoxGeometry(0.2, 0.04, 0.02);
-    const lens = new THREE.Mesh(lensGeo, this.cyanEmissive);
+    const lens = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.04, 0.02), this.cyanEmissive);
     lens.position.set(0, 0, 0.075);
     bdGroup.add(lens);
 
     loungeGroup.add(bdGroup);
 
-    // Wall TV / Screen Display on Right Wall (Focus for STATS / Bio)
-    const tvGroup = new THREE.Group();
-    tvGroup.position.set(1.42, 1.6, -0.2);
-    tvGroup.rotation.y = -Math.PI / 2;
-
-    const tvScreenGeo = new THREE.PlaneGeometry(1.6, 0.95);
-    const tvCanvas = document.createElement('canvas');
-    tvCanvas.width = 512;
-    tvCanvas.height = 300;
-    const tvctx = tvCanvas.getContext('2d');
-    tvctx.fillStyle = '#060914';
-    tvctx.fillRect(0, 0, 512, 300);
-    tvctx.fillStyle = '#FCEE09';
-    tvctx.font = 'bold 24px monospace';
-    tvctx.fillText('WNS NEWS // NIGHT CITY', 24, 40);
-    tvctx.fillStyle = '#00F0FF';
-    tvctx.font = '16px monospace';
-    tvctx.fillText('FELIX PALINGAN: NETRUNNER PROFILE', 24, 80);
-    tvctx.fillText('TECHNICAL ABILITY: 95/100', 24, 120);
-    tvctx.fillText('INTELLIGENCE: 92/100', 24, 150);
-    tvctx.fillText('REFLEXES: 90/100', 24, 180);
-    tvctx.fillText('COOL: 88/100', 24, 210);
-
-    const tvTexture = new THREE.CanvasTexture(tvCanvas);
-    const tvMesh = new THREE.Mesh(tvScreenGeo, new THREE.MeshBasicMaterial({ map: tvTexture }));
-    tvGroup.add(tvMesh);
-
-    // TV Bezel
-    const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.66, 1.01, 0.04), this.darkMetal);
-    tvFrame.position.z = -0.025;
-    tvGroup.add(tvFrame);
-
-    // TV Screen Ambient Point Light (illuminates sofa and right wall in cyan/blue)
-    const tvScreenLight = new THREE.PointLight(0x00f0ff, 2.5, 4.5, 1.2);
-    tvScreenLight.position.set(1.2, 1.6, -0.2);
-    loungeGroup.add(tvScreenLight);
-
-    // =========================================================================
-    // DEDICATED SUNKEN LOUNGE LIGHTING (Warm ambient & accent glow)
-    // =========================================================================
-    // 1. Warm overhead ceiling pendant spotlight shining down onto the sofa & coffee table
-    const loungeOverheadLight = new THREE.SpotLight(0xffbe6b, 4.2, 7.5, Math.PI / 2.8, 0.4, 1.0);
-    loungeOverheadLight.position.set(-0.2, 2.7, 0.0);
-    loungeOverheadLight.target.position.set(-0.2, 0.2, 0.0);
-    loungeGroup.add(loungeOverheadLight);
-    loungeGroup.add(loungeOverheadLight.target);
-
-    // 2. Under-sofa Cyberpunk yellow LED base runner strip
-    const underSofaGeo = new THREE.BoxGeometry(2.05, 0.04, 0.04);
-    const underSofaMesh = new THREE.Mesh(underSofaGeo, this.yellowAccentMaterial);
-    underSofaMesh.position.set(-0.15, 0.03, -0.36);
-    loungeGroup.add(underSofaMesh);
-
-    const underSofaLight = new THREE.PointLight(0xFCEE09, 1.5, 2.5, 1.6);
-    underSofaLight.position.set(-0.15, 0.1, -0.3);
-    loungeGroup.add(underSofaLight);
-
-    // 3. Cyberpunk drink / datapad prop on coffee table with soft cyan ambient light
-    const datapadGeo = new THREE.BoxGeometry(0.18, 0.015, 0.12);
-    const datapadMesh = new THREE.Mesh(datapadGeo, this.cyanEmissive);
-    datapadMesh.position.set(-0.1, 0.28, 0.25);
-    loungeGroup.add(datapadMesh);
-
-    const tableLight = new THREE.PointLight(0x00f0ff, 1.2, 2.0);
-    tableLight.position.set(-0.1, 0.35, 0.25);
-    loungeGroup.add(tableLight);
-
-    loungeGroup.add(tvGroup);
     this.group.add(loungeGroup);
   }
 
