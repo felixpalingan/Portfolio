@@ -2,6 +2,7 @@ import './style.css';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { portfolioData } from './data/portfolioData.js';
+import { ApartmentRoom } from './scene/ApartmentRoom.js';
 
 class App {
   constructor() {
@@ -17,7 +18,7 @@ class App {
     this.initCamera();
     this.initRenderer();
     this.initLights();
-    this.initPhase0Placeholder();
+    this.initRoom();
     this.initEvents();
     this.initLoadingSequence();
     this.animate();
@@ -25,17 +26,16 @@ class App {
 
   initScene() {
     this.scene = new THREE.Scene();
-    // Cyberpunk ambient fog
     this.scene.background = new THREE.Color(0x07080c);
-    this.scene.fog = new THREE.FogExp2(0x07080c, 0.045);
+    this.scene.fog = new THREE.FogExp2(0x07080c, 0.035);
   }
 
   initCamera() {
     const aspect = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 100);
-    // Initial camera position for Phase 0 (Wide establishing view)
-    this.camera.position.set(0, 2.2, 5.5);
-    this.camera.lookAt(0, 1.0, 0);
+    this.camera = new THREE.PerspectiveCamera(52, aspect, 0.1, 100);
+    // HOME Anchor: Wide establishing shot looking into the apartment
+    this.camera.position.set(0, 1.85, 4.4);
+    this.camera.lookAt(0, 1.25, -0.5);
   }
 
   initRenderer() {
@@ -47,66 +47,31 @@ class App {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.1;
+    this.renderer.toneMappingExposure = 1.15;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   }
 
   initLights() {
-    // Ambient light - dim cyberpunk atmosphere
-    const ambientLight = new THREE.AmbientLight(0x181a26, 1.2);
+    // Ambient light - dark cyberpunk base
+    const ambientLight = new THREE.AmbientLight(0x1a1622, 1.4);
     this.scene.add(ambientLight);
 
-    // Directional light - simulating cool Night City skyline light
-    const dirLight = new THREE.DirectionalLight(0x00F0FF, 1.5);
-    dirLight.position.set(5, 8, 3);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    this.scene.add(dirLight);
+    // Warm ceiling interior bounce light (simulating apartment lamps)
+    const interiorLight = new THREE.PointLight(0xffa24c, 2.2, 10, 1.2);
+    interiorLight.position.set(-1.0, 2.8, 0.5);
+    interiorLight.castShadow = true;
+    this.scene.add(interiorLight);
 
-    // Warm accent light - warm neon orange
-    const orangeLight = new THREE.PointLight(0xFCEE09, 3.0, 15);
-    orangeLight.position.set(-3, 2, 2);
-    this.scene.add(orangeLight);
+    // Subtle cool fill from opposite side
+    const fillLight = new THREE.PointLight(0x00d4ff, 1.2, 8, 1.4);
+    fillLight.position.set(2.5, 2.2, 1.0);
+    this.scene.add(fillLight);
   }
 
-  initPhase0Placeholder() {
-    // Phase 0 visual test: holographic tech grid and placeholder core
-    this.placeholderGroup = new THREE.Group();
-
-    // Floor grid
-    const gridHelper = new THREE.GridHelper(16, 16, 0x00F0FF, 0x1f263b);
-    gridHelper.position.y = 0;
-    this.placeholderGroup.add(gridHelper);
-
-    // Center holographic monolith
-    const geometry = new THREE.BoxGeometry(1.2, 1.8, 1.2);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x0a101d,
-      roughness: 0.2,
-      metalness: 0.8,
-      emissive: 0x00F0FF,
-      emissiveIntensity: 0.2
-    });
-    this.centerMesh = new THREE.Mesh(geometry, material);
-    this.centerMesh.position.y = 1.0;
-    this.centerMesh.castShadow = true;
-    this.placeholderGroup.add(this.centerMesh);
-
-    // Glowing wireframe cage
-    const wireframeGeo = new THREE.BoxGeometry(1.4, 2.0, 1.4);
-    const wireframeMat = new THREE.MeshBasicMaterial({
-      color: 0xFCEE09,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.6
-    });
-    this.wireMesh = new THREE.Mesh(wireframeGeo, wireframeMat);
-    this.wireMesh.position.y = 1.0;
-    this.placeholderGroup.add(this.wireMesh);
-
-    this.scene.add(this.placeholderGroup);
+  initRoom() {
+    this.room = new ApartmentRoom();
+    this.scene.add(this.room.group);
   }
 
   initEvents() {
@@ -130,16 +95,14 @@ class App {
   }
 
   initLoadingSequence() {
-    // Simulated asset load progress
-    let progress = 0;
+    let currentStep = 0;
     const steps = [
-      { p: 25, label: "MOUNTING NEURAL INTERFACE [25%]" },
-      { p: 60, label: "INITIALIZING THREE.JS WEBGL PIPELINE [60%]" },
-      { p: 90, label: "LOADING APARTMENT MATRIX // WATSON DISTRICT [90%]" },
-      { p: 100, label: "NEURAL LINK ESTABLISHED [100%]" }
+      { p: 25, label: "CALIBRATING ROOM SHELL MATRIX [25%]" },
+      { p: 60, label: "COMPUTING HEXAGONAL TILE SHADERS [60%]" },
+      { p: 85, label: "SYNCHRONIZING NIGHT CITY SKYLINE [85%]" },
+      { p: 100, label: "MEGABUILDING H10 INITIALIZED [100%]" }
     ];
 
-    let currentStep = 0;
     const interval = setInterval(() => {
       if (currentStep < steps.length) {
         const step = steps[currentStep];
@@ -157,29 +120,22 @@ class App {
               this.loadingScreen.classList.add('fade-out');
             }
           });
-        }, 300);
+        }, 250);
       }
-    }, 180);
+    }, 150);
   }
 
   animate() {
     requestAnimationFrame(() => this.animate());
 
     const delta = this.clock.getDelta();
-    const elapsedTime = this.clock.getElapsedTime();
 
-    // Subtle idle animation on placeholder
-    if (this.centerMesh) {
-      this.centerMesh.rotation.y = elapsedTime * 0.3;
-      this.wireMesh.rotation.y = -elapsedTime * 0.2;
-      this.centerMesh.position.y = 1.0 + Math.sin(elapsedTime * 1.5) * 0.05;
-      this.wireMesh.position.y = 1.0 + Math.sin(elapsedTime * 1.5) * 0.05;
-    }
-
-    // Gentle camera parallax from mouse movement
-    this.camera.position.x += (this.mouse.x * 0.4 - this.camera.position.x) * 0.05;
-    this.camera.position.y += (2.2 + this.mouse.y * 0.2 - this.camera.position.y) * 0.05;
-    this.camera.lookAt(0, 1.0, 0);
+    // Subtle responsive camera parallax
+    const targetX = this.mouse.x * 0.35;
+    const targetY = 1.85 + this.mouse.y * 0.15;
+    this.camera.position.x += (targetX - this.camera.position.x) * 0.04;
+    this.camera.position.y += (targetY - this.camera.position.y) * 0.04;
+    this.camera.lookAt(0, 1.25, -0.5);
 
     this.renderer.render(this.scene, this.camera);
   }
