@@ -17,4 +17,5 @@ Thumbs.db
 .grok/
 .hermes/
 .opencode/
-.pi/
+# Project specific
+reference/

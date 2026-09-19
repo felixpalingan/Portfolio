@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Felix Palingan | Full Stack Netrunner & Creative Developer</title>
+    <meta name="description" content="Cyberpunk 2077 inspired interactive 3D portfolio of Felix Palingan, featuring V's Megabuilding H10 apartment, Netrunner workstation, and projects." />
+    <meta name="keywords" content="Felix Palingan, Portfolio, Full Stack Developer, Three.js, WebGL, Cyberpunk 2077, Netrunner, JavaScript, Creative Developer" />
+    <meta name="author" content="Felix Palingan" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Felix Palingan | Cyberpunk 3D Portfolio" />
+    <meta property="og:description" content="Explore V's Megabuilding H10 apartment in real-time 3D WebGL. Discover projects, technical stats, and contact terminal." />
+    <meta property="og:url" content="https://felixpalingan.vercel.app/" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- 3D WebGL Canvas Layer -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Main Application UI / HUD Layer -->
+    <div id="app">
+      <!-- Loading Screen -->
+      <div id="loading-screen">
+        <div class="loader-content">
+          <div class="glitch-title" data-text="SYSTEM INITIALIZATION">SYSTEM INITIALIZATION</div>
+          <div class="loader-subtitle">NEURAL LINK // MEGABUILDING H10 APARTMENT</div>
+          <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+          <div id="loading-status" class="loading-status">CALIBRATING OPTICS [0%]</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
