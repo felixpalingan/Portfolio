@@ -338,6 +338,7 @@ export class ApartmentRoom {
     this.group.add(skylineMesh);
 
     // Cool neon rim light from the window
+    const windowZ = -this.depth / 2;
     const windowLight = new THREE.SpotLight(0x00F0FF, 3.5, 9, Math.PI / 3, 0.4, 1.2);
     windowLight.position.set(0.15, centerY + 0.5, windowZ - 0.2);
     windowLight.target.position.set(0.15, 1.0, 0);
