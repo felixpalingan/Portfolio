@@ -77,14 +77,20 @@ export class ApartmentRoom {
   }
 
   createFloor() {
-    // Main apartment floor
-    // Sunken lounge is in top-right (x: 1.5 to 4.5, z: -3.5 to -0.5)
-    // We create the main floor slab and a stepped sunken pit
-    const floorGeo = new THREE.BoxGeometry(this.width, 0.2, this.depth);
-    const floorMesh = new THREE.Mesh(floorGeo, this.floorMaterial);
-    floorMesh.position.set(0, -0.1, 0);
-    floorMesh.receiveShadow = true;
-    this.group.add(floorMesh);
+    // MAIN APARTMENT FLOOR (Precisely cut with open recess for the Sunken Lounge)
+    // Piece 1: Left area covering full depth (x: -4.5 to 1.6, z: -3.5 to +3.5)
+    const floorLeftGeo = new THREE.BoxGeometry(6.1, 0.2, 7.0);
+    const floorLeftMesh = new THREE.Mesh(floorLeftGeo, this.floorMaterial);
+    floorLeftMesh.position.set(-1.45, -0.1, 0);
+    floorLeftMesh.receiveShadow = true;
+    this.group.add(floorLeftMesh);
+
+    // Piece 2: Front-Right area in front of the lounge (x: 1.6 to 4.5, z: -0.6 to +3.5)
+    const floorFrontRightGeo = new THREE.BoxGeometry(2.9, 0.2, 4.1);
+    const floorFrontRightMesh = new THREE.Mesh(floorFrontRightGeo, this.floorMaterial);
+    floorFrontRightMesh.position.set(3.05, -0.1, 1.45);
+    floorFrontRightMesh.receiveShadow = true;
+    this.group.add(floorFrontRightMesh);
 
     // Sunken Lounge Pit (Lowered arena floor at y = -0.38)
     const sunkenGeo = new THREE.BoxGeometry(2.9, 0.1, 2.9);
