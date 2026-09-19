@@ -106,23 +106,26 @@ class App {
     const interval = setInterval(() => {
       if (currentStep < steps.length) {
         const step = steps[currentStep];
-        this.progressBar.style.width = `${step.p}%`;
-        this.loadingStatus.textContent = step.label;
+        if (this.progressBar) this.progressBar.style.width = `${step.p}%`;
+        if (this.loadingStatus) this.loadingStatus.textContent = step.label;
         currentStep++;
       } else {
         clearInterval(interval);
         setTimeout(() => {
-          gsap.to(this.loadingScreen, {
-            opacity: 0,
-            duration: 0.8,
-            ease: "power2.out",
-            onComplete: () => {
-              this.loadingScreen.classList.add('fade-out');
-            }
-          });
-        }, 250);
+          if (this.loadingScreen) {
+            gsap.to(this.loadingScreen, {
+              opacity: 0,
+              duration: 0.6,
+              ease: "power2.out",
+              onComplete: () => {
+                this.loadingScreen.classList.add('fade-out');
+                this.loadingScreen.style.display = 'none';
+              }
+            });
+          }
+        }, 200);
       }
-    }, 150);
+    }, 120);
   }
 
   animate() {
@@ -141,7 +144,12 @@ class App {
   }
 }
 
-// Boot application
-window.addEventListener('DOMContentLoaded', () => {
+// Boot application immediately (ES module is executed after DOM is available)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    new App();
+  });
+} else {
   new App();
-});
+}
+
