@@ -137,10 +137,11 @@ class App {
     requestAnimationFrame(() => this.animate());
 
     const delta = this.clock.getDelta();
+    const elapsedTime = this.clock.getElapsedTime();
 
-    // Update animated furniture elements (ceiling fan, vinyl record, etc.)
+    // Update animated furniture and atmospheric elements
     if (this.room) {
-      this.room.update();
+      this.room.update(elapsedTime);
     }
 
     // Subtle responsive camera parallax

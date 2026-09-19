@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { TextureGenerator } from './TextureGenerator.js';
 import { ApartmentFurniture } from './ApartmentFurniture.js';
+import { Atmosphere } from './Atmosphere.js';
 
 /**
- * ApartmentRoom (Room Shell & Interior - Phase 1 & 2)
- * Builds the architectural geometry and integrated interior furniture of V's Megabuilding H10 apartment.
+ * ApartmentRoom (Room Shell & Interior - Phase 1 & 2 & 3)
+ * Builds the architectural geometry, integrated interior furniture, and atmospheric effects of V's Megabuilding H10 apartment.
  */
 export class ApartmentRoom {
   constructor() {
@@ -22,6 +23,7 @@ export class ApartmentRoom {
     this.createPanoramicWindow();
     this.createStructuralBeams();
     this.createFurniture();
+    this.createAtmosphere();
   }
 
   initMaterials() {
@@ -667,9 +669,17 @@ export class ApartmentRoom {
     this.group.add(this.furniture.group);
   }
 
-  update() {
+  createAtmosphere() {
+    this.atmosphere = new Atmosphere();
+    this.group.add(this.atmosphere.group);
+  }
+
+  update(time = 0) {
     if (this.furniture) {
       this.furniture.update();
+    }
+    if (this.atmosphere) {
+      this.atmosphere.update(time);
     }
   }
 }

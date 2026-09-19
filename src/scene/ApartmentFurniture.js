@@ -363,6 +363,29 @@ export class ApartmentFurniture {
     rgbStrip.position.set(0.55, 0.28, 0.35);
     deskGroup.add(rgbStrip);
 
+    // Dynamic Netrunner Server Rack Activity LEDs
+    const ledColors = [0x00FF66, 0xFFB400, 0x00F0FF, 0xFF003C];
+    const ledMeshes = [];
+    for (let i = 0; i < 4; i++) {
+      const ledGeo = new THREE.BoxGeometry(0.018, 0.018, 0.01);
+      const ledMat = new THREE.MeshBasicMaterial({ color: ledColors[i] });
+      const ledMesh = new THREE.Mesh(ledGeo, ledMat);
+      ledMesh.position.set(0.58 + i * 0.05, 0.51, 0.355);
+      deskGroup.add(ledMesh);
+      ledMeshes.push({ mesh: ledMesh, color: ledColors[i], phase: i * 1.7 });
+    }
+
+    this.animatedObjects.push({
+      update: () => {
+        const t = Date.now() * 0.005;
+        for (let i = 0; i < ledMeshes.length; i++) {
+          const item = ledMeshes[i];
+          const blink = Math.sin(t * (1.5 + i * 0.7) + item.phase) > 0.2;
+          item.mesh.material.color.setHex(blink ? item.color : 0x050505);
+        }
+      }
+    });
+
     // Shelves mounted on wall above desk
     const shelfGeo = new THREE.BoxGeometry(1.8, 0.05, 0.35);
     const shelf1 = new THREE.Mesh(shelfGeo, this.tanMetal);
