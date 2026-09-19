@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 import { TextureGenerator } from './TextureGenerator.js';
 
 /**
@@ -163,16 +164,16 @@ export class ApartmentFurniture {
   }
 
   // ===========================================================================
-  // 2B: TOILET + MIRROR AREA (Left - between pod and desk)
+  // 2B: TOILET + SMART CYBERPUNK MIRROR AREA (Left - COMM Terminal)
   // ===========================================================================
   buildToiletAndMirror() {
     const toiletGroup = new THREE.Group();
-    toiletGroup.position.set(-4.0, 0, -0.5);
+    toiletGroup.position.set(-4.0, 0, 0.0);
 
-    // Partition divider wall
-    const partWallGeo = new THREE.BoxGeometry(0.12, 2.4, 1.8);
+    // Stall divider wall (covers toilet in corner, leaves sink & mirror wide open)
+    const partWallGeo = new THREE.BoxGeometry(0.12, 2.4, 0.85);
     const partWall = new THREE.Mesh(partWallGeo, this.darkMetal);
-    partWall.position.set(1.0, 1.2, 0.0);
+    partWall.position.set(1.0, 1.2, -0.65);
     toiletGroup.add(partWall);
 
     // Toilet Bowl & Tank (futuristic compact Megabuilding module)
@@ -182,38 +183,85 @@ export class ApartmentFurniture {
       roughness: 0.2,
       metalness: 0.1
     }));
-    toiletBowl.position.set(0.3, 0.225, -0.4);
+    toiletBowl.position.set(0.3, 0.225, -0.65);
     toiletBowl.castShadow = true;
     toiletGroup.add(toiletBowl);
 
     const toiletTankGeo = new THREE.BoxGeometry(0.45, 0.5, 0.25);
     const toiletTank = new THREE.Mesh(toiletTankGeo, this.darkMetal);
-    toiletTank.position.set(0.3, 0.65, -0.65);
+    toiletTank.position.set(0.3, 0.65, -0.95);
     toiletGroup.add(toiletTank);
 
-    // Sink counter
-    const sinkGeo = new THREE.BoxGeometry(0.45, 0.75, 0.55);
+    // Sink counter below mirror
+    const sinkGeo = new THREE.BoxGeometry(0.55, 0.75, 0.75);
     const sink = new THREE.Mesh(sinkGeo, this.darkMetal);
-    sink.position.set(0.3, 0.375, 0.45);
+    sink.position.set(0.32, 0.375, 0.0);
     toiletGroup.add(sink);
 
-    // Wall Mirror (glossy, reflective plastic mirror)
-    const mirrorGeo = new THREE.BoxGeometry(0.04, 0.9, 0.5);
+    // Wall Mirror Frame (dark cyber metal chassis against left wall)
+    const mirrorFrameGeo = new THREE.BoxGeometry(0.04, 1.15, 0.82);
+    const mirrorFrame = new THREE.Mesh(mirrorFrameGeo, this.darkMetal);
+    mirrorFrame.position.set(-0.46, 1.48, 0.0);
+    toiletGroup.add(mirrorFrame);
+
+    // Base reflective mirror glass
+    const mirrorGeo = new THREE.BoxGeometry(0.02, 1.08, 0.76);
     const mirror = new THREE.Mesh(mirrorGeo, this.mirrorMaterial);
-    mirror.position.set(-0.4, 1.45, 0.45);
+    mirror.position.set(-0.44, 1.48, 0.0);
     toiletGroup.add(mirror);
 
+    // =========================================================================
+    // DIEGETIC SMART CYBERPUNK MIRROR DISPLAY (Fades in like Cyberpunk 2077 mirror)
+    // =========================================================================
+    const smartMirrorGeo = new THREE.PlaneGeometry(0.74, 1.06);
+    const smartMirrorTexture = TextureGenerator.createSmartMirrorTexture();
+    const smartMirrorMat = new THREE.MeshBasicMaterial({
+      map: smartMirrorTexture,
+      transparent: true,
+      opacity: 0.0,
+      side: THREE.DoubleSide
+    });
+    this.smartMirrorDisplay = new THREE.Mesh(smartMirrorGeo, smartMirrorMat);
+    // Orient plane normal facing +X (towards the camera standing in front of mirror)
+    this.smartMirrorDisplay.rotation.y = Math.PI / 2;
+    this.smartMirrorDisplay.position.set(-0.428, 1.48, 0.0);
+    toiletGroup.add(this.smartMirrorDisplay);
+
     // Cool white overhead LED strip for mirror
-    const mirrorLightGeo = new THREE.BoxGeometry(0.06, 0.05, 0.5);
+    const mirrorLightGeo = new THREE.BoxGeometry(0.06, 0.05, 0.82);
     const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.whiteEmissive);
-    mirrorLightMesh.position.set(-0.38, 1.95, 0.45);
+    mirrorLightMesh.position.set(-0.43, 2.08, 0.0);
     toiletGroup.add(mirrorLightMesh);
 
-    const mirrorSpot = new THREE.PointLight(0xddeeff, 1.5, 3.0);
-    mirrorSpot.position.set(0.1, 1.8, 0.45);
-    toiletGroup.add(mirrorSpot);
+    // Dedicated mirror task light
+    this.mirrorSpot = new THREE.PointLight(0xddeeff, 2.2, 3.8);
+    this.mirrorSpot.position.set(0.4, 1.95, 0.0);
+    toiletGroup.add(this.mirrorSpot);
 
     this.group.add(toiletGroup);
+  }
+
+  /**
+   * Activates or deactivates the Cyberpunk Smart Mirror biometric HUD with fade-in effect
+   */
+  setMirrorActive(active) {
+    if (!this.smartMirrorDisplay) return;
+    gsap.killTweensOf(this.smartMirrorDisplay.material);
+
+    if (active) {
+      // Cyberpunk 2077 digital glitch flicker fade-in
+      this.smartMirrorDisplay.material.opacity = 0;
+      gsap.timeline()
+        .to(this.smartMirrorDisplay.material, { opacity: 0.85, duration: 0.12, ease: 'steps(2)' })
+        .to(this.smartMirrorDisplay.material, { opacity: 0.3, duration: 0.08 })
+        .to(this.smartMirrorDisplay.material, { opacity: 0.98, duration: 0.35, ease: 'power2.out' });
+    } else {
+      gsap.to(this.smartMirrorDisplay.material, {
+        opacity: 0,
+        duration: 0.35,
+        ease: 'power2.in'
+      });
+    }
   }
 
   // ===========================================================================

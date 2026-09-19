@@ -668,6 +668,12 @@ export class ApartmentRoom {
     this.group.add(this.furniture.group);
   }
 
+  setMirrorActive(active) {
+    if (this.furniture) {
+      this.furniture.setMirrorActive(active);
+    }
+  }
+
   update() {
     if (this.furniture) {
       this.furniture.update();

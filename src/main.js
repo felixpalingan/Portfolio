@@ -129,7 +129,9 @@ class App {
 
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const anchor = btn.getAttribute('data-nav');
+        let anchor = btn.getAttribute('data-nav');
+        if (anchor === 'CONTACT') anchor = 'COMM';
+
         if (this.cameraController) {
           this.cameraController.moveTo(anchor);
         }
@@ -141,6 +143,47 @@ class App {
         }
       });
     });
+
+    // Camera transition lifecycle hooks for Smart Mirror & HUD
+    if (this.cameraController) {
+      this.cameraController.onTransitionStart = (anchor) => {
+        if (anchor.name !== 'COMM') {
+          if (this.room) this.room.setMirrorActive(false);
+          this.hideSmartMirrorHUD();
+        }
+      };
+
+      this.cameraController.onTransitionComplete = (anchor) => {
+        if (anchor.name === 'COMM') {
+          if (this.room) this.room.setMirrorActive(true);
+          this.showSmartMirrorHUD();
+        }
+      };
+    }
+
+    // Mirror Exit button -> Return to HOME
+    const mirrorReturnBtn = document.getElementById('mirror-return-btn');
+    if (mirrorReturnBtn) {
+      mirrorReturnBtn.addEventListener('click', () => {
+        document.getElementById('nav-btn-home')?.click();
+      });
+    }
+
+    // Copy Email Chip
+    const copyBtn = document.getElementById('copy-email-btn');
+    const copyToast = document.getElementById('copy-toast');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText('felixbariq@gmail.com').then(() => {
+          if (copyToast) {
+            copyToast.textContent = '[EMAIL COPIED TO CLIPBOARD]';
+            copyToast.classList.add('show');
+            setTimeout(() => copyToast.classList.remove('show'), 2500);
+          }
+        });
+      });
+    }
 
     // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, Escape: HOME)
     window.addEventListener('keydown', (e) => {
@@ -154,6 +197,20 @@ class App {
         document.getElementById('nav-btn-contact')?.click();
       }
     });
+  }
+
+  showSmartMirrorHUD() {
+    const overlay = document.getElementById('smart-mirror-overlay');
+    if (overlay) {
+      overlay.classList.add('active');
+    }
+  }
+
+  hideSmartMirrorHUD() {
+    const overlay = document.getElementById('smart-mirror-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+    }
   }
 
   onResize() {

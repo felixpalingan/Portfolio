@@ -62,6 +62,80 @@
       <!-- CRT Scanline Screen Overlay -->
       <div class="hud-scanlines" aria-hidden="true"></div>
 
+      <!-- Cyberpunk Smart Mirror Interactive HUD Overlay (COMM View) -->
+      <div id="smart-mirror-overlay" class="cyber-mirror-hud" aria-hidden="true">
+        <div class="mirror-hud-frame">
+          <div class="mirror-hud-corner tl"></div>
+          <div class="mirror-hud-corner tr"></div>
+          <div class="mirror-hud-corner bl"></div>
+          <div class="mirror-hud-corner br"></div>
+
+          <div class="mirror-header">
+            <span class="hud-glitch-badge">⚡ OPTICAL_FEED // BIOMETRIC LINK ACTIVE</span>
+            <span class="mirror-freq">98.7 MHz NET_CHANNEL</span>
+          </div>
+
+          <div class="mirror-profile-section">
+            <div class="mirror-avatar-wrapper">
+              <div class="mirror-avatar-box">
+                <div class="cyber-crosshair"></div>
+                <div class="avatar-silhouette">
+                  <div class="cyber-visor-glow"></div>
+                </div>
+              </div>
+              <div class="biometric-tag">[FACIAL SCAN: 99.8% MATCH]</div>
+            </div>
+
+            <div class="mirror-bio-data">
+              <div class="operative-name">ALMAKIUS FELIX BARIQ HEKOPUNG</div>
+              <div class="operative-role">// FULL STACK NETRUNNER &amp; CREATIVE DEVELOPER</div>
+              <div class="operative-meta">WATSON DISTRICT // MEGABUILDING H10</div>
+              <div class="operative-status"><span class="status-indicator"></span> STATUS: OPEN FOR CONTRACTS &amp; RAID TEAMS</div>
+            </div>
+          </div>
+
+          <div class="mirror-divider"></div>
+
+          <div class="mirror-comms-channels">
+            <div class="comm-channel-header">// DIRECT TRANSMISSION CHANNELS</div>
+            
+            <div class="mirror-comm-card" id="comm-email-card">
+              <div class="comm-icon">✉</div>
+              <div class="comm-details">
+                <span class="comm-type">DIRECT COMMS // EMAIL</span>
+                <span class="comm-val">felixbariq@gmail.com</span>
+              </div>
+              <button type="button" class="copy-chip" id="copy-email-btn" title="Copy Email">COPY</button>
+            </div>
+
+            <a href="https://github.com/felixpalingan" target="_blank" rel="noopener noreferrer" class="mirror-comm-card">
+              <div class="comm-icon">◈</div>
+              <div class="comm-details">
+                <span class="comm-type">NEURAL ARCHIVE // GITHUB</span>
+                <span class="comm-val">github.com/felixpalingan</span>
+              </div>
+              <span class="comm-arrow">↗</span>
+            </a>
+
+            <a href="https://linkedin.com/in/felixpalingan" target="_blank" rel="noopener noreferrer" class="mirror-comm-card">
+              <div class="comm-icon">◆</div>
+              <div class="comm-details">
+                <span class="comm-type">NETRUNNER SYNDICATE // LINKEDIN</span>
+                <span class="comm-val">linkedin.com/in/felixpalingan</span>
+              </div>
+              <span class="comm-arrow">↗</span>
+            </a>
+          </div>
+
+          <div class="mirror-footer">
+            <button id="mirror-return-btn" class="mirror-exit-btn">
+              <span>◄ RETURN TO APARTMENT</span>
+            </button>
+            <span id="copy-toast" class="copy-toast"></span>
+          </div>
+        </div>
+      </div>
+
       <!-- Loading Screen -->
       <div id="loading-screen">
         <div class="loader-content">

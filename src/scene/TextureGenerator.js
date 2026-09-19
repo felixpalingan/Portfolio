@@ -198,5 +198,180 @@ export class TextureGenerator {
     texture.repeat.set(16, 8);
     return texture;
   }
+
+  /**
+   * Generates Cyberpunk 2077 Smart Mirror interactive HUD texture
+   */
+  static createSmartMirrorTexture() {
+    const w = 1024;
+    const h = 1536;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // Deep semi-transparent cybernetic glass background
+    ctx.fillStyle = '#060a12';
+    ctx.fillRect(0, 0, w, h);
+
+    // Subtle background scanline matrix
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.03)';
+    for (let y = 0; y < h; y += 8) {
+      ctx.fillRect(0, y, w, 4);
+    }
+
+    // Outer HUD frame with cyber brackets
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(30, 30, w - 60, h - 60);
+
+    // Corner brackets
+    ctx.fillStyle = '#FCEE09';
+    ctx.fillRect(20, 20, 40, 10);
+    ctx.fillRect(20, 20, 10, 40);
+    ctx.fillRect(w - 60, 20, 40, 10);
+    ctx.fillRect(w - 30, 20, 10, 40);
+    ctx.fillRect(20, h - 30, 40, 10);
+    ctx.fillRect(20, h - 60, 10, 40);
+    ctx.fillRect(w - 60, h - 30, 40, 10);
+    ctx.fillRect(w - 30, h - 60, 10, 40);
+
+    // Top Header
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 36px monospace';
+    ctx.fillText('KIROSHI OPTICAL // SMART MIRROR v2.077', 60, 95);
+
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = '22px monospace';
+    ctx.fillText('● NEURAL LINK SYNCHRONIZED // 98.7 MHz', 60, 135);
+
+    // Divider Line
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(60, 160);
+    ctx.lineTo(w - 60, 160);
+    ctx.stroke();
+
+    // =========================================================================
+    // AVATAR / PROFILE PHOTO BOX (Styled Cyberpunk Operative Scan)
+    // =========================================================================
+    const photoX = 60;
+    const photoY = 195;
+    const photoW = w - 120;
+    const photoH = 500;
+
+    // Dark photo container
+    ctx.fillStyle = '#090e18';
+    ctx.fillRect(photoX, photoY, photoW, photoH);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(photoX, photoY, photoW, photoH);
+
+    // Operative Silhouette / Cyber Face
+    ctx.fillStyle = '#111827';
+    ctx.beginPath();
+    ctx.arc(w / 2, photoY + 200, 110, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Shoulders
+    ctx.beginPath();
+    ctx.ellipse(w / 2, photoY + 420, 220, 130, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Glowing Cyberware Visor / Optics
+    ctx.fillStyle = '#FCEE09';
+    ctx.shadowColor = '#FCEE09';
+    ctx.shadowBlur = 18;
+    ctx.fillRect(w / 2 - 80, photoY + 185, 160, 28);
+    ctx.shadowBlur = 0;
+
+    // Biometric facial tracking crosshair brackets
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(w / 2 - 120, photoY + 80, 240, 240);
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 24px monospace';
+    ctx.fillText('[SUBJECT: ALMAKIUS FELIX BARIQ HEKOPUNG]', w / 2 - 270, photoY + 470);
+
+    // =========================================================================
+    // BIOMETRIC & OPERATIVE TELEMETRY
+    // =========================================================================
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.8)';
+    ctx.font = '24px monospace';
+    ctx.fillText('ROLE: FULL STACK NETRUNNER // CREATIVE DEVELOPER', 60, 750);
+    ctx.fillText('LOC : WATSON DISTRICT // MEGABUILDING H10', 60, 790);
+    ctx.fillText('PULSE: 72 BPM  |  NEURAL LOAD: 14%  |  ICE: SECURE', 60, 830);
+
+    // Divider
+    ctx.strokeStyle = '#FF003C';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(60, 865);
+    ctx.lineTo(w - 60, 865);
+    ctx.stroke();
+
+    // =========================================================================
+    // TRANSMISSION CHANNELS (CONTACT INFO)
+    // =========================================================================
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = 'bold 32px monospace';
+    ctx.fillText('// DIRECT TRANSMISSION CHANNELS', 60, 925);
+
+    // Channel Box 1: Email
+    ctx.fillStyle = '#0a1220';
+    ctx.fillRect(60, 960, w - 120, 95);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(60, 960, w - 120, 95);
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 24px monospace';
+    ctx.fillText('✉ COMMS / EMAIL', 90, 1000);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '28px monospace';
+    ctx.fillText('felixbariq@gmail.com', 90, 1038);
+
+    // Channel Box 2: GitHub
+    ctx.fillStyle = '#0a1220';
+    ctx.fillRect(60, 1075, w - 120, 95);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(60, 1075, w - 120, 95);
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 24px monospace';
+    ctx.fillText('◈ CODE REPOSITORY / GITHUB', 90, 1115);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '28px monospace';
+    ctx.fillText('github.com/felixpalingan', 90, 1153);
+
+    // Channel Box 3: LinkedIn
+    ctx.fillStyle = '#0a1220';
+    ctx.fillRect(60, 1190, w - 120, 95);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(60, 1190, w - 120, 95);
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 24px monospace';
+    ctx.fillText('◆ PROFESSIONAL NETWORK / LINKEDIN', 90, 1230);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '28px monospace';
+    ctx.fillText('linkedin.com/in/felixpalingan', 90, 1268);
+
+    // Bottom Status Badge
+    ctx.fillStyle = '#00FF66';
+    ctx.fillRect(60, 1340, w - 120, 50);
+    ctx.fillStyle = '#060a12';
+    ctx.font = 'bold 26px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡ STATUS: OPEN FOR CONTRACTS & NEW MISSIONS ⚡', w / 2, 1375);
+    ctx.textAlign = 'left';
+
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }
 }
 
