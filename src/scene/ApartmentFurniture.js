@@ -543,7 +543,7 @@ export class ApartmentFurniture {
     });
 
     // =========================================================================
-    // 360-DEGREE CYLINDRICAL RUNNING TEXT MONITOR & NEON LIGHT EMITTER
+    // 360-DEGREE CYLINDRICAL RUNNING TEXT MONITOR & NEON GREEN EMITTER
     // =========================================================================
     const tickerCanvas = document.createElement('canvas');
     tickerCanvas.width = 2048;
@@ -551,21 +551,21 @@ export class ApartmentFurniture {
     const tctx = tickerCanvas.getContext('2d');
 
     // Cyberpunk semi-transparent glowing holographic background
-    tctx.fillStyle = '#060a14';
+    tctx.fillStyle = '#030d06';
     tctx.fillRect(0, 0, 2048, 256);
 
-    // Neon borders top and bottom
-    tctx.fillStyle = '#00F0FF';
+    // Electric Neon Green borders top and bottom
+    tctx.fillStyle = '#00FF66';
     tctx.fillRect(0, 0, 2048, 8);
     tctx.fillRect(0, 248, 2048, 8);
-    tctx.fillStyle = '#FCEE09';
+    tctx.fillStyle = '#39FF14';
     tctx.fillRect(0, 8, 2048, 3);
     tctx.fillRect(0, 245, 2048, 3);
 
-    // Running text marquee pattern
-    tctx.shadowColor = '#00F0FF';
-    tctx.shadowBlur = 18;
-    tctx.fillStyle = '#00F0FF';
+    // Running text marquee pattern in Electric Neon Green
+    tctx.shadowColor = '#00FF66';
+    tctx.shadowBlur = 22;
+    tctx.fillStyle = '#00FF66';
     tctx.font = 'bold 44px monospace';
     const marqueeText = "⚡ FELIX PALINGAN // NETRUNNER OPERATIVE // WATSON DISTRICT // MEGABUILDING H10 // TECHNICAL ABILITY 95% // INTELLIGENCE 92% // REFLEXES 90% // COOL 88% // ARASAKA ICE: COMPROMISED // NEURAL MATRIX ONLINE // ⚡ ";
     tctx.fillText(marqueeText, 30, 145);
@@ -580,7 +580,7 @@ export class ApartmentFurniture {
       map: tickerTexture,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.92
+      opacity: 0.95
     });
     this.cylScreen = new THREE.Mesh(cylGeo, cylMat);
     this.cylScreen.position.set(-0.15, 1.45, 0.1);
@@ -603,17 +603,13 @@ export class ApartmentFurniture {
     loungeGroup.add(rod);
 
     // =========================================================================
-    // DYNAMIC 360° NEON LIGHT EMANATING DIRECTLY FROM THE MONITOR
+    // DYNAMIC NEON GREEN LIGHT EMANATING DIRECTLY FROM THE 360 MONITOR
     // =========================================================================
-    this.loungeNeonLight = new THREE.PointLight(0x00F0FF, 3.8, 6.0, 1.1);
+    this.loungeNeonLight = new THREE.PointLight(0x00FF66, 4.2, 6.5, 1.1);
     this.loungeNeonLight.position.set(-0.15, 1.45, 0.1);
     loungeGroup.add(this.loungeNeonLight);
 
-    const loungeAmberLight = new THREE.PointLight(0xffa233, 2.2, 5.0, 1.2);
-    loungeAmberLight.position.set(-0.15, 1.2, 0.1);
-    loungeGroup.add(loungeAmberLight);
-
-    // Register animation loop: Continuous 360 text scroll and gentle neon pulsing
+    // Register animation loop: Continuous 360 text scroll and gentle neon green pulsing
     let tickerOffset = 0;
     this.animatedObjects.push({
       update: () => {
@@ -622,9 +618,9 @@ export class ApartmentFurniture {
         tickerTexture.offset.x = tickerOffset;
         this.cylScreen.rotation.y += 0.003;
 
-        // Subtle neon breathing pulse
+        // Subtle electric neon green breathing pulse
         const time = Date.now() * 0.002;
-        this.loungeNeonLight.intensity = 3.6 + Math.sin(time) * 0.6;
+        this.loungeNeonLight.intensity = 4.0 + Math.sin(time) * 0.7;
       }
     });
 

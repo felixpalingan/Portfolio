@@ -91,25 +91,21 @@ class App {
   }
 
   initLights() {
-    // Ambient light - rich dark cyberpunk base
-    const ambientLight = new THREE.AmbientLight(0x221e2c, 1.8);
+    // Dim atmospheric Cyberpunk base ambient
+    const ambientLight = new THREE.AmbientLight(0x0e1322, 1.3);
     this.scene.add(ambientLight);
 
-    // Warm ceiling interior bounce light (simulating left side apartment lamps)
-    const interiorLight = new THREE.PointLight(0xffa24c, 2.2, 10, 1.2);
-    interiorLight.position.set(-1.0, 2.8, 0.5);
-    interiorLight.castShadow = true;
-    this.scene.add(interiorLight);
+    // Primary apartment light source: Soft diffuse cool white neon streaming inward from outside panoramic window
+    const windowStreamLight = new THREE.DirectionalLight(0xdcf0ff, 2.2);
+    windowStreamLight.position.set(0.15, 2.4, -4.6);
+    windowStreamLight.target.position.set(0.15, 0.5, 0.5);
+    this.scene.add(windowStreamLight);
+    this.scene.add(windowStreamLight.target);
 
-    // Warm lounge ceiling fill light (illuminating right lounge area from above)
-    const loungeCeilingLight = new THREE.PointLight(0xffc27a, 2.0, 9, 1.2);
-    loungeCeilingLight.position.set(2.6, 2.7, -1.2);
-    this.scene.add(loungeCeilingLight);
-
-    // Subtle cool fill from front-right side
-    const fillLight = new THREE.PointLight(0x00d4ff, 1.2, 8, 1.4);
-    fillLight.position.set(2.5, 2.2, 1.5);
-    this.scene.add(fillLight);
+    // Soft diffuse window neon spill onto the apartment floor
+    const windowSpillLight = new THREE.PointLight(0xcde6fc, 2.0, 11, 1.2);
+    windowSpillLight.position.set(0.15, 1.8, -3.2);
+    this.scene.add(windowSpillLight);
   }
 
   initRoom() {
