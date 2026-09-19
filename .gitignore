@@ -1,6 +1,20 @@
+# Dependencies & build
 node_modules/
 dist/
 .env
 .env.local
 .DS_Store
 Thumbs.db
+
+# AI Agent harnesses, skills, & tool configs
+.agent/
+.agents/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.impeccable/
+.grok/
+.hermes/
+.opencode/
+.pi/
