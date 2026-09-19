@@ -40,11 +40,11 @@ export class ApartmentFurniture {
       metalness: 0.6
     });
 
-    // Workstation desk surface
+    // Workstation desk surface (Warm industrial cyber laminate)
     this.deskMaterial = new THREE.MeshStandardMaterial({
-      color: 0x241d18,
+      color: 0x987456,
       roughness: 0.35,
-      metalness: 0.4
+      metalness: 0.15
     });
 
     // Fabric / Sofa cushion material
@@ -218,15 +218,20 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildNetrunnerWorkstation() {
     const deskGroup = new THREE.Group();
-    deskGroup.position.set(-3.2, 0, 1.9);
+    deskGroup.position.set(-3.0, 0, 1.5);
 
-    // Main Desk Tabletop (tan/dark wood laminate)
+    // Main Desk Tabletop (warm industrial birch laminate)
     const topGeo = new THREE.BoxGeometry(2.1, 0.08, 1.0);
     const deskTop = new THREE.Mesh(topGeo, this.deskMaterial);
     deskTop.position.set(0, 0.72, 0);
     deskTop.castShadow = true;
     deskTop.receiveShadow = true;
     deskGroup.add(deskTop);
+
+    // Front edge cyan neon trim strip (makes desk perimeter crystal clear)
+    const deskFrontEdge = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.025, 0.025), this.cyanEmissive);
+    deskFrontEdge.position.set(0, 0.74, 0.51);
+    deskGroup.add(deskFrontEdge);
 
     // Sturdy industrial metal frame legs
     const legGeo = new THREE.BoxGeometry(0.08, 0.72, 0.9);
@@ -328,8 +333,20 @@ export class ApartmentFurniture {
     standBase.position.set(0, 0.74, -0.2);
     deskGroup.add(standBase);
 
+    // Dedicated Overhead Workstation Desk Task Light (illuminates tabletop & keyboard brightly)
+    const deskTaskSpot = new THREE.SpotLight(0xffecd0, 3.8, 4.5, Math.PI / 3, 0.35, 1.2);
+    deskTaskSpot.position.set(0, 2.1, 0.3);
+    deskTaskSpot.target.position.set(0, 0.72, 0.1);
+    deskGroup.add(deskTaskSpot);
+    deskGroup.add(deskTaskSpot.target);
+
+    // Warm ambient point light directly over the desk
+    const deskWarmGlow = new THREE.PointLight(0xffa855, 2.2, 3.2, 1.2);
+    deskWarmGlow.position.set(0, 1.4, 0.35);
+    deskGroup.add(deskWarmGlow);
+
     // Monitor glow casting on the desk
-    const monitorLight = new THREE.PointLight(0x00F0FF, 1.8, 2.5, 1.4);
+    const monitorLight = new THREE.PointLight(0x00F0FF, 2.2, 2.8, 1.3);
     monitorLight.position.set(0, 1.15, 0.3);
     deskGroup.add(monitorLight);
 
@@ -415,6 +432,7 @@ export class ApartmentFurniture {
     // Swivel Chair (Egg / Pilot swivel bucket seat)
     const chairGroup = new THREE.Group();
     chairGroup.position.set(0, 0, 0.75);
+    chairGroup.rotation.y = -0.35; // Angled slightly into room for clear visibility
 
     // Chair base star & piston
     const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), this.darkMetal);

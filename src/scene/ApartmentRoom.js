@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import { TextureGenerator } from './TextureGenerator.js';
 import { ApartmentFurniture } from './ApartmentFurniture.js';
-import { Atmosphere } from './Atmosphere.js';
 
 /**
- * ApartmentRoom (Room Shell & Interior - Phase 1 & 2 & 3)
- * Builds the architectural geometry, integrated interior furniture, and atmospheric effects of V's Megabuilding H10 apartment.
+ * ApartmentRoom (Room Shell & Interior)
+ * Builds the architectural geometry and integrated interior furniture of V's Megabuilding H10 apartment.
  */
 export class ApartmentRoom {
   constructor() {
@@ -23,7 +22,6 @@ export class ApartmentRoom {
     this.createPanoramicWindow();
     this.createStructuralBeams();
     this.createFurniture();
-    this.createAtmosphere();
   }
 
   initMaterials() {
@@ -66,15 +64,15 @@ export class ApartmentRoom {
       metalness: 0.7
     });
 
-    // Window glass material (tinted, semi-reflective with realistic micro-imperfections)
+    // Window glass material (tinted dark cyber glass, semi-reflective)
     const glassRoughnessMap = TextureGenerator.createGlassRoughnessTexture();
     this.glassMaterial = new THREE.MeshStandardMaterial({
-      color: 0x77b8d8,
+      color: 0x14202c,
       transparent: true,
-      opacity: 0.28,
-      roughness: 0.25,
+      opacity: 0.38,
+      roughness: 0.35,
       roughnessMap: glassRoughnessMap,
-      metalness: 0.3
+      metalness: 0.25
     });
   }
 
@@ -628,22 +626,23 @@ export class ApartmentRoom {
     const skylineGeo = new THREE.PlaneGeometry(12.0, 6.0);
     const skylineMat = new THREE.MeshBasicMaterial({
       map: skylineTexture,
+      color: 0x667788,
       fog: false
     });
     const skylineMesh = new THREE.Mesh(skylineGeo, skylineMat);
     skylineMesh.position.set(0.15, centerY + 0.3, backdropZ);
     this.group.add(skylineMesh);
 
-    // Cool neon rim light from the window (reduced by 80%)
+    // Ultra-dim cool neon rim light from the window (subtle atmospheric ambient)
     const windowZ = -this.depth / 2;
-    const windowLight = new THREE.SpotLight(0x00F0FF, 0.7, 9, Math.PI / 3, 0.4, 1.2);
+    const windowLight = new THREE.SpotLight(0x00F0FF, 0.08, 8, Math.PI / 3, 0.5, 1.2);
     windowLight.position.set(0.15, centerY + 0.5, windowZ - 0.2);
     windowLight.target.position.set(0.15, 1.0, 0);
     this.group.add(windowLight);
     this.group.add(windowLight.target);
 
-    // Warm neon bounce from the bottom smog/amber billboards (reduced by 80%)
-    const cityAmberLight = new THREE.PointLight(0xff4411, 0.4, 6);
+    // Faint warm neon bounce from bottom billboards
+    const cityAmberLight = new THREE.PointLight(0xff4411, 0.05, 5);
     cityAmberLight.position.set(0.15, centerY - 0.4, windowZ - 0.5);
     this.group.add(cityAmberLight);
   }
@@ -669,17 +668,9 @@ export class ApartmentRoom {
     this.group.add(this.furniture.group);
   }
 
-  createAtmosphere() {
-    this.atmosphere = new Atmosphere();
-    this.group.add(this.atmosphere.group);
-  }
-
-  update(time = 0) {
+  update() {
     if (this.furniture) {
       this.furniture.update();
-    }
-    if (this.atmosphere) {
-      this.atmosphere.update(time);
     }
   }
 }
