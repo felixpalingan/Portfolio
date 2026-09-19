@@ -340,31 +340,38 @@ html, body {
 .cyber-mirror-hud {
   position: fixed;
   top: 50%;
-  right: 5%;
-  transform: translateY(-50%) scale(0.96);
-  width: 440px;
-  max-width: 90vw;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.94);
+  width: 530px;
+  max-width: 92vw;
+  max-height: 88vh;
   z-index: 45;
-  pointer-events: auto;
+  pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s ease;
 }
 
 .cyber-mirror-hud.active {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-50%) scale(1);
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .mirror-hud-frame {
   position: relative;
-  background: rgba(8, 12, 20, 0.88);
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  backdrop-filter: blur(16px);
-  padding: 1.5rem;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 240, 255, 0.15);
-  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  background: rgba(7, 12, 22, 0.76);
+  border: 1.5px solid rgba(0, 240, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.6rem;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.85), 
+              0 0 35px rgba(0, 240, 255, 0.25),
+              inset 0 0 30px rgba(255, 255, 255, 0.04);
+  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  overflow-y: auto;
+  max-height: 84vh;
 }
 
 .mirror-hud-corner {
@@ -384,6 +391,8 @@ html, body {
   align-items: center;
   margin-bottom: 1.2rem;
   font-family: var(--font-mono);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  padding-bottom: 0.6rem;
 }
 
 .hud-glitch-badge {
@@ -401,7 +410,7 @@ html, body {
 
 .mirror-profile-section {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem;
   align-items: center;
   margin-bottom: 1.2rem;
 }
@@ -414,34 +423,42 @@ html, body {
 }
 
 .mirror-avatar-box {
-  width: 72px;
-  height: 72px;
+  width: 96px;
+  height: 96px;
   background: #0d1320;
-  border: 1px solid rgba(0, 240, 255, 0.5);
+  border: 2px solid var(--color-cyan);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
 }
 
-.avatar-silhouette {
-  width: 44px;
-  height: 52px;
-  background: #1c2638;
-  border-radius: 22px 22px 4px 4px;
-  position: relative;
+.mirror-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.cyber-visor-glow {
+.mirror-scan-laser {
   position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 8px;
-  background: var(--color-yellow);
-  box-shadow: 0 0 8px var(--color-yellow);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00FF66, #00F0FF, transparent);
+  box-shadow: 0 0 8px #00F0FF;
+  animation: mirrorScanLaser 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mirrorScanLaser {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
 .biometric-tag {
@@ -449,6 +466,7 @@ html, body {
   font-size: 0.62rem;
   color: #00FF66;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .mirror-bio-data {
@@ -457,16 +475,17 @@ html, body {
 
 .operative-name {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.02rem;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: 1.5px;
   margin-bottom: 0.2rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .operative-role {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--color-cyan);
   margin-bottom: 0.25rem;
 }
@@ -478,6 +497,24 @@ html, body {
   margin-bottom: 0.35rem;
 }
 
+.operative-stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.45rem 0;
+}
+
+.stack-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: var(--color-cyan);
+  padding: 0.15rem 0.42rem;
+  letter-spacing: 0.5px;
+}
+
 .operative-status {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -485,6 +522,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  margin-top: 0.3rem;
 }
 
 .status-indicator {
@@ -497,8 +535,8 @@ html, body {
 
 .mirror-divider {
   height: 1px;
-  background: linear-gradient(90deg, rgba(0, 240, 255, 0.4), rgba(252, 238, 9, 0.4), transparent);
-  margin-bottom: 1rem;
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.5), rgba(252, 238, 9, 0.5), transparent);
+  margin-bottom: 1.1rem;
 }
 
 .comm-channel-header {
@@ -506,24 +544,24 @@ html, body {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--color-yellow);
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.75rem;
   letter-spacing: 1px;
 }
 
 .mirror-comms-channels {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1.2rem;
+  gap: 0.65rem;
+  margin-bottom: 1.3rem;
 }
 
 .mirror-comm-card {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.65rem 0.9rem;
-  background: rgba(14, 20, 32, 0.75);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  background: rgba(14, 20, 32, 0.82);
+  border: 1px solid rgba(0, 240, 255, 0.25);
   color: var(--text-main);
   text-decoration: none;
   font-family: var(--font-mono);
@@ -532,14 +570,14 @@ html, body {
 }
 
 .mirror-comm-card:hover {
-  background: rgba(0, 240, 255, 0.12);
+  background: rgba(0, 240, 255, 0.16);
   border-color: var(--color-cyan);
   transform: translateX(4px);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.3);
 }
 
 .comm-icon {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--color-cyan);
 }
 
@@ -556,14 +594,31 @@ html, body {
 }
 
 .comm-val {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-main);
   font-weight: 600;
+}
+
+.comm-actions {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
 }
 
 .comm-arrow {
   color: var(--color-cyan);
   font-weight: bold;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.mirror-comm-card:hover .comm-arrow {
+  background: var(--color-cyan);
+  color: #07080c;
+  box-shadow: 0 0 8px var(--color-cyan);
 }
 
 .copy-chip {
@@ -573,7 +628,7 @@ html, body {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: bold;
-  padding: 0.25rem 0.55rem;
+  padding: 0.3rem 0.6rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -584,20 +639,41 @@ html, body {
   box-shadow: 0 0 8px var(--color-yellow);
 }
 
+.send-chip {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--color-cyan);
+  color: var(--color-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: bold;
+  padding: 0.3rem 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.send-chip:hover {
+  background: var(--color-cyan);
+  color: #07080c;
+  box-shadow: 0 0 8px var(--color-cyan);
+}
+
 .mirror-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
 }
 
 .mirror-exit-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 0, 60, 0.5);
+  background: rgba(255, 0, 60, 0.1);
+  border: 1px solid rgba(255, 0, 60, 0.6);
   color: var(--color-pink);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: bold;
-  padding: 0.45rem 0.9rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -605,15 +681,16 @@ html, body {
 .mirror-exit-btn:hover {
   background: var(--color-pink);
   color: white;
-  box-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+  box-shadow: 0 0 12px rgba(255, 0, 60, 0.6);
 }
 
 .copy-toast {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: #00FF66;
   opacity: 0;
   transition: opacity 0.3s ease;
+  font-weight: bold;
 }
 .copy-toast.show {
   opacity: 1;

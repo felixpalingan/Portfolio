@@ -146,14 +146,15 @@ class App {
 
     // Camera transition lifecycle hooks for Smart Mirror & HUD
     if (this.cameraController) {
-      this.cameraController.onTransitionStart = (anchor) => {
-        if (anchor.name !== 'COMM') {
-          if (this.room) this.room.setMirrorActive(false);
-          this.hideSmartMirrorHUD();
-        }
+      this.cameraController.onTransitionStart = () => {
+        // Hide mirror HUD and diegetic content while camera is in flight
+        if (this.room) this.room.setMirrorActive(false);
+        this.hideSmartMirrorHUD();
       };
 
       this.cameraController.onTransitionComplete = (anchor) => {
+        // Only once the camera arrives and is aimed right at the mirror:
+        // fade in image, telemetry info, and interactive buttons on the mirror
         if (anchor.name === 'COMM') {
           if (this.room) this.room.setMirrorActive(true);
           this.showSmartMirrorHUD();

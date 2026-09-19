@@ -200,6 +200,76 @@ export class TextureGenerator {
   }
 
   /**
+   * Generates a photorealistic Chrome Silver metallic reflection texture
+   * Produces brilliant specular gleams and horizontal horizon line typical of polished chrome
+   */
+  static createChromeSilverTexture() {
+    const size = 1024;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    // Multi-stop metallic sky-ground horizon gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, size);
+    grad.addColorStop(0.0, '#1c2432');  // Deep dark metal top edge
+    grad.addColorStop(0.18, '#52647a'); // Cool blue-grey metal
+    grad.addColorStop(0.40, '#a2b8d0'); // Light silver reflection
+    grad.addColorStop(0.48, '#eaf2fa'); // Brilliant silver sheen
+    grad.addColorStop(0.50, '#ffffff'); // Sharp white horizon highlight line
+    grad.addColorStop(0.52, '#28313e'); // High-contrast ground reflection
+    grad.addColorStop(0.68, '#58687a'); // Reflective floor ambient
+    grad.addColorStop(0.85, '#92a6be'); // Soft lower specular reflection
+    grad.addColorStop(1.0, '#1c222c');  // Dark base edge
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, size, size);
+
+    // Subtle horizontal brushed chrome striations
+    ctx.lineWidth = 1;
+    for (let y = 0; y < size; y += 4) {
+      const alpha = (Math.sin(y * 0.1) * 0.5 + 0.5) * 0.08;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(size, y);
+      ctx.stroke();
+    }
+
+    // Diagonal specular flare streaks
+    const flareGrad = ctx.createLinearGradient(0, 0, size, size);
+    flareGrad.addColorStop(0.2, 'rgba(255, 255, 255, 0)');
+    flareGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.28)');
+    flareGrad.addColorStop(0.42, 'rgba(255, 255, 255, 0.5)');
+    flareGrad.addColorStop(0.46, 'rgba(255, 255, 255, 0.2)');
+    flareGrad.addColorStop(0.6, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = flareGrad;
+    ctx.fillRect(0, 0, size, size);
+
+    // Cyberpunk optical grid watermark
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < size; x += 64) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, size);
+      ctx.stroke();
+    }
+    for (let y = 0; y < size; y += 64) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(y, size);
+      ctx.stroke();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    return texture;
+  }
+
+  /**
    * Generates Cyberpunk 2077 Smart Mirror interactive HUD texture
    */
   static createSmartMirrorTexture() {
