@@ -476,49 +476,138 @@ export class ApartmentFurniture {
     counterTop.receiveShadow = true;
     bathGroup.add(counterTop);
 
-    // Sculpted washbasin (Wastafel cuci muka putih terang & berkilau)
-    const basinOuterGeo = new THREE.BoxGeometry(0.72, 0.11, 0.40);
-    const basinOuter = new THREE.Mesh(basinOuterGeo, whiteCeramicMat);
-    basinOuter.position.set(0, 0.74, 1.98);
-    basinOuter.castShadow = true;
-    bathGroup.add(basinOuter);
-
-    // Inner basin cavity (cekungan dalam wastafel)
-    const basinInnerGeo = new THREE.BoxGeometry(0.64, 0.07, 0.32);
-    const basinInnerMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 0.06,
-      metalness: 0.04
+    // =========================================================================
+    // TRUE HOLLOWED-OUT WASHBASIN (Wastafel Cuci Muka dengan Bowl Cekung/Bolong)
+    // =========================================================================
+    const innerCeramicMat = new THREE.MeshStandardMaterial({
+      color: 0xeef3f8,
+      roughness: 0.18,
+      metalness: 0.05
     });
-    const basinInner = new THREE.Mesh(basinInnerGeo, basinInnerMat);
-    basinInner.position.set(0, 0.77, 1.98);
-    bathGroup.add(basinInner);
 
-    // Chrome drain ring at the bottom of basin
-    const drainGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.015, 16);
-    const drain = new THREE.Mesh(drainGeo, this.chromeFrameMaterial);
-    drain.position.set(0, 0.74, 1.98);
-    bathGroup.add(drain);
+    // 1. Bottom Floor of the Basin (sitting flush on counter at Y = 0.71)
+    const basinFloorGeo = new THREE.BoxGeometry(0.66, 0.02, 0.38);
+    const basinFloor = new THREE.Mesh(basinFloorGeo, innerCeramicMat);
+    basinFloor.position.set(0, 0.72, 1.96);
+    basinFloor.castShadow = true;
+    basinFloor.receiveShadow = true;
+    bathGroup.add(basinFloor);
 
-    // Sleek chrome cyber faucet / tap
-    const tapStandGeo = new THREE.CylinderGeometry(0.016, 0.018, 0.18, 12);
+    // 2. Perimeter Walls creating the hollow interior cavity (Height: 0.14m -> Top Rim Y = 0.85m)
+    // Front Wall (nearest to camera in COMM)
+    const frontWallGeo = new THREE.BoxGeometry(0.66, 0.14, 0.04);
+    const frontWall = new THREE.Mesh(frontWallGeo, whiteCeramicMat);
+    frontWall.position.set(0, 0.78, 1.77);
+    frontWall.castShadow = true;
+    frontWall.receiveShadow = true;
+    bathGroup.add(frontWall);
+
+    // Back Wall (near mirror & faucet)
+    const backWallGeo = new THREE.BoxGeometry(0.66, 0.14, 0.04);
+    const backWall = new THREE.Mesh(backWallGeo, whiteCeramicMat);
+    backWall.position.set(0, 0.78, 2.15);
+    backWall.castShadow = true;
+    backWall.receiveShadow = true;
+    bathGroup.add(backWall);
+
+    // Left Wall
+    const leftWallGeo = new THREE.BoxGeometry(0.04, 0.14, 0.34);
+    const leftWall = new THREE.Mesh(leftWallGeo, whiteCeramicMat);
+    leftWall.position.set(-0.31, 0.78, 1.96);
+    leftWall.castShadow = true;
+    leftWall.receiveShadow = true;
+    bathGroup.add(leftWall);
+
+    // Right Wall
+    const rightWallGeo = new THREE.BoxGeometry(0.04, 0.14, 0.34);
+    const rightWall = new THREE.Mesh(rightWallGeo, whiteCeramicMat);
+    rightWall.position.set(0.31, 0.78, 1.96);
+    rightWall.castShadow = true;
+    rightWall.receiveShadow = true;
+    bathGroup.add(rightWall);
+
+    // 3. Smooth Radiused Outer Corners
+    const cornerGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.14, 16);
+    const corners = [
+      { x: -0.31, z: 1.77 },
+      { x: 0.31, z: 1.77 },
+      { x: -0.31, z: 2.15 },
+      { x: 0.31, z: 2.15 }
+    ];
+    corners.forEach(c => {
+      const cornerMesh = new THREE.Mesh(cornerGeo, whiteCeramicMat);
+      cornerMesh.position.set(c.x, 0.78, c.z);
+      bathGroup.add(cornerMesh);
+    });
+
+    // 4. Chrome Drain Assembly at the bottom of the hollow cavity
+    // Metallic drain flange ring
+    const drainFlangeGeo = new THREE.CylinderGeometry(0.042, 0.042, 0.006, 24);
+    const drainFlange = new THREE.Mesh(drainFlangeGeo, this.chromeFrameMaterial);
+    drainFlange.position.set(0, 0.732, 1.96);
+    bathGroup.add(drainFlange);
+
+    // Dark drain hole cavity (lubang pembuangan bolong hitam di tengah)
+    const drainHoleGeo = new THREE.CylinderGeometry(0.024, 0.024, 0.014, 24);
+    const drainHoleMat = new THREE.MeshBasicMaterial({ color: 0x05080e });
+    const drainHole = new THREE.Mesh(drainHoleGeo, drainHoleMat);
+    drainHole.position.set(0, 0.734, 1.96);
+    bathGroup.add(drainHole);
+
+    // Chrome cross strainer grate inside the drain hole
+    const crossPin1 = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.004, 0.005), this.chromeFrameMaterial);
+    crossPin1.position.set(0, 0.736, 1.96);
+    bathGroup.add(crossPin1);
+
+    const crossPin2 = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.004, 0.038), this.chromeFrameMaterial);
+    crossPin2.position.set(0, 0.736, 1.96);
+    bathGroup.add(crossPin2);
+
+    // 5. Subtle Translucent Water Surface inside the bowl
+    const waterMat = new THREE.MeshPhysicalMaterial({
+      color: 0x90d5ec,
+      transmission: 0.82,
+      roughness: 0.05,
+      transparent: true,
+      opacity: 0.42,
+      ior: 1.33
+    });
+    const waterMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.28), waterMat);
+    waterMesh.rotation.x = -Math.PI / 2;
+    waterMesh.position.set(0, 0.738, 1.96);
+    bathGroup.add(waterMesh);
+
+    // 6. Sleek Chrome Cyber Faucet / Tap (Overhanging into the bowl)
+    const tapStandGeo = new THREE.CylinderGeometry(0.018, 0.020, 0.22, 14);
     const tapStand = new THREE.Mesh(tapStandGeo, this.chromeFrameMaterial);
-    tapStand.position.set(0, 0.83, 2.13);
+    tapStand.position.set(0, 0.82, 2.22);
     bathGroup.add(tapStand);
 
-    const tapSpoutGeo = new THREE.BoxGeometry(0.024, 0.02, 0.12);
+    const tapSpoutGeo = new THREE.BoxGeometry(0.024, 0.020, 0.16);
     const tapSpout = new THREE.Mesh(tapSpoutGeo, this.chromeFrameMaterial);
-    tapSpout.position.set(0, 0.91, 2.08);
+    tapSpout.position.set(0, 0.92, 2.13);
     bathGroup.add(tapSpout);
 
-    // Mixer control rings (cyan & red indicator)
-    const coldRing = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.03), this.cyanEmissive);
-    coldRing.position.set(-0.07, 0.81, 2.13);
+    const tapNozzleGeo = new THREE.CylinderGeometry(0.010, 0.010, 0.025, 12);
+    const tapNozzle = new THREE.Mesh(tapNozzleGeo, this.chromeFrameMaterial);
+    tapNozzle.position.set(0, 0.90, 2.06);
+    bathGroup.add(tapNozzle);
+
+    // Mixer control valves (cyan & red indicator)
+    const coldRing = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.04, 0.032), this.cyanEmissive);
+    coldRing.position.set(-0.08, 0.81, 2.22);
     bathGroup.add(coldRing);
 
-    const hotRing = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.03), this.pinkEmissive || this.warmOrangeEmissive);
-    hotRing.position.set(0.07, 0.81, 2.13);
+    const hotRing = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.04, 0.032), this.pinkEmissive || this.warmOrangeEmissive);
+    hotRing.position.set(0.08, 0.81, 2.22);
     bathGroup.add(hotRing);
+
+    // 7. Dedicated Downlight Spot Illuminating the Hollow Bowl
+    const sinkSpot = new THREE.SpotLight(0xfffaed, 2.5, 3.0, Math.PI / 4, 0.35, 1.2);
+    sinkSpot.position.set(0, 1.70, 1.96);
+    sinkSpot.target.position.set(0, 0.72, 1.96);
+    bathGroup.add(sinkSpot);
+    bathGroup.add(sinkSpot.target);
 
     // Under-counter subtle glow runner strip (highlights the vanity edge)
     const underGlow = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.015, 0.015), this.dimCyanEmissive);
