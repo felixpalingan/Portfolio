@@ -964,10 +964,10 @@ export class TextureGenerator {
     const nextX = idxX + idxW + 20;
     const isNextHovered = hoveredAction === 'next';
     ctx.fillStyle = isNextHovered ? 'rgba(0, 240, 255, 0.4)' : 'rgba(14, 20, 32, 0.9)';
-    ctx.fillRect(nextX, btnY, nextW, btnH);
+    ctx.fillRect(nextX, btnY, btnW, btnH);
     ctx.strokeStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
     ctx.lineWidth = isNextHovered ? 2.5 : 1.5;
-    ctx.strokeRect(nextX, btnY, nextW, btnH);
+    ctx.strokeRect(nextX, btnY, btnW, btnH);
 
     ctx.fillStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
     ctx.font = 'bold 20px monospace';
