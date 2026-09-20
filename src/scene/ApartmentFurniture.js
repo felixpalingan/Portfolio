@@ -222,25 +222,25 @@ export class ApartmentFurniture {
     toiletGroup.add(toiletTank);
 
     // Sink counter below mirror (sleek cyber console flush with wall)
-    const sinkGeo = new THREE.BoxGeometry(0.48, 0.72, 1.25);
+    const sinkGeo = new THREE.BoxGeometry(0.56, 0.74, 1.36);
     const sink = new THREE.Mesh(sinkGeo, this.darkMetal);
-    sink.position.set(-0.20, 0.36, 0.0);
+    sink.position.set(-0.12, 0.37, 0.0);
     toiletGroup.add(sink);
 
     // Chrome faucet / cyber tap
     const tapGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.18, 8);
     const tap = new THREE.Mesh(tapGeo, this.chromeFrameMaterial);
-    tap.position.set(-0.18, 0.81, 0.0);
+    tap.position.set(-0.12, 0.81, 0.0);
     toiletGroup.add(tap);
 
-    // Wall Mirror Frame (sleek beveled chrome silver chassis against left wall)
-    const mirrorFrameGeo = new THREE.BoxGeometry(0.04, 1.54, 1.28);
+    // Wall Mirror Frame (sleek beveled chrome silver chassis proudly mounted on left wall)
+    const mirrorFrameGeo = new THREE.BoxGeometry(0.06, 1.54, 1.30);
     const mirrorFrame = new THREE.Mesh(mirrorFrameGeo, this.chromeFrameMaterial);
-    mirrorFrame.position.set(-0.46, 1.55, 0.0);
+    mirrorFrame.position.set(-0.37, 1.55, 0.0);
     toiletGroup.add(mirrorFrame);
 
     // Chrome Frame Yellow Hazard Corner Accents (Cyberpunk 2077 aesthetic)
-    const cornerGeo = new THREE.BoxGeometry(0.045, 0.12, 0.12);
+    const cornerGeo = new THREE.BoxGeometry(0.02, 0.12, 0.12);
     const cornerOffsets = [
       { y: 1.55 + 0.73, z: -0.60 },
       { y: 1.55 + 0.73, z: 0.60 },
@@ -249,50 +249,51 @@ export class ApartmentFurniture {
     ];
     cornerOffsets.forEach(pt => {
       const cMesh = new THREE.Mesh(cornerGeo, this.yellowAccentMaterial);
-      cMesh.position.set(-0.455, pt.y, pt.z);
+      cMesh.position.set(-0.335, pt.y, pt.z);
       toiletGroup.add(cMesh);
     });
 
     // Base highly-reflective Chrome Silver Mirror Glass
-    const mirrorGeo = new THREE.BoxGeometry(0.02, 1.48, 1.22);
+    const mirrorGeo = new THREE.BoxGeometry(0.015, 1.48, 1.24);
     const mirror = new THREE.Mesh(mirrorGeo, this.chromeMirrorMaterial);
-    mirror.position.set(-0.44, 1.55, 0.0);
+    mirror.position.set(-0.345, 1.55, 0.0);
     toiletGroup.add(mirror);
 
     // Perimeter LED backlight strip framing the chrome mirror
-    const perimeterH = new THREE.BoxGeometry(0.03, 0.02, 1.24);
+    const perimeterH = new THREE.BoxGeometry(0.018, 0.02, 1.26);
     const ledTop = new THREE.Mesh(perimeterH, this.cyanEmissive);
-    ledTop.position.set(-0.435, 1.55 + 0.74, 0.0);
+    ledTop.position.set(-0.335, 1.55 + 0.74, 0.0);
     toiletGroup.add(ledTop);
 
     const ledBottom = new THREE.Mesh(perimeterH, this.cyanEmissive);
-    ledBottom.position.set(-0.435, 1.55 - 0.74, 0.0);
+    ledBottom.position.set(-0.335, 1.55 - 0.74, 0.0);
     toiletGroup.add(ledBottom);
 
-    const perimeterV = new THREE.BoxGeometry(0.03, 1.48, 0.02);
+    const perimeterV = new THREE.BoxGeometry(0.018, 1.48, 0.02);
     const ledLeft = new THREE.Mesh(perimeterV, this.cyanEmissive);
-    ledLeft.position.set(-0.435, 1.55, -0.61);
+    ledLeft.position.set(-0.335, 1.55, -0.62);
     toiletGroup.add(ledLeft);
 
     const ledRight = new THREE.Mesh(perimeterV, this.cyanEmissive);
-    ledRight.position.set(-0.435, 1.55, 0.61);
+    ledRight.position.set(-0.335, 1.55, 0.62);
     toiletGroup.add(ledRight);
 
     // =========================================================================
     // DIEGETIC SMART CYBERPUNK MIRROR DISPLAY (Fades in like Cyberpunk 2077 mirror)
     // =========================================================================
-    const smartMirrorGeo = new THREE.PlaneGeometry(1.20, 1.46);
+    const smartMirrorGeo = new THREE.PlaneGeometry(1.22, 1.46);
     const smartMirrorTexture = TextureGenerator.createSmartMirrorTexture();
     const smartMirrorMat = new THREE.MeshBasicMaterial({
       map: smartMirrorTexture,
       transparent: true,
       opacity: 0.0,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      depthWrite: false
     });
     this.smartMirrorDisplay = new THREE.Mesh(smartMirrorGeo, smartMirrorMat);
     // Orient plane normal facing +X (towards the camera standing in front of mirror)
     this.smartMirrorDisplay.rotation.y = Math.PI / 2;
-    this.smartMirrorDisplay.position.set(-0.428, 1.55, 0.0);
+    this.smartMirrorDisplay.position.set(-0.330, 1.55, 0.0);
     toiletGroup.add(this.smartMirrorDisplay);
 
     // =========================================================================
@@ -336,7 +337,7 @@ export class ApartmentFurniture {
     ];
 
     const btnGeo = new THREE.PlaneGeometry(0.52, 0.14);
-    const chassisGeo = new THREE.BoxGeometry(0.012, 0.144, 0.524);
+    const chassisGeo = new THREE.BoxGeometry(0.02, 0.144, 0.524);
 
     buttonConfigs.forEach(cfg => {
       const normalTex = TextureGenerator.createMirrorButtonTexture(cfg);
@@ -347,7 +348,8 @@ export class ApartmentFurniture {
         map: normalTex,
         transparent: true,
         opacity: 0.0,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
+        depthWrite: false
       });
 
       const chassisMat = new THREE.MeshStandardMaterial({
@@ -360,10 +362,10 @@ export class ApartmentFurniture {
 
       const btnMesh = new THREE.Mesh(btnGeo, mat);
       btnMesh.rotation.y = Math.PI / 2; // Face +X into the room
-      btnMesh.position.set(-0.418, cfg.pos.y, cfg.pos.z);
+      btnMesh.position.set(-0.305, cfg.pos.y, cfg.pos.z);
 
       const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
-      chassisMesh.position.set(-0.425, cfg.pos.y, cfg.pos.z);
+      chassisMesh.position.set(-0.318, cfg.pos.y, cfg.pos.z);
 
       btnMesh.userData = {
         id: cfg.id,
@@ -371,7 +373,7 @@ export class ApartmentFurniture {
         normalTex: normalTex,
         hoverTex: hoverTex,
         successTex: successTex,
-        baseX: -0.418,
+        baseX: -0.305,
         chassis: chassisMesh,
         isHovered: false
       };
@@ -384,19 +386,19 @@ export class ApartmentFurniture {
     // Dedicated overhead mirror task light & spotlight creating chrome specular gleam
     const mirrorLightGeo = new THREE.BoxGeometry(0.08, 0.05, 1.26);
     const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.whiteEmissive);
-    mirrorLightMesh.position.set(-0.43, 2.34, 0.0);
+    mirrorLightMesh.position.set(-0.28, 2.34, 0.0);
     toiletGroup.add(mirrorLightMesh);
 
     // Dedicated Chrome Specular Spotlight (aimed right at chrome mirror surface)
-    const mirrorSpot = new THREE.SpotLight(0xf0f6ff, 4.5, 4.2, Math.PI / 3, 0.25, 1.1);
-    mirrorSpot.position.set(0.6, 2.2, 0.15);
-    mirrorSpot.target.position.set(-0.44, 1.55, 0.0);
+    const mirrorSpot = new THREE.SpotLight(0xf0f6ff, 5.0, 4.5, Math.PI / 3, 0.25, 1.1);
+    mirrorSpot.position.set(0.5, 2.25, 0.1);
+    mirrorSpot.target.position.set(-0.34, 1.55, 0.0);
     toiletGroup.add(mirrorSpot);
     toiletGroup.add(mirrorSpot.target);
 
     // Soft cool ambient point light in front of mirror
-    this.mirrorAmbient = new THREE.PointLight(0x00F0FF, 1.8, 3.2, 1.4);
-    this.mirrorAmbient.position.set(0.2, 1.7, 0.0);
+    this.mirrorAmbient = new THREE.PointLight(0x00F0FF, 2.2, 3.5, 1.3);
+    this.mirrorAmbient.position.set(-0.05, 1.7, 0.0);
     toiletGroup.add(this.mirrorAmbient);
 
     this.group.add(toiletGroup);

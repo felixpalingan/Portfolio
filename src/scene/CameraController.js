@@ -59,16 +59,16 @@ export class CameraController {
         name: 'COMM',
         label: 'SMART MIRROR // BIOMETRIC COMM LINK',
         // In front of the bathroom smart mirror, eye-level facing the mirror on left wall
-        position: new THREE.Vector3(-3.15, 1.55, 0.0),
-        target: new THREE.Vector3(-4.44, 1.55, 0.0),
+        position: new THREE.Vector3(-2.65, 1.55, 0.0),
+        target: new THREE.Vector3(-4.34, 1.55, 0.0),
         duration: 1.9,
         ease: 'power2.inOut'
       },
       CONTACT: {
         name: 'COMM',
         label: 'SMART MIRROR // BIOMETRIC COMM LINK',
-        position: new THREE.Vector3(-3.15, 1.55, 0.0),
-        target: new THREE.Vector3(-4.44, 1.55, 0.0),
+        position: new THREE.Vector3(-2.65, 1.55, 0.0),
+        target: new THREE.Vector3(-4.34, 1.55, 0.0),
         duration: 1.9,
         ease: 'power2.inOut'
       }
