@@ -243,6 +243,8 @@ export class ApartmentRoom {
   }
 
   createCeiling() {
+    this.ceilingGroup = new THREE.Group();
+
     // Ceiling slab
     const ceilingGeo = new THREE.BoxGeometry(this.width, 0.2, this.depth);
     const ceilingMat = new THREE.MeshStandardMaterial({
@@ -252,7 +254,7 @@ export class ApartmentRoom {
     });
     const ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMat);
     ceilingMesh.position.set(0, this.height + 0.1, 0);
-    this.group.add(ceilingMesh);
+    this.ceilingGroup.add(ceilingMesh);
 
     // Industrial exposed ceiling beams running front-to-back (Z)
     const beamGeo = new THREE.BoxGeometry(0.15, 0.25, this.depth);
@@ -262,14 +264,25 @@ export class ApartmentRoom {
       const beam = new THREE.Mesh(beamGeo, this.trimMaterial);
       beam.position.set(x, this.height - 0.125, 0);
       beam.castShadow = true;
-      this.group.add(beam);
+      this.ceilingGroup.add(beam);
     });
 
     // Central fan mount junction box
     const fanBoxGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.15, 12);
     const fanBox = new THREE.Mesh(fanBoxGeo, this.trimMaterial);
     fanBox.position.set(0, this.height - 0.075, 0);
-    this.group.add(fanBox);
+    this.ceilingGroup.add(fanBox);
+
+    this.group.add(this.ceilingGroup);
+  }
+
+  setCeilingVisible(visible) {
+    if (this.ceilingGroup) {
+      this.ceilingGroup.visible = visible;
+    }
+    if (this.furniture) {
+      this.furniture.setCeilingVisible(visible);
+    }
   }
 
   createPanoramicWindow() {

@@ -71,6 +71,14 @@ export class CameraController {
         target: new THREE.Vector3(-4.34, 1.55, 0.0),
         duration: 1.9,
         ease: 'power2.inOut'
+      },
+      TOPDOWN: {
+        name: 'TOPDOWN',
+        label: 'ARCHITECTURAL BLUEPRINT // TOP-DOWN VIEW',
+        position: new THREE.Vector3(0.0, 8.2, 0.001),
+        target: new THREE.Vector3(0.0, 0.0, 0.0),
+        duration: 1.8,
+        ease: 'power2.inOut'
       }
     };
 
@@ -78,7 +86,8 @@ export class CameraController {
     const m = new THREE.Matrix4();
     for (const key of Object.keys(this.anchors)) {
       const a = this.anchors[key];
-      m.lookAt(a.position, a.target, new THREE.Vector3(0, 1, 0));
+      const up = a.name === 'TOPDOWN' ? new THREE.Vector3(0, 0, -1) : new THREE.Vector3(0, 1, 0);
+      m.lookAt(a.position, a.target, up);
       a.quaternion = new THREE.Quaternion().setFromRotationMatrix(m);
     }
 
@@ -106,7 +115,9 @@ export class CameraController {
     // Default safe elevation
     mid.y = Math.max(startPos.y, endPos.y) + 0.18;
 
-    if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
+    if (startName === 'TOPDOWN' || endName === 'TOPDOWN') {
+      mid.y = Math.max(startPos.y, endPos.y) + 0.4;
+    } else if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
       // Arc through central aisle to enter the bed/workstation space from the front
       mid.set(-1.3, 1.68, 2.0);
     } else if (key === 'HOME->COMM' || key === 'COMM->HOME') {
@@ -164,8 +175,12 @@ export class CameraController {
     // Calculate bespoke midpoint waypoint
     const midPos = this.getMidpoint(startAnchorName, anchor.name, startPos, endPos);
 
-    // Ensure camera up vector is clean
-    this.camera.up.set(0, 1, 0);
+    // Set appropriate up vector
+    if (anchor.name === 'TOPDOWN') {
+      this.camera.up.set(0, 0, -1);
+    } else {
+      this.camera.up.set(0, 1, 0);
+    }
 
     // Cancel any ongoing transition cleanly
     if (this.activeTween) {
@@ -201,7 +216,12 @@ export class CameraController {
         this.camera.position.copy(anchor.position);
         this.camera.quaternion.copy(anchor.quaternion);
         this.target.copy(anchor.target);
-        this.camera.lookAt(this.target);
+
+        if (anchor.name === 'TOPDOWN') {
+          this.camera.up.set(0, 0, -1);
+        } else {
+          this.camera.up.set(0, 1, 0);
+        }
 
         if (this.onTransitionComplete) {
           this.onTransitionComplete(anchor);

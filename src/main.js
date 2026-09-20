@@ -217,11 +217,15 @@ class App {
       });
     });
 
-    // Camera transition lifecycle hooks for 3D Wall Mirror
+    // Camera transition lifecycle hooks for 3D Wall Mirror & Top-Down Blueprint
     if (this.cameraController) {
-      this.cameraController.onTransitionStart = () => {
+      this.cameraController.onTransitionStart = (anchor) => {
         // While camera is in flight, mirror remains clean chrome silver
         if (this.room) this.room.setMirrorActive(false);
+
+        // Temporarily lift the ceiling during TOP-DOWN blueprint view
+        const isTop = anchor?.name === 'TOPDOWN';
+        if (this.room) this.room.setCeilingVisible(!isTop);
       };
 
       this.cameraController.onTransitionComplete = (anchor) => {
@@ -230,10 +234,13 @@ class App {
         if (anchor.name === 'COMM') {
           if (this.room) this.room.setMirrorActive(true);
         }
+
+        const isTop = anchor.name === 'TOPDOWN';
+        if (this.room) this.room.setCeilingVisible(!isTop);
       };
     }
 
-    // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, Escape: HOME)
+    // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, 5/T: TOP-DOWN, Escape: HOME)
     window.addEventListener('keydown', (e) => {
       if (e.key === '1' || e.key === 'Escape') {
         document.getElementById('nav-btn-home')?.click();
@@ -243,6 +250,8 @@ class App {
         document.getElementById('nav-btn-stats')?.click();
       } else if (e.key === '4') {
         document.getElementById('nav-btn-contact')?.click();
+      } else if (e.key === '5' || e.key.toLowerCase() === 't') {
+        document.getElementById('nav-btn-topdown')?.click();
       }
     });
   }

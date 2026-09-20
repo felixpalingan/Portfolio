@@ -996,14 +996,14 @@ export class ApartmentFurniture {
   // 2G: CEILING FAN & CABLES
   // ===========================================================================
   buildCeilingFan() {
-    const fanGroup = new THREE.Group();
-    fanGroup.position.set(0, 3.05, 0);
+    this.fanGroup = new THREE.Group();
+    this.fanGroup.position.set(0, 3.05, 0);
 
     // Downrod tube
     const rodGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.35, 8);
     const rod = new THREE.Mesh(rodGeo, this.darkMetal);
     rod.position.y = -0.175;
-    fanGroup.add(rod);
+    this.fanGroup.add(rod);
 
     // Rotor hub
     this.rotorGroup = new THREE.Group();
@@ -1025,8 +1025,8 @@ export class ApartmentFurniture {
       this.rotorGroup.add(blade);
     }
 
-    fanGroup.add(this.rotorGroup);
-    this.group.add(fanGroup);
+    this.fanGroup.add(this.rotorGroup);
+    this.group.add(this.fanGroup);
 
     // Register ceiling fan rotation update in RAF loop
     this.animatedObjects.push({
@@ -1046,8 +1046,13 @@ export class ApartmentFurniture {
       new THREE.Vector3(4.2, 2.9, -1.5)
     ]);
     const wireGeo = new THREE.TubeGeometry(curve, 32, 0.018, 6, false);
-    const wireMesh = new THREE.Mesh(wireGeo, this.darkMetal);
-    this.group.add(wireMesh);
+    this.conduitMesh = new THREE.Mesh(wireGeo, this.darkMetal);
+    this.group.add(this.conduitMesh);
+  }
+
+  setCeilingVisible(visible) {
+    if (this.fanGroup) this.fanGroup.visible = visible;
+    if (this.conduitMesh) this.conduitMesh.visible = visible;
   }
 
   update() {
