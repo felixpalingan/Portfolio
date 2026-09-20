@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { portfolioData } from './data/portfolioData.js';
 import { ApartmentRoom } from './scene/ApartmentRoom.js';
 import { CameraController } from './scene/CameraController.js';
+import { TextureGenerator } from './scene/TextureGenerator.js';
 
 class App {
   constructor() {
@@ -16,6 +17,8 @@ class App {
     this.mouse = new THREE.Vector2(0, 0);
     this.raycaster = new THREE.Raycaster();
     this.hoveredMirrorBtn = null;
+    this.hoveredProjectAction = null;
+    this.hoveredDeskBtn = null;
 
     try {
       console.log("[CYBERPUNK] Booting Megabuilding H10 matrix...");
@@ -154,15 +157,59 @@ class App {
         this.hoveredMirrorBtn = null;
         document.body.style.cursor = 'default';
       }
+
+      // 3D Workstation Monitor & Desk Buttons Hover Detection (when viewing PROJECTS)
+      if (
+        this.cameraController &&
+        this.cameraController.currentAnchor === 'PROJECTS' &&
+        this.room?.furniture
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const interactiveObjs = [];
+        if (this.room.furniture.projectMonitorScreen) {
+          interactiveObjs.push(this.room.furniture.projectMonitorScreen);
+        }
+        if (this.room.furniture.projectControlButtons) {
+          interactiveObjs.push(...this.room.furniture.projectControlButtons);
+        }
+
+        const intersects = this.raycaster.intersectObjects(interactiveObjs);
+        if (intersects.length > 0) {
+          const hit = intersects[0];
+          if (hit.object.userData?.isProjectMonitor && hit.uv) {
+            const actionObj = TextureGenerator.getProjectActionAtUV(hit.uv.x, hit.uv.y);
+            if (actionObj) {
+              document.body.style.cursor = 'pointer';
+              const actionKey = actionObj.action === 'tab' ? `tab_${actionObj.index}` : actionObj.action;
+              this.room.furniture.setProjectHover(actionKey);
+            } else {
+              document.body.style.cursor = 'default';
+              this.room.furniture.setProjectHover(null);
+            }
+          } else if (hit.object.userData?.isDeskButton) {
+            document.body.style.cursor = 'pointer';
+            hit.object.material.emissiveIntensity = 0.9;
+            this.hoveredDeskBtn = hit.object;
+          }
+        } else {
+          document.body.style.cursor = 'default';
+          this.room.furniture.setProjectHover(null);
+          if (this.hoveredDeskBtn) {
+            this.hoveredDeskBtn.material.emissiveIntensity = 0.35;
+            this.hoveredDeskBtn = null;
+          }
+        }
+      }
     });
 
-    // 3D Mirror Button Click Interactions
+    // 3D Interactive Clicks (Mirror Buttons in COMM & Workstation Monitor in PROJECTS)
     window.addEventListener('click', (e) => {
       // Ignore click if clicking 2D navigation bar buttons
       if (e.target.closest('.hud-nav-btn') || e.target.closest('.hud-header')) {
         return;
       }
 
+      // COMM Mirror Buttons Click
       if (
         this.cameraController && 
         this.cameraController.currentAnchor === 'COMM' && 
@@ -191,6 +238,78 @@ class App {
             window.open('https://linkedin.com/in/felixpalingan', '_blank');
           } else if (id === 'return') {
             document.getElementById('nav-btn-home')?.click();
+          }
+        }
+      }
+
+      // PROJECTS Workstation Monitor & Desk Buttons Click
+      if (
+        this.cameraController &&
+        this.cameraController.currentAnchor === 'PROJECTS' &&
+        this.room?.furniture
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const interactiveObjs = [];
+        if (this.room.furniture.projectMonitorScreen) {
+          interactiveObjs.push(this.room.furniture.projectMonitorScreen);
+        }
+        if (this.room.furniture.projectControlButtons) {
+          interactiveObjs.push(...this.room.furniture.projectControlButtons);
+        }
+
+        const intersects = this.raycaster.intersectObjects(interactiveObjs);
+        if (intersects.length > 0) {
+          const hit = intersects[0];
+          if (hit.object.userData?.isProjectMonitor && hit.uv) {
+            const actionObj = TextureGenerator.getProjectActionAtUV(hit.uv.x, hit.uv.y);
+            if (actionObj) {
+              if (actionObj.action === 'tab') {
+                const p = this.room.furniture.setProjectIndex(actionObj.index);
+                if (p) this.showCopyToast(`⚡ PROJECT LOADED: ${p.title}`);
+              } else if (actionObj.action === 'prev') {
+                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
+                if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
+              } else if (actionObj.action === 'next') {
+                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
+                if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
+              } else if (actionObj.action === 'repo') {
+                const p = this.room.furniture.getCurrentProject();
+                if (p?.repoUrl) {
+                  window.open(p.repoUrl, '_blank');
+                  this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
+                }
+              } else if (actionObj.action === 'live') {
+                const p = this.room.furniture.getCurrentProject();
+                if (p?.liveUrl) {
+                  window.open(p.liveUrl, '_blank');
+                  this.showCopyToast(`⚡ LAUNCHING DEMO: ${p.title}`);
+                }
+              }
+            }
+          } else if (hit.object.userData?.isDeskButton) {
+            const btn = hit.object;
+            const action = btn.userData.action;
+            // Press tactile button animation
+            gsap.to(btn.position, {
+              y: btn.userData.baseY - 0.007,
+              duration: 0.08,
+              yoyo: true,
+              repeat: 1
+            });
+
+            if (action === 'prev') {
+              const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
+              if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
+            } else if (action === 'next') {
+              const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
+              if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
+            } else if (action === 'repo') {
+              const p = this.room.furniture.getCurrentProject();
+              if (p?.repoUrl) {
+                window.open(p.repoUrl, '_blank');
+                this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
+              }
+            }
           }
         }
       }
@@ -241,6 +360,7 @@ class App {
     }
 
     // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, 5/T: TOP-DOWN, Escape: HOME)
+    // In PROJECTS view: ◄ / ► arrow keys or A / D browse projects, O opens repo
     window.addEventListener('keydown', (e) => {
       if (e.key === '1' || e.key === 'Escape') {
         document.getElementById('nav-btn-home')?.click();
@@ -252,6 +372,23 @@ class App {
         document.getElementById('nav-btn-contact')?.click();
       } else if (e.key === '5' || e.key.toLowerCase() === 't') {
         document.getElementById('nav-btn-topdown')?.click();
+      }
+
+      // Keyboard browsing while at Netrunner Workstation
+      if (this.cameraController && this.cameraController.currentAnchor === 'PROJECTS') {
+        if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
+          const p = this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
+          if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
+        } else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
+          const p = this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
+          if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
+        } else if (e.key.toLowerCase() === 'o') {
+          const p = this.room?.furniture?.getCurrentProject();
+          if (p?.repoUrl) {
+            window.open(p.repoUrl, '_blank');
+            this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
+          }
+        }
       }
     });
   }

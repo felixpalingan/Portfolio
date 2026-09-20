@@ -507,5 +507,359 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas);
     return texture;
   }
+
+  /**
+   * Generates interactive project repository terminal canvas for workstation ultrawide monitor
+   */
+  static renderProjectMonitorCanvas(canvas, projects, currentIndex, hoveredAction = null) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const ctx = canvas.getContext('2d');
+    const project = projects[currentIndex] || projects[0];
+
+    // Background & carbon grid
+    ctx.fillStyle = '#060911';
+    ctx.fillRect(0, 0, w, h);
+
+    // Subtle matrix scanlines
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.025)';
+    for (let y = 0; y < h; y += 4) {
+      ctx.fillRect(0, y, w, 2);
+    }
+
+    // Top Header bar
+    ctx.fillStyle = '#0b111e';
+    ctx.fillRect(0, 0, w, 32);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 32);
+    ctx.lineTo(w, 32);
+    ctx.stroke();
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 15px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('⚡ NETRUNNER OS v4.81 // ARASAKA ARCHIVE EXPLORER // WATSON SUBNET [SECURE]', 24, 21);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#00FF66';
+    ctx.fillText(`SYSTEM DAEMON: ACTIVE ● [0${currentIndex + 1} / 0${projects.length}]`, w - 24, 21);
+
+    // 4 Project Selector Tabs
+    const tabY = 40;
+    const tabH = 38;
+    const tabW = 290;
+    const tabGap = 16;
+    const tabStartX = 24;
+
+    projects.forEach((p, idx) => {
+      const tx = tabStartX + idx * (tabW + tabGap);
+      const isActive = idx === currentIndex;
+      const isHovered = hoveredAction === `tab_${idx}`;
+
+      // Tab Background
+      if (isActive) {
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.22)';
+      } else if (isHovered) {
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.10)';
+      } else {
+        ctx.fillStyle = 'rgba(12, 18, 30, 0.85)';
+      }
+      ctx.fillRect(tx, tabY, tabW, tabH);
+
+      // Tab Border
+      ctx.strokeStyle = isActive ? (p.color || '#00F0FF') : (isHovered ? '#FFFFFF' : 'rgba(0, 240, 255, 0.35)');
+      ctx.lineWidth = isActive ? 2 : 1;
+      ctx.strokeRect(tx, tabY, tabW, tabH);
+
+      if (isActive) {
+        ctx.fillStyle = p.color || '#00F0FF';
+        ctx.fillRect(tx, tabY, 6, tabH);
+        ctx.fillRect(tx, tabY + tabH - 3, tabW, 3);
+      }
+
+      ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.65)');
+      ctx.font = isActive ? 'bold 15px monospace' : '14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.tabTitle || `0${idx + 1} // ${p.title.substring(0, 14)}`, tx + tabW / 2, tabY + 24);
+    });
+
+    // Main Left Section: Project details
+    const leftX = 28;
+
+    // Category & Year Tagline
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = 'bold 15px monospace';
+    ctx.fillText(`// ${project.category.toUpperCase()} — YEAR: ${project.year}`, leftX, 115);
+
+    // Title
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 36px monospace';
+    ctx.fillText(project.title, leftX, 160);
+
+    // Color indicator under-title line
+    ctx.fillStyle = project.color || '#00F0FF';
+    ctx.fillRect(leftX, 172, 160, 3);
+
+    // Description text (word-wrapped)
+    ctx.fillStyle = 'rgba(220, 235, 255, 0.88)';
+    ctx.font = '17px monospace';
+    const words = project.description.split(' ');
+    let line = '';
+    let lineY = 205;
+    const maxLineWidth = 720;
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxLineWidth && n > 0) {
+        ctx.fillText(line, leftX, lineY);
+        line = words[n] + ' ';
+        lineY += 26;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, leftX, lineY);
+
+    // Tags list
+    const tagY = 295;
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText('CORE STACK:', leftX, tagY + 16);
+
+    let tagX = leftX + 115;
+    if (project.tags && project.tags.length > 0) {
+      project.tags.forEach(tag => {
+        const tw = ctx.measureText(tag).width + 20;
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.1)';
+        ctx.fillRect(tagX, tagY, tw, 26);
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(tagX, tagY, tw, 26);
+
+        ctx.fillStyle = '#EAF4FF';
+        ctx.fillText(tag, tagX + 10, tagY + 18);
+        tagX += tw + 10;
+      });
+    }
+
+    // Telemetry metric cards
+    const mY = 345;
+    const mCardW = 230;
+    const metricsData = [
+      { label: 'LATENCY', val: project.metrics?.latency || '1.4ms', color: '#00FF66' },
+      { label: 'NODES', val: project.metrics?.nodes || '1,024 Active', color: '#00F0FF' },
+      { label: 'STATUS', val: project.status || 'DEPLOYED // PROD', color: '#FCEE09' }
+    ];
+
+    metricsData.forEach((m, i) => {
+      const mx = leftX + i * (mCardW + 14);
+      ctx.fillStyle = 'rgba(10, 16, 28, 0.9)';
+      ctx.fillRect(mx, mY, mCardW, 58);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(mx, mY, mCardW, 58);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '12px monospace';
+      ctx.fillText(m.label, mx + 14, mY + 22);
+
+      ctx.fillStyle = m.color;
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText(m.val, mx + 14, mY + 46);
+    });
+
+    // Right Section: Holographic Radar Wireframe Box
+    const rx = 780;
+    const ry = 98;
+    const rw = 470;
+    const rh = 232;
+
+    ctx.fillStyle = 'rgba(8, 12, 22, 0.95)';
+    ctx.fillRect(rx, ry, rw, rh);
+    ctx.strokeStyle = project.color || '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(rx, ry, rw, rh);
+
+    // Corner hazard trims
+    ctx.fillStyle = '#FCEE09';
+    ctx.fillRect(rx, ry, 12, 3);
+    ctx.fillRect(rx, ry, 3, 12);
+    ctx.fillRect(rx + rw - 12, ry, 12, 3);
+    ctx.fillRect(rx + rw - 3, ry, 3, 12);
+    ctx.fillRect(rx, ry + rh - 3, 12, 3);
+    ctx.fillRect(rx, ry + rh - 12, 3, 12);
+    ctx.fillRect(rx + rw - 12, ry + rh - 3, 12, 3);
+    ctx.fillRect(rx + rw - 3, ry + rh - 12, 3, 12);
+
+    // Grid in radar box
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+    ctx.lineWidth = 1;
+    for (let gx = rx + 30; gx < rx + rw; gx += 30) {
+      ctx.beginPath();
+      ctx.moveTo(gx, ry);
+      ctx.lineTo(gx, ry + rh);
+      ctx.stroke();
+    }
+    for (let gy = ry + 25; gy < ry + rh; gy += 25) {
+      ctx.beginPath();
+      ctx.moveTo(rx, gy);
+      ctx.lineTo(rx + rw, gy);
+      ctx.stroke();
+    }
+
+    // Radar circle & crosshair
+    const cx = rx + rw / 2;
+    const cy = ry + rh / 2;
+    ctx.strokeStyle = project.color || '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 60, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Crosshairs
+    ctx.beginPath();
+    ctx.moveTo(cx - 75, cy);
+    ctx.lineTo(cx + 75, cy);
+    ctx.moveTo(cx, cy - 75);
+    ctx.lineTo(cx, cy + 75);
+    ctx.stroke();
+
+    // Wireframe Box header & footer labels
+    ctx.fillStyle = project.color || '#00F0FF';
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`ID: ${project.id.toUpperCase()}`, rx + 14, ry + 22);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#00FF66';
+    ctx.fillText('ICE INTEGRITY: 100%', rx + rw - 14, ry + 22);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(project.tagline || 'SYSTEM DATA SHARD ARCHIVE', cx, ry + rh - 16);
+
+    // Right Nav Controls: PREV / NEXT buttons
+    const btnY = 345;
+    const btnH = 58;
+
+    // PREV Button
+    const prevW = 145;
+    const prevX = rx;
+    const isPrevHovered = hoveredAction === 'prev';
+    ctx.fillStyle = isPrevHovered ? 'rgba(0, 240, 255, 0.35)' : 'rgba(12, 18, 30, 0.9)';
+    ctx.fillRect(prevX, btnY, prevW, btnH);
+    ctx.strokeStyle = isPrevHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.lineWidth = isPrevHovered ? 2.5 : 1.5;
+    ctx.strokeRect(prevX, btnY, prevW, btnH);
+
+    ctx.fillStyle = isPrevHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.font = 'bold 17px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('◄ PREV', prevX + prevW / 2, btnY + 36);
+
+    // Index Badge
+    const idxW = 150;
+    const idxX = prevX + prevW + 15;
+    ctx.fillStyle = 'rgba(8, 12, 20, 0.8)';
+    ctx.fillRect(idxX, btnY, idxW, btnH);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(idxX, btnY, idxW, btnH);
+
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText(`PROJECT ${currentIndex + 1} / ${projects.length}`, idxX + idxW / 2, btnY + 36);
+
+    // NEXT Button
+    const nextW = 145;
+    const nextX = idxX + idxW + 15;
+    const isNextHovered = hoveredAction === 'next';
+    ctx.fillStyle = isNextHovered ? 'rgba(0, 240, 255, 0.35)' : 'rgba(12, 18, 30, 0.9)';
+    ctx.fillRect(nextX, btnY, nextW, btnH);
+    ctx.strokeStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.lineWidth = isNextHovered ? 2.5 : 1.5;
+    ctx.strokeRect(nextX, btnY, nextW, btnH);
+
+    ctx.fillStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.font = 'bold 17px monospace';
+    ctx.fillText('NEXT ►', nextX + nextW / 2, btnY + 36);
+
+    // Bottom Action Bar: GITHUB REPO & LIVE PREVIEW buttons
+    const actY = 432;
+    const actH = 56;
+
+    // Button 1: GITHUB REPO
+    const repoW = 410;
+    const repoX = leftX;
+    const isRepoHovered = hoveredAction === 'repo';
+    ctx.fillStyle = isRepoHovered ? 'rgba(0, 240, 255, 0.4)' : 'rgba(0, 240, 255, 0.15)';
+    ctx.fillRect(repoX, actY, repoW, actH);
+    ctx.strokeStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.lineWidth = isRepoHovered ? 2.5 : 1.5;
+    ctx.strokeRect(repoX, actY, repoW, actH);
+
+    ctx.fillStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.font = 'bold 18px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + 24, actY + 35);
+
+    // Button 2: LIVE PREVIEW / DEMO
+    const liveW = 340;
+    const liveX = repoX + repoW + 16;
+    const isLiveHovered = hoveredAction === 'live';
+    ctx.fillStyle = isLiveHovered ? 'rgba(252, 238, 9, 0.4)' : 'rgba(252, 238, 9, 0.15)';
+    ctx.fillRect(liveX, actY, liveW, actH);
+    ctx.strokeStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
+    ctx.lineWidth = isLiveHovered ? 2.5 : 1.5;
+    ctx.strokeRect(liveX, actY, liveW, actH);
+
+    ctx.fillStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + 24, actY + 35);
+
+    // Instructions on the right
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.font = '13px monospace';
+    ctx.fillText('[ CLICK TABS / BUTTONS // USE ◄ / ► KEYS ]', w - 28, actY + 35);
+  }
+
+  /**
+   * Translates UV (0 to 1) coordinates from Raycaster hit on monitor plane
+   * into specific clickable button action
+   */
+  static getProjectActionAtUV(u, v) {
+    const x = u * 1280;
+    const y = (1 - v) * 512;
+
+    // 1. Top tabs
+    if (y >= 40 && y <= 78) {
+      if (x >= 24 && x <= 314) return { action: 'tab', index: 0 };
+      if (x >= 330 && x <= 620) return { action: 'tab', index: 1 };
+      if (x >= 636 && x <= 926) return { action: 'tab', index: 2 };
+      if (x >= 942 && x <= 1232) return { action: 'tab', index: 3 };
+    }
+    // 2. Nav buttons (PREV / NEXT)
+    if (y >= 345 && y <= 405) {
+      if (x >= 780 && x <= 925) return { action: 'prev' };
+      if (x >= 1105 && x <= 1250) return { action: 'next' };
+    }
+    // 3. Action bar buttons (REPO / LIVE)
+    if (y >= 430 && y <= 490) {
+      if (x >= 28 && x <= 440) return { action: 'repo' };
+      if (x >= 454 && x <= 800) return { action: 'live' };
+    }
+    return null;
+  }
 }
+
 

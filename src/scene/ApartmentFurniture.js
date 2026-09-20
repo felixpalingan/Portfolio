@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { TextureGenerator } from './TextureGenerator.js';
+import { portfolioData } from '../data/portfolioData.js';
 
 /**
  * ApartmentFurniture (Phase 2 - Complete Apartment Furniture & Interior Elements)
@@ -16,6 +17,15 @@ export class ApartmentFurniture {
   constructor() {
     this.group = new THREE.Group();
     this.animatedObjects = []; // Stores objects that require RAF animation (e.g., ceiling fan)
+
+    // Interactive Netrunner Project Repository Terminal State
+    this.projects = portfolioData.projects || [];
+    this.currentProjectIndex = 0;
+    this.projectMonitorScreen = null;
+    this.projectMonitorCanvas = null;
+    this.projectMonitorTexture = null;
+    this.projectControlButtons = [];
+    this.currentProjectHover = null;
 
     this.initMaterials();
     this.buildSleepingPod();
@@ -672,85 +682,52 @@ export class ApartmentFurniture {
     deskGroup.add(legR);
 
     // =========================================================================
-    // CURVED ULTRAWIDE DIEGETIC MONITOR (Centerpiece of PROJECTS section)
+    // INTERACTIVE ULTRAWIDE DIEGETIC MONITOR (PROJECTS Showcase Terminal)
     // =========================================================================
-    // Generates procedural terminal canvas texture for monitor
-    const monitorCanvas = document.createElement('canvas');
-    monitorCanvas.width = 1024;
-    monitorCanvas.height = 400;
-    const mctx = monitorCanvas.getContext('2d');
+    this.projectMonitorCanvas = document.createElement('canvas');
+    this.projectMonitorCanvas.width = 1280;
+    this.projectMonitorCanvas.height = 512;
+    this.projectMonitorTexture = new THREE.CanvasTexture(this.projectMonitorCanvas);
+    this.projectMonitorTexture.minFilter = THREE.LinearFilter;
+    this.projectMonitorTexture.magFilter = THREE.LinearFilter;
 
-    // Terminal dark background
-    mctx.fillStyle = '#060810';
-    mctx.fillRect(0, 0, 1024, 400);
+    // Render initial active project onto the monitor screen
+    TextureGenerator.renderProjectMonitorCanvas(
+      this.projectMonitorCanvas,
+      this.projects,
+      this.currentProjectIndex,
+      null
+    );
+    this.projectMonitorTexture.needsUpdate = true;
 
-    // Subtle cyan matrix grid lines
-    mctx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
-    mctx.lineWidth = 1;
-    for (let y = 0; y < 400; y += 20) {
-      mctx.beginPath();
-      mctx.moveTo(0, y);
-      mctx.lineTo(1024, y);
-      mctx.stroke();
-    }
-
-    // Header bar
-    mctx.fillStyle = '#00F0FF';
-    mctx.fillRect(0, 0, 1024, 34);
-    mctx.fillStyle = '#060810';
-    mctx.font = 'bold 18px monospace';
-    mctx.fillText('NETRUNNER TERMINAL // OS v4.81 // ARASAKA BREACH SECURE', 20, 24);
-
-    // Left pane: System telemetry
-    mctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
-    mctx.font = '14px monospace';
-    mctx.fillText('> MEMORY: 64TB / 128TB NEURAL RAM', 24, 80);
-    mctx.fillText('> ICE STATUS: BYPASSED // WATSON SUBNET', 24, 110);
-    mctx.fillText('> REPO LOADED: FELIX PALINGAN // PORTFOLIO', 24, 140);
-    mctx.fillText('> ACTIVE THREADS: 128 WORKER DAEMONS', 24, 170);
-
-    // Center pane: Cyberpunk waveform graph
-    mctx.strokeStyle = '#FCEE09';
-    mctx.lineWidth = 2.5;
-    mctx.beginPath();
-    for (let x = 400; x < 850; x += 10) {
-      const wave = Math.sin(x * 0.05) * 40 + Math.cos(x * 0.12) * 20;
-      if (x === 400) mctx.moveTo(x, 150 + wave);
-      else mctx.lineTo(x, 150 + wave);
-    }
-    mctx.stroke();
-
-    // Right pane: Glowing alert badge
-    mctx.fillStyle = '#FF003C';
-    mctx.fillRect(870, 60, 130, 36);
-    mctx.fillStyle = '#FFFFFF';
-    mctx.font = 'bold 14px monospace';
-    mctx.fillText('NET READY', 890, 84);
-
-    // Bottom prompt line
-    mctx.fillStyle = '#00F0FF';
-    mctx.font = 'bold 18px monospace';
-    mctx.fillText('root@megabuilding-h10:~$ select_project --interactive _', 24, 340);
-
-    const monitorTexture = new THREE.CanvasTexture(monitorCanvas);
+    // Monitor display plane (facing +Z in deskGroup, directly facing the camera in PROJECTS view)
+    const monitorGeo = new THREE.PlaneGeometry(1.36, 0.54);
     const monitorMat = new THREE.MeshBasicMaterial({
-      map: monitorTexture
+      map: this.projectMonitorTexture,
+      side: THREE.DoubleSide
     });
+    this.projectMonitorScreen = new THREE.Mesh(monitorGeo, monitorMat);
+    this.projectMonitorScreen.position.set(0, 1.15, -0.144);
+    this.projectMonitorScreen.userData = {
+      isProjectMonitor: true
+    };
+    deskGroup.add(this.projectMonitorScreen);
 
-    // Monitor screen (curved cylinder slice or angled panel)
-    const monitorGeo = new THREE.BoxGeometry(1.35, 0.52, 0.04);
-    const monitor = new THREE.Mesh(monitorGeo, monitorMat);
-    monitor.position.set(0, 1.15, -0.15);
-    monitor.castShadow = true;
-    deskGroup.add(monitor);
-
-    // Monitor bezel / frame
-    const bezelGeo = new THREE.BoxGeometry(1.39, 0.56, 0.05);
+    // Bezel / monitor frame chassis
+    const bezelGeo = new THREE.BoxGeometry(1.42, 0.60, 0.04);
     const bezel = new THREE.Mesh(bezelGeo, this.darkMetal);
-    bezel.position.set(0, 1.15, -0.17);
+    bezel.position.set(0, 1.15, -0.165);
     deskGroup.add(bezel);
 
-    // Sleek rear monitor chassis accent stripe (visible from camera)
+    // Cyan glowing top rim edge on monitor
+    const monitorTopRim = new THREE.Mesh(
+      new THREE.BoxGeometry(1.43, 0.015, 0.02),
+      this.cyanEmissive
+    );
+    monitorTopRim.position.set(0, 1.45, -0.155);
+    deskGroup.add(monitorTopRim);
+
+    // Sleek rear monitor chassis accent stripe (visible from apartment room)
     const rearMonitorEmblem = new THREE.Mesh(
       new THREE.BoxGeometry(0.85, 0.025, 0.02),
       this.cyanEmissive
@@ -803,6 +780,64 @@ export class ApartmentFurniture {
     const mousepad = new THREE.Mesh(mousepadGeo, this.cushionMaterial);
     mousepad.position.set(-0.36, 0.765, 0.15);
     deskGroup.add(mousepad);
+
+    // =========================================================================
+    // TACTILE DESK CONTROL MACROPAD (Physical 3D buttons on desk to browse projects)
+    // =========================================================================
+    this.projectControlButtons = [];
+    const macroPadBase = new THREE.Mesh(
+      new THREE.BoxGeometry(0.68, 0.018, 0.09),
+      this.darkMetal
+    );
+    macroPadBase.position.set(0, 0.762, -0.02);
+    deskGroup.add(macroPadBase);
+
+    const deskBtnConfigs = [
+      {
+        id: 'prev',
+        label: '◄ PREV',
+        color: 0x00F0FF,
+        x: -0.22,
+        action: 'prev',
+        toast: 'SWITCHING TO PREVIOUS PROJECT'
+      },
+      {
+        id: 'next',
+        label: 'NEXT ►',
+        color: 0x00F0FF,
+        x: 0.0,
+        action: 'next',
+        toast: 'SWITCHING TO NEXT PROJECT'
+      },
+      {
+        id: 'repo',
+        label: '◈ GITHUB',
+        color: 0xFCEE09,
+        x: 0.22,
+        action: 'repo',
+        toast: 'OPENING GITHUB REPOSITORY'
+      }
+    ];
+
+    deskBtnConfigs.forEach(btnCfg => {
+      const btnMat = new THREE.MeshStandardMaterial({
+        color: 0x101726,
+        roughness: 0.3,
+        metalness: 0.7,
+        emissive: btnCfg.color,
+        emissiveIntensity: 0.35
+      });
+      const btnMesh = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.016, 0.07), btnMat);
+      btnMesh.position.set(btnCfg.x, 0.776, -0.02);
+      btnMesh.userData = {
+        isDeskButton: true,
+        action: btnCfg.action,
+        cfg: btnCfg,
+        baseY: 0.776
+      };
+      deskGroup.add(btnMesh);
+      this.projectControlButtons.push(btnMesh);
+    });
 
     // PC Server Tower / Rack beside desk (mirrored towards right wall)
     const towerGeo = new THREE.BoxGeometry(0.26, 0.55, 0.6);
@@ -865,10 +900,13 @@ export class ApartmentFurniture {
       deskGroup.add(box);
     }
 
-    // Swivel Chair (tucked on the bed/lounge side, facing into the desk)
+    // =========================================================================
+    // SWIVEL CHAIR — PUSHED TO THE SIDE (Never blocks camera line-of-sight!)
+    // Geser ke arah lorong kamar (x = 0.68), posisi tucked ke samping meja.
+    // =========================================================================
     const chairGroup = new THREE.Group();
-    chairGroup.position.set(0, 0, 0.75);
-    chairGroup.rotation.y = 0.15; // Angled naturally towards the screen
+    chairGroup.position.set(0.68, 0, 0.35); // Geser 68cm ke kiri viewer, pandangan monitor 100% plong!
+    chairGroup.rotation.y = 0.55; // Mengarah natural ke sudut meja
 
     // Chair base star & piston
     const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), this.darkMetal);
@@ -912,6 +950,49 @@ export class ApartmentFurniture {
 
     deskGroup.add(jacketGroup);
     this.group.add(deskGroup);
+  }
+
+  /**
+   * Updates active project on the ultrawide workstation monitor
+   */
+  setProjectIndex(newIndex, hoveredAction = null) {
+    if (!this.projects || this.projects.length === 0) return null;
+    this.currentProjectIndex = ((newIndex % this.projects.length) + this.projects.length) % this.projects.length;
+    this.currentProjectHover = hoveredAction;
+
+    if (this.projectMonitorCanvas && this.projectMonitorTexture) {
+      TextureGenerator.renderProjectMonitorCanvas(
+        this.projectMonitorCanvas,
+        this.projects,
+        this.currentProjectIndex,
+        hoveredAction
+      );
+      this.projectMonitorTexture.needsUpdate = true;
+    }
+
+    return this.projects[this.currentProjectIndex];
+  }
+
+  /**
+   * Updates hover state highlights on the workstation monitor
+   */
+  setProjectHover(hoveredAction) {
+    if (this.currentProjectHover === hoveredAction) return;
+    this.currentProjectHover = hoveredAction;
+
+    if (this.projectMonitorCanvas && this.projectMonitorTexture) {
+      TextureGenerator.renderProjectMonitorCanvas(
+        this.projectMonitorCanvas,
+        this.projects,
+        this.currentProjectIndex,
+        hoveredAction
+      );
+      this.projectMonitorTexture.needsUpdate = true;
+    }
+  }
+
+  getCurrentProject() {
+    return this.projects[this.currentProjectIndex] || null;
   }
 
   // ===========================================================================
