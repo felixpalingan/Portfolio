@@ -295,6 +295,92 @@ export class ApartmentFurniture {
     this.smartMirrorDisplay.position.set(-0.428, 1.55, 0.0);
     toiletGroup.add(this.smartMirrorDisplay);
 
+    // =========================================================================
+    // 3D INTERACTIVE BUTTONS ON THE MIRROR FACE (No 2D pop-ups)
+    // =========================================================================
+    this.mirrorButtons = [];
+
+    const buttonConfigs = [
+      {
+        id: 'email',
+        icon: '✉',
+        title: 'EMAIL COMMS',
+        subtitle: 'felixbariq@gmail.com',
+        color: '#00F0FF',
+        pos: { y: 1.15, z: -0.28 }
+      },
+      {
+        id: 'github',
+        icon: '◈',
+        title: 'GITHUB ARCHIVE',
+        subtitle: 'github.com/felixpalingan',
+        color: '#00F0FF',
+        pos: { y: 1.15, z: 0.28 }
+      },
+      {
+        id: 'linkedin',
+        icon: '◆',
+        title: 'LINKEDIN NET',
+        subtitle: 'linkedin.com/in/felixpalingan',
+        color: '#00F0FF',
+        pos: { y: 0.97, z: -0.28 }
+      },
+      {
+        id: 'return',
+        icon: '◄',
+        title: 'DISENGAGE',
+        subtitle: 'RETURN TO ROOM',
+        color: '#FF003C',
+        pos: { y: 0.97, z: 0.28 }
+      }
+    ];
+
+    const btnGeo = new THREE.PlaneGeometry(0.52, 0.14);
+    const chassisGeo = new THREE.BoxGeometry(0.012, 0.144, 0.524);
+
+    buttonConfigs.forEach(cfg => {
+      const normalTex = TextureGenerator.createMirrorButtonTexture(cfg);
+      const hoverTex = TextureGenerator.createMirrorButtonTexture({ ...cfg, isHovered: true });
+      const successTex = TextureGenerator.createMirrorButtonTexture({ ...cfg, isSuccess: true });
+
+      const mat = new THREE.MeshBasicMaterial({
+        map: normalTex,
+        transparent: true,
+        opacity: 0.0,
+        side: THREE.DoubleSide
+      });
+
+      const chassisMat = new THREE.MeshStandardMaterial({
+        color: 0x101622,
+        roughness: 0.4,
+        metalness: 0.8,
+        transparent: true,
+        opacity: 0.0
+      });
+
+      const btnMesh = new THREE.Mesh(btnGeo, mat);
+      btnMesh.rotation.y = Math.PI / 2; // Face +X into the room
+      btnMesh.position.set(-0.418, cfg.pos.y, cfg.pos.z);
+
+      const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
+      chassisMesh.position.set(-0.425, cfg.pos.y, cfg.pos.z);
+
+      btnMesh.userData = {
+        id: cfg.id,
+        cfg: cfg,
+        normalTex: normalTex,
+        hoverTex: hoverTex,
+        successTex: successTex,
+        baseX: -0.418,
+        chassis: chassisMesh,
+        isHovered: false
+      };
+
+      toiletGroup.add(chassisMesh);
+      toiletGroup.add(btnMesh);
+      this.mirrorButtons.push(btnMesh);
+    });
+
     // Dedicated overhead mirror task light & spotlight creating chrome specular gleam
     const mirrorLightGeo = new THREE.BoxGeometry(0.08, 0.05, 1.26);
     const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.whiteEmissive);
@@ -323,6 +409,13 @@ export class ApartmentFurniture {
     if (!this.smartMirrorDisplay) return;
     gsap.killTweensOf(this.smartMirrorDisplay.material);
 
+    if (this.mirrorButtons) {
+      this.mirrorButtons.forEach(b => {
+        gsap.killTweensOf(b.material);
+        if (b.userData.chassis) gsap.killTweensOf(b.userData.chassis.material);
+      });
+    }
+
     if (active) {
       // Cyberpunk 2077 digital glitch flicker fade-in
       this.smartMirrorDisplay.material.opacity = 0;
@@ -330,12 +423,43 @@ export class ApartmentFurniture {
         .to(this.smartMirrorDisplay.material, { opacity: 0.85, duration: 0.12, ease: 'steps(2)' })
         .to(this.smartMirrorDisplay.material, { opacity: 0.3, duration: 0.08 })
         .to(this.smartMirrorDisplay.material, { opacity: 0.98, duration: 0.35, ease: 'power2.out' });
+
+      // Stagger fade-in for 3D buttons on the mirror
+      if (this.mirrorButtons) {
+        this.mirrorButtons.forEach((b, i) => {
+          b.material.opacity = 0;
+          if (b.userData.chassis) b.userData.chassis.material.opacity = 0;
+          gsap.to(b.material, {
+            opacity: 0.98,
+            duration: 0.35,
+            delay: 0.18 + i * 0.06,
+            ease: 'power2.out'
+          });
+          if (b.userData.chassis) {
+            gsap.to(b.userData.chassis.material, {
+              opacity: 0.92,
+              duration: 0.35,
+              delay: 0.18 + i * 0.06,
+              ease: 'power2.out'
+            });
+          }
+        });
+      }
     } else {
       gsap.to(this.smartMirrorDisplay.material, {
         opacity: 0,
-        duration: 0.35,
+        duration: 0.25,
         ease: 'power2.in'
       });
+
+      if (this.mirrorButtons) {
+        this.mirrorButtons.forEach(b => {
+          gsap.to(b.material, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+          if (b.userData.chassis) {
+            gsap.to(b.userData.chassis.material, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+          }
+        });
+      }
     }
   }
 

@@ -14,6 +14,8 @@ class App {
 
     this.clock = new THREE.Clock();
     this.mouse = new THREE.Vector2(0, 0);
+    this.raycaster = new THREE.Raycaster();
+    this.hoveredMirrorBtn = null;
 
     try {
       console.log("[CYBERPUNK] Booting Megabuilding H10 matrix...");
@@ -115,11 +117,82 @@ class App {
   initEvents() {
     window.addEventListener('resize', () => this.onResize());
 
+    // Mousemove for parallax & 3D mirror button hover detection
     window.addEventListener('mousemove', (e) => {
       this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       if (this.cameraController) {
         this.cameraController.setMouse(this.mouse.x, this.mouse.y);
+      }
+
+      // 3D Mirror Button Hover Detection (when viewing COMM)
+      if (
+        this.cameraController && 
+        this.cameraController.currentAnchor === 'COMM' && 
+        this.room?.furniture?.mirrorButtons
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.room.furniture.mirrorButtons);
+
+        if (intersects.length > 0) {
+          const hit = intersects[0].object;
+          if (this.hoveredMirrorBtn !== hit) {
+            if (this.hoveredMirrorBtn) this.resetMirrorButton(this.hoveredMirrorBtn);
+            this.hoveredMirrorBtn = hit;
+            this.highlightMirrorButton(hit);
+          }
+          document.body.style.cursor = 'pointer';
+        } else {
+          if (this.hoveredMirrorBtn) {
+            this.resetMirrorButton(this.hoveredMirrorBtn);
+            this.hoveredMirrorBtn = null;
+          }
+          document.body.style.cursor = 'default';
+        }
+      } else if (this.hoveredMirrorBtn) {
+        this.resetMirrorButton(this.hoveredMirrorBtn);
+        this.hoveredMirrorBtn = null;
+        document.body.style.cursor = 'default';
+      }
+    });
+
+    // 3D Mirror Button Click Interactions
+    window.addEventListener('click', (e) => {
+      // Ignore click if clicking 2D navigation bar buttons
+      if (e.target.closest('.hud-nav-btn') || e.target.closest('.hud-header')) {
+        return;
+      }
+
+      if (
+        this.cameraController && 
+        this.cameraController.currentAnchor === 'COMM' && 
+        this.room?.furniture?.mirrorButtons
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.room.furniture.mirrorButtons);
+
+        if (intersects.length > 0) {
+          const hit = intersects[0].object;
+          const id = hit.userData?.id;
+
+          if (id === 'email') {
+            navigator.clipboard.writeText('felixbariq@gmail.com').then(() => {
+              hit.material.map = hit.userData.successTex;
+              hit.material.needsUpdate = true;
+              this.showCopyToast('⚡ DIRECT EMAIL felixbariq@gmail.com COPIED TO CLIPBOARD');
+              setTimeout(() => {
+                hit.material.map = hit.userData.normalTex;
+                hit.material.needsUpdate = true;
+              }, 2500);
+            });
+          } else if (id === 'github') {
+            window.open('https://github.com/felixpalingan', '_blank');
+          } else if (id === 'linkedin') {
+            window.open('https://linkedin.com/in/felixpalingan', '_blank');
+          } else if (id === 'return') {
+            document.getElementById('nav-btn-home')?.click();
+          }
+        }
       }
     });
 
@@ -144,46 +217,20 @@ class App {
       });
     });
 
-    // Camera transition lifecycle hooks for Smart Mirror & HUD
+    // Camera transition lifecycle hooks for 3D Wall Mirror
     if (this.cameraController) {
       this.cameraController.onTransitionStart = () => {
-        // Hide mirror HUD and diegetic content while camera is in flight
+        // While camera is in flight, mirror remains clean chrome silver
         if (this.room) this.room.setMirrorActive(false);
-        this.hideSmartMirrorHUD();
       };
 
       this.cameraController.onTransitionComplete = (anchor) => {
-        // Only once the camera arrives and is aimed right at the mirror:
-        // fade in image, telemetry info, and interactive buttons on the mirror
+        // Only once camera stops and aims directly at the wall mirror:
+        // fade in image, info, and 3D buttons right on the mirror face
         if (anchor.name === 'COMM') {
           if (this.room) this.room.setMirrorActive(true);
-          this.showSmartMirrorHUD();
         }
       };
-    }
-
-    // Mirror Exit button -> Return to HOME
-    const mirrorReturnBtn = document.getElementById('mirror-return-btn');
-    if (mirrorReturnBtn) {
-      mirrorReturnBtn.addEventListener('click', () => {
-        document.getElementById('nav-btn-home')?.click();
-      });
-    }
-
-    // Copy Email Chip
-    const copyBtn = document.getElementById('copy-email-btn');
-    const copyToast = document.getElementById('copy-toast');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText('felixbariq@gmail.com').then(() => {
-          if (copyToast) {
-            copyToast.textContent = '[EMAIL COPIED TO CLIPBOARD]';
-            copyToast.classList.add('show');
-            setTimeout(() => copyToast.classList.remove('show'), 2500);
-          }
-        });
-      });
     }
 
     // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, Escape: HOME)
@@ -200,17 +247,26 @@ class App {
     });
   }
 
-  showSmartMirrorHUD() {
-    const overlay = document.getElementById('smart-mirror-overlay');
-    if (overlay) {
-      overlay.classList.add('active');
-    }
+  highlightMirrorButton(btn) {
+    if (!btn || !btn.userData) return;
+    btn.material.map = btn.userData.hoverTex;
+    btn.material.needsUpdate = true;
+    gsap.to(btn.position, { x: btn.userData.baseX + 0.012, duration: 0.15 });
   }
 
-  hideSmartMirrorHUD() {
-    const overlay = document.getElementById('smart-mirror-overlay');
-    if (overlay) {
-      overlay.classList.remove('active');
+  resetMirrorButton(btn) {
+    if (!btn || !btn.userData) return;
+    btn.material.map = btn.userData.normalTex;
+    btn.material.needsUpdate = true;
+    gsap.to(btn.position, { x: btn.userData.baseX, duration: 0.15 });
+  }
+
+  showCopyToast(text) {
+    const toast = document.getElementById('copy-toast');
+    if (toast) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
     }
   }
 
