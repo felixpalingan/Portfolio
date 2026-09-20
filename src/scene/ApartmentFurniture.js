@@ -119,75 +119,165 @@ export class ApartmentFurniture {
   }
 
   // ===========================================================================
-  // 2A: SLEEPING POD & VENDING MACHINE (Top-Left)
+  // 2A: SLEEPING POD WITH FULL-LENGTH NIGHTSTAND (Top-Left)
+  // Kasur mepet dari dinding belakang (atas) sampai sekat shower (bawah).
+  // Di sebelah kiri antara kasur dan tembok kiri terdapat nightstand runner panjang.
   // ===========================================================================
   buildSleepingPod() {
     const podGroup = new THREE.Group();
-    podGroup.position.set(-3.2, 0, -2.6);
+    podGroup.position.set(0, 0, 0);
 
-    // Bed platform box (recessed base)
-    const baseGeo = new THREE.BoxGeometry(1.8, 0.4, 1.5);
+    // =========================================================================
+    // 1. FULL-LENGTH BEDSIDE NIGHTSTAND (Antara kasur dan tembok kiri)
+    // Tembok kiri: X = -4.40m | Kasur mulai: X = -3.90m | Panjang Z: -3.38 ke -1.02
+    // =========================================================================
+    const nightstandGroup = new THREE.Group();
+    nightstandGroup.position.set(-4.15, 0, -2.20);
+
+    // Nightstand main cabinet body (2.36m panjang sepanjang kasur)
+    const nsBodyGeo = new THREE.BoxGeometry(0.48, 0.48, 2.36);
+    const nsBody = new THREE.Mesh(nsBodyGeo, this.darkMetal);
+    nsBody.position.y = 0.24;
+    nsBody.castShadow = true;
+    nsBody.receiveShadow = true;
+    nightstandGroup.add(nsBody);
+
+    // Top console countertop surface (matte carbon finish)
+    const nsTopGeo = new THREE.BoxGeometry(0.50, 0.035, 2.38);
+    const nsTop = new THREE.Mesh(nsTopGeo, this.deskMaterial);
+    nsTop.position.y = 0.49;
+    nightstandGroup.add(nsTop);
+
+    // Luminous warm amber LED runner strip along the entire inside edge
+    const nsLedGeo = new THREE.BoxGeometry(0.02, 0.02, 2.34);
+    const nsLed = new THREE.Mesh(nsLedGeo, this.warmOrangeEmissive);
+    nsLed.position.set(0.24, 0.50, 0);
+    nightstandGroup.add(nsLed);
+
+    // Horizontal cyber cabinet panel division lines
+    const panelLine1 = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.44, 0.02), this.trimMaterial || this.darkMetal);
+    panelLine1.position.set(0.245, 0.24, -0.4);
+    nightstandGroup.add(panelLine1);
+
+    const panelLine2 = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.44, 0.02), this.trimMaterial || this.darkMetal);
+    panelLine2.position.set(0.245, 0.24, 0.4);
+    nightstandGroup.add(panelLine2);
+
+    // Bedside Clutter / Props on the nightstand:
+    // A. Netrunner Datapad / Cyberpunk Tablet (illuminated screen)
+    const tabletGeo = new THREE.BoxGeometry(0.22, 0.015, 0.32);
+    const tabletMat = new THREE.MeshStandardMaterial({
+      color: 0x080c14,
+      emissive: 0x00F0FF,
+      emissiveIntensity: 0.6,
+      roughness: 0.3
+    });
+    const tablet = new THREE.Mesh(tabletGeo, tabletMat);
+    tablet.position.set(0.0, 0.515, -0.65);
+    tablet.rotation.y = 0.15;
+    nightstandGroup.add(tablet);
+
+    // B. Neural Interface Shard Dock / Charger Station
+    const dockGeo = new THREE.BoxGeometry(0.14, 0.04, 0.18);
+    const dock = new THREE.Mesh(dockGeo, this.darkMetal);
+    dock.position.set(0.02, 0.525, -0.15);
+    nightstandGroup.add(dock);
+
+    const shardLed = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.01, 0.02), this.cyanEmissive);
+    shardLed.position.set(0.02, 0.548, -0.15);
+    nightstandGroup.add(shardLed);
+
+    // C. Chrome Water Flask / Cyber Decanter + Tumbler
+    const flaskGeo = new THREE.CylinderGeometry(0.04, 0.045, 0.22, 12);
+    const flask = new THREE.Mesh(flaskGeo, this.chromeFrameMaterial);
+    flask.position.set(-0.05, 0.615, 0.45);
+    nightstandGroup.add(flask);
+
+    const glassGeo = new THREE.CylinderGeometry(0.03, 0.025, 0.09, 12);
+    const glass = new THREE.Mesh(glassGeo, new THREE.MeshStandardMaterial({
+      color: 0x335577,
+      transparent: true,
+      opacity: 0.6,
+      roughness: 0.1
+    }));
+    glass.position.set(0.08, 0.555, 0.52);
+    nightstandGroup.add(glass);
+
+    // Warm ambient point light softly illuminating the nightstand runner
+    const nightstandLight = new THREE.PointLight(0xff6622, 1.6, 2.8, 1.4);
+    nightstandLight.position.set(0.0, 0.85, -0.3);
+    nightstandGroup.add(nightstandLight);
+
+    podGroup.add(nightstandGroup);
+
+    // =========================================================================
+    // 2. KASUR (BED) MEPET ATAS (Dinding Belakang) SAMPAI BAWAH (Sekat Shower)
+    // Z: -3.39m (dinding belakang) s/d -1.01m (sekat shower) -> Panjang Z: 2.38m
+    // X: -3.90m (sebelah nightstand) s/d -2.05m -> Lebar X: 1.85m
+    // Center: X = -2.975m, Z = -2.20m
+    // =========================================================================
+    const bedGroup = new THREE.Group();
+    bedGroup.position.set(-2.975, 0, -2.20);
+
+    // Bed Platform Base (mepet atas sampe bawah)
+    const baseGeo = new THREE.BoxGeometry(1.85, 0.32, 2.38);
     const base = new THREE.Mesh(baseGeo, this.darkMetal);
-    base.position.set(0, 0.2, 0);
+    base.position.y = 0.16;
     base.castShadow = true;
     base.receiveShadow = true;
-    podGroup.add(base);
+    bedGroup.add(base);
 
-    // Mattress
-    const matGeo = new THREE.BoxGeometry(1.7, 0.22, 1.4);
+    // Mattress (Kasur tebal & empuk membentang dari dinding belakang ke sekat shower)
+    const matGeo = new THREE.BoxGeometry(1.80, 0.26, 2.34);
     const mat = new THREE.Mesh(matGeo, this.bedSheetMaterial);
-    mat.position.set(0, 0.45, 0);
+    mat.position.y = 0.44;
     mat.castShadow = true;
-    podGroup.add(mat);
+    mat.receiveShadow = true;
+    bedGroup.add(mat);
 
-    // Sleeping Pod Headboard / Shell
-    const shellGeo = new THREE.BoxGeometry(1.82, 1.4, 0.2);
-    const shell = new THREE.Mesh(shellGeo, this.darkMetal);
-    shell.position.set(0, 0.7, -0.75);
-    shell.castShadow = true;
-    podGroup.add(shell);
+    // Bed Headboard Panel (Flush at back wall, Z = -3.36 -> relative Z = -1.16)
+    const headboardGeo = new THREE.BoxGeometry(1.85, 0.95, 0.08);
+    const headboard = new THREE.Mesh(headboardGeo, this.darkMetal);
+    headboard.position.set(0, 0.85, -1.15);
+    headboard.castShadow = true;
+    bedGroup.add(headboard);
 
-    // Overhead Pod Canopy / Roof
-    const canopyGeo = new THREE.BoxGeometry(1.82, 0.1, 1.2);
-    const canopy = new THREE.Mesh(canopyGeo, this.darkMetal);
-    canopy.position.set(0, 1.4, -0.2);
-    podGroup.add(canopy);
+    // Luminous warm orange headboard runner strip
+    const headboardLightGeo = new THREE.BoxGeometry(1.85, 0.035, 0.035);
+    const headboardLight = new THREE.Mesh(headboardLightGeo, this.warmOrangeEmissive);
+    headboardLight.position.set(0, 1.30, -1.13);
+    bedGroup.add(headboardLight);
 
-    // Side Privacy Fin
-    const finGeo = new THREE.BoxGeometry(0.08, 1.4, 1.4);
-    const fin = new THREE.Mesh(finGeo, this.darkMetal);
-    fin.position.set(-0.87, 0.7, 0.05);
-    podGroup.add(fin);
-
-    // Pillows
-    const pillowGeo = new THREE.BoxGeometry(0.5, 0.14, 0.35);
+    // 2 Pillows at the head of the bed
+    const pillowGeo = new THREE.BoxGeometry(0.68, 0.14, 0.42);
     const pillow1 = new THREE.Mesh(pillowGeo, this.bedPillowMaterial);
-    pillow1.position.set(-0.45, 0.65, -0.42);
-    pillow1.rotation.y = 0.08;
-    podGroup.add(pillow1);
+    pillow1.position.set(-0.45, 0.62, -0.85);
+    pillow1.rotation.y = 0.04;
+    bedGroup.add(pillow1);
 
     const pillow2 = new THREE.Mesh(pillowGeo, this.bedPillowMaterial);
-    pillow2.position.set(0.2, 0.65, -0.42);
-    pillow2.rotation.y = -0.05;
-    podGroup.add(pillow2);
+    pillow2.position.set(0.45, 0.62, -0.85);
+    pillow2.rotation.y = -0.04;
+    bedGroup.add(pillow2);
 
-    // Rumpled duvet blanket at foot of bed
-    const duvetGeo = new THREE.BoxGeometry(1.68, 0.18, 0.85);
+    // Rumpled duvet blanket covering lower portion of bed up to shower divider
+    const duvetGeo = new THREE.BoxGeometry(1.78, 0.16, 1.55);
     const duvet = new THREE.Mesh(duvetGeo, this.bedSheetMaterial);
-    duvet.position.set(0.0, 0.62, 0.25);
-    duvet.rotation.z = -0.02;
-    podGroup.add(duvet);
+    duvet.position.set(0.0, 0.58, 0.35);
+    duvet.rotation.z = -0.015;
+    bedGroup.add(duvet);
 
-    // Warm headboard neon strip
-    const headboardLightGeo = new THREE.BoxGeometry(1.7, 0.06, 0.06);
-    const headboardLight = new THREE.Mesh(headboardLightGeo, this.warmOrangeEmissive);
-    headboardLight.position.set(0.0, 0.75, -0.7);
-    podGroup.add(headboardLight);
+    // Subtle edge rim hazard strip along bottom edge near shower divider
+    const footTrim = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.02, 0.02), this.yellowAccentMaterial);
+    footTrim.position.set(0, 0.32, 1.18);
+    bedGroup.add(footTrim);
 
-    // Headboard point light (ambient warm glow over bed)
-    const bedPointLight = new THREE.PointLight(0xff5511, 2.0, 3.5, 1.4);
-    bedPointLight.position.set(0.0, 0.9, -0.5);
-    podGroup.add(bedPointLight);
+    // Ambient warm headboard point light
+    const bedPointLight = new THREE.PointLight(0xff5511, 2.2, 4.0, 1.3);
+    bedPointLight.position.set(0.0, 1.1, -0.9);
+    bedGroup.add(bedPointLight);
+
+    podGroup.add(bedGroup);
 
     this.group.add(podGroup);
   }
