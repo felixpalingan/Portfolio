@@ -17,9 +17,9 @@ export class CameraController {
     this.currentAnchor = 'HOME';
 
     // Target lookAt vector currently tracked by the camera
-    this.target = new THREE.Vector3(0, 1.25, -0.5);
-    this.basePosition = new THREE.Vector3(0, 1.85, 4.4);
-    this.baseTarget = new THREE.Vector3(0, 1.25, -0.5);
+    this.target = new THREE.Vector3(0, 1.15, -0.35);
+    this.basePosition = new THREE.Vector3(0, 1.95, 3.65);
+    this.baseTarget = new THREE.Vector3(0, 1.15, -0.35);
 
     // Mouse coordinates (-1 to 1)
     this.mouse = new THREE.Vector2(0, 0);
@@ -32,8 +32,9 @@ export class CameraController {
       HOME: {
         name: 'HOME',
         label: 'OVERVIEW // MEGABUILDING H10',
-        position: new THREE.Vector3(0, 2.15, 4.85),
-        target: new THREE.Vector3(0, 1.20, -0.40),
+        // Brought forward to 3.65m so the extreme outer wall edges are cropped naturally
+        position: new THREE.Vector3(0, 1.95, 3.65),
+        target: new THREE.Vector3(0, 1.15, -0.35),
         duration: 1.8,
         ease: 'power2.inOut'
       },
@@ -119,13 +120,13 @@ export class CameraController {
       mid.y = Math.max(startPos.y, endPos.y) + 0.4;
     } else if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
       // Arc through right aisle to enter bottom-right workstation
-      mid.set(1.6, 1.75, 2.4);
+      mid.set(1.6, 1.75, 2.1);
     } else if (key === 'HOME->COMM' || key === 'COMM->HOME') {
       // Arc through left aisle into the open-concept bathroom
-      mid.set(-1.6, 1.75, 2.4);
+      mid.set(-1.6, 1.75, 2.1);
     } else if (key === 'HOME->STATS' || key === 'STATS->HOME') {
       // Descend gently into the sunken lounge
-      mid.set(0.9, 1.55, 1.5);
+      mid.set(0.8, 1.55, 1.4);
     } else if (key === 'PROJECTS->STATS' || key === 'STATS->PROJECTS') {
       // Short hop between right workstation and sunken lounge
       mid.set(2.4, 1.45, 0.0);
