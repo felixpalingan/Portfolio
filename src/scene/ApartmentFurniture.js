@@ -19,7 +19,7 @@ export class ApartmentFurniture {
 
     this.initMaterials();
     this.buildSleepingPod();
-    this.buildToiletAndMirror();
+    this.buildOpenBathroom();
     this.buildNetrunnerWorkstation();
     this.buildSunkenLounge();
     this.buildWardrobe();
@@ -193,94 +193,173 @@ export class ApartmentFurniture {
   }
 
   // ===========================================================================
-  // 2B: TOILET + SMART CYBERPUNK MIRROR AREA (Left - COMM Terminal)
+  // 2B: OPEN-CONCEPT CYBERPUNK BATHROOM (Left-Bottom - Focus for COMM)
+  // Features:
+  // - Divider wall near bed (Z = -0.95) with industrial chrome shower head & column
+  // - Open walk-in wet room shower floor drain
+  // - Vanity console + 3D Chrome Mirror facing the bed (Z = 2.20, normal faces -Z)
+  // - Diegetic Smart Mirror HUD & 4 interactive 3D buttons facing -Z (towards bed)
+  // - Compact futuristic toilet module along left wall
   // ===========================================================================
-  buildToiletAndMirror() {
-    const toiletGroup = new THREE.Group();
-    toiletGroup.position.set(-4.0, 0, 0.0);
+  buildOpenBathroom() {
+    const bathGroup = new THREE.Group();
+    bathGroup.position.set(-3.1, 0, 0.0);
 
-    // Stall divider wall (covers toilet in corner, leaves sink & mirror wide open)
-    const partWallGeo = new THREE.BoxGeometry(0.12, 2.4, 0.85);
-    const partWall = new THREE.Mesh(partWallGeo, this.darkMetal);
-    partWall.position.set(1.0, 1.2, -0.65);
-    toiletGroup.add(partWall);
+    // 1. DIVIDER WALL NEAR BED (at Z = -0.95, separating sleeping pod from open bathroom)
+    const dividerGeo = new THREE.BoxGeometry(2.5, 2.4, 0.12);
+    const dividerWall = new THREE.Mesh(dividerGeo, this.darkMetal);
+    dividerWall.position.set(0, 1.2, -0.95);
+    bathGroup.add(dividerWall);
 
-    // Toilet Bowl & Tank (futuristic compact Megabuilding module)
-    const toiletBowlGeo = new THREE.BoxGeometry(0.45, 0.45, 0.55);
-    const toiletBowl = new THREE.Mesh(toiletBowlGeo, new THREE.MeshStandardMaterial({
-      color: 0xcccccc,
-      roughness: 0.2,
-      metalness: 0.1
-    }));
-    toiletBowl.position.set(0.3, 0.225, -0.65);
-    toiletBowl.castShadow = true;
-    toiletGroup.add(toiletBowl);
+    // Warm accent trim on bed side of divider wall
+    const bedTrim = new THREE.Mesh(new THREE.BoxGeometry(2.52, 0.03, 0.02), this.warmOrangeEmissive);
+    bedTrim.position.set(0, 1.8, -1.02);
+    bathGroup.add(bedTrim);
 
-    const toiletTankGeo = new THREE.BoxGeometry(0.45, 0.5, 0.25);
-    const toiletTank = new THREE.Mesh(toiletTankGeo, this.darkMetal);
-    toiletTank.position.set(0.3, 0.65, -0.95);
-    toiletGroup.add(toiletTank);
+    // 2. INDUSTRIAL CHROME SHOWER COLUMN & HEAD (Mounted on bathroom face of divider, facing South +Z towards sink)
+    // Chrome vertical supply pipe
+    const showerPipeGeo = new THREE.CylinderGeometry(0.016, 0.016, 1.4, 8);
+    const showerPipe = new THREE.Mesh(showerPipeGeo, this.chromeFrameMaterial);
+    showerPipe.position.set(0, 1.4, -0.86);
+    bathGroup.add(showerPipe);
 
-    // Sink counter below mirror (sleek cyber console flush with wall)
-    const sinkGeo = new THREE.BoxGeometry(0.56, 0.74, 1.36);
+    // Dual cyber mixer valves (hot/cold)
+    const valveGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.04, 12);
+    const valve1 = new THREE.Mesh(valveGeo, this.chromeFrameMaterial);
+    valve1.rotation.x = Math.PI / 2;
+    valve1.position.set(-0.08, 0.95, -0.84);
+    bathGroup.add(valve1);
+
+    const valve2 = new THREE.Mesh(valveGeo, this.chromeFrameMaterial);
+    valve2.rotation.x = Math.PI / 2;
+    valve2.position.set(0.08, 0.95, -0.84);
+    bathGroup.add(valve2);
+
+    // Shower arm extending out into the bathroom along +Z
+    const showerArmGeo = new THREE.CylinderGeometry(0.014, 0.014, 0.55, 8);
+    const showerArm = new THREE.Mesh(showerArmGeo, this.chromeFrameMaterial);
+    showerArm.rotation.x = Math.PI / 2;
+    showerArm.position.set(0, 2.15, -0.58);
+    bathGroup.add(showerArm);
+
+    // Wide Cyberpunk Rain Shower Head disc (facing down towards sink)
+    const showerDiscGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.025, 24);
+    const showerDisc = new THREE.Mesh(showerDiscGeo, this.chromeFrameMaterial);
+    showerDisc.position.set(0, 2.12, -0.32);
+    bathGroup.add(showerDisc);
+
+    // Cyan glowing nozzle rim
+    const nozzleRim = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.008, 8, 24), this.cyanEmissive);
+    nozzleRim.rotation.x = Math.PI / 2;
+    nozzleRim.position.set(0, 2.10, -0.32);
+    bathGroup.add(nozzleRim);
+
+    // Dedicated cool blue shower spotlight
+    const showerSpot = new THREE.SpotLight(0x00F0FF, 3.5, 4.0, Math.PI / 4, 0.35, 1.2);
+    showerSpot.position.set(0, 2.3, -0.32);
+    showerSpot.target.position.set(0, 0, -0.32);
+    bathGroup.add(showerSpot);
+    bathGroup.add(showerSpot.target);
+
+    // Shower wet-room floor drain plate & grate
+    const slatePlate = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 0.008, 1.3),
+      new THREE.MeshStandardMaterial({ color: 0x141822, roughness: 0.85, metalness: 0.3 })
+    );
+    slatePlate.position.set(0, 0.004, -0.30);
+    slatePlate.receiveShadow = true;
+    bathGroup.add(slatePlate);
+
+    const drainGrate = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.012, 0.24),
+      this.darkMetal
+    );
+    drainGrate.position.set(0, 0.01, -0.30);
+    bathGroup.add(drainGrate);
+
+    // 3. COMPACT TOILET MODULE (Along Left Wall at X = -4.40)
+    const toiletBowl = new THREE.Mesh(
+      new THREE.BoxGeometry(0.45, 0.45, 0.52),
+      new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.2, metalness: 0.1 })
+    );
+    // Relative to bathGroup (-3.1), x = -0.95 -> world x = -4.05
+    toiletBowl.position.set(-0.95, 0.225, 0.65);
+    bathGroup.add(toiletBowl);
+
+    const toiletTank = new THREE.Mesh(
+      new THREE.BoxGeometry(0.22, 0.5, 0.45),
+      this.darkMetal
+    );
+    toiletTank.position.set(-1.18, 0.65, 0.65);
+    bathGroup.add(toiletTank);
+
+    // 4. VANITY CONSOLE + 3D CHROME MIRROR (Facing the Bed, normal along -Z)
+    // Vanity back partition screen
+    const vanityBack = new THREE.Mesh(
+      new THREE.BoxGeometry(1.8, 2.5, 0.08),
+      this.darkMetal
+    );
+    vanityBack.position.set(0, 1.25, 2.30);
+    bathGroup.add(vanityBack);
+
+    // Vanity counter & sink below mirror
+    const sinkGeo = new THREE.BoxGeometry(1.5, 0.74, 0.52);
     const sink = new THREE.Mesh(sinkGeo, this.darkMetal);
-    sink.position.set(-0.12, 0.37, 0.0);
-    toiletGroup.add(sink);
+    sink.position.set(0, 0.37, 2.02);
+    bathGroup.add(sink);
 
     // Chrome faucet / cyber tap
-    const tapGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.18, 8);
+    const tapGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.18, 8);
     const tap = new THREE.Mesh(tapGeo, this.chromeFrameMaterial);
-    tap.position.set(-0.12, 0.81, 0.0);
-    toiletGroup.add(tap);
+    tap.position.set(0, 0.81, 1.92);
+    bathGroup.add(tap);
 
-    // Wall Mirror Frame (sleek beveled chrome silver chassis proudly mounted on left wall)
-    const mirrorFrameGeo = new THREE.BoxGeometry(0.06, 1.54, 1.30);
+    // Wall Mirror Frame (sleek beveled chrome silver chassis facing bed)
+    const mirrorFrameGeo = new THREE.BoxGeometry(1.30, 1.54, 0.06);
     const mirrorFrame = new THREE.Mesh(mirrorFrameGeo, this.chromeFrameMaterial);
-    mirrorFrame.position.set(-0.37, 1.55, 0.0);
-    toiletGroup.add(mirrorFrame);
+    mirrorFrame.position.set(0, 1.55, 2.22);
+    bathGroup.add(mirrorFrame);
 
-    // Chrome Frame Yellow Hazard Corner Accents (Cyberpunk 2077 aesthetic)
-    const cornerGeo = new THREE.BoxGeometry(0.02, 0.12, 0.12);
+    // Chrome Frame Yellow Hazard Corner Accents
+    const cornerGeo = new THREE.BoxGeometry(0.12, 0.12, 0.02);
     const cornerOffsets = [
-      { y: 1.55 + 0.73, z: -0.60 },
-      { y: 1.55 + 0.73, z: 0.60 },
-      { y: 1.55 - 0.73, z: -0.60 },
-      { y: 1.55 - 0.73, z: 0.60 }
+      { x: -0.60, y: 1.55 + 0.73 },
+      { x: 0.60, y: 1.55 + 0.73 },
+      { x: -0.60, y: 1.55 - 0.73 },
+      { x: 0.60, y: 1.55 - 0.73 }
     ];
     cornerOffsets.forEach(pt => {
       const cMesh = new THREE.Mesh(cornerGeo, this.yellowAccentMaterial);
-      cMesh.position.set(-0.335, pt.y, pt.z);
-      toiletGroup.add(cMesh);
+      cMesh.position.set(pt.x, pt.y, 2.185);
+      bathGroup.add(cMesh);
     });
 
-    // Base highly-reflective Chrome Silver Mirror Glass
-    const mirrorGeo = new THREE.BoxGeometry(0.015, 1.48, 1.24);
+    // Base highly-reflective Chrome Silver Mirror Glass (facing bed)
+    const mirrorGeo = new THREE.BoxGeometry(1.24, 1.48, 0.015);
     const mirror = new THREE.Mesh(mirrorGeo, this.chromeMirrorMaterial);
-    mirror.position.set(-0.345, 1.55, 0.0);
-    toiletGroup.add(mirror);
+    mirror.position.set(0, 1.55, 2.20);
+    bathGroup.add(mirror);
 
     // Perimeter LED backlight strip framing the chrome mirror
-    const perimeterH = new THREE.BoxGeometry(0.018, 0.02, 1.26);
+    const perimeterH = new THREE.BoxGeometry(1.26, 0.02, 0.018);
     const ledTop = new THREE.Mesh(perimeterH, this.cyanEmissive);
-    ledTop.position.set(-0.335, 1.55 + 0.74, 0.0);
-    toiletGroup.add(ledTop);
+    ledTop.position.set(0, 1.55 + 0.74, 2.185);
+    bathGroup.add(ledTop);
 
     const ledBottom = new THREE.Mesh(perimeterH, this.cyanEmissive);
-    ledBottom.position.set(-0.335, 1.55 - 0.74, 0.0);
-    toiletGroup.add(ledBottom);
+    ledBottom.position.set(0, 1.55 - 0.74, 2.185);
+    bathGroup.add(ledBottom);
 
-    const perimeterV = new THREE.BoxGeometry(0.018, 1.48, 0.02);
+    const perimeterV = new THREE.BoxGeometry(0.02, 1.48, 0.018);
     const ledLeft = new THREE.Mesh(perimeterV, this.cyanEmissive);
-    ledLeft.position.set(-0.335, 1.55, -0.62);
-    toiletGroup.add(ledLeft);
+    ledLeft.position.set(-0.62, 1.55, 2.185);
+    bathGroup.add(ledLeft);
 
     const ledRight = new THREE.Mesh(perimeterV, this.cyanEmissive);
-    ledRight.position.set(-0.335, 1.55, 0.62);
-    toiletGroup.add(ledRight);
+    ledRight.position.set(0.62, 1.55, 2.185);
+    bathGroup.add(ledRight);
 
-    // =========================================================================
-    // DIEGETIC SMART CYBERPUNK MIRROR DISPLAY (Fades in like Cyberpunk 2077 mirror)
-    // =========================================================================
+    // 5. DIEGETIC SMART CYBERPUNK MIRROR DISPLAY (Facing Bed & Camera)
     const smartMirrorGeo = new THREE.PlaneGeometry(1.22, 1.46);
     const smartMirrorTexture = TextureGenerator.createSmartMirrorTexture();
     const smartMirrorMat = new THREE.MeshBasicMaterial({
@@ -291,14 +370,13 @@ export class ApartmentFurniture {
       depthWrite: false
     });
     this.smartMirrorDisplay = new THREE.Mesh(smartMirrorGeo, smartMirrorMat);
-    // Orient plane normal facing +X (towards the camera standing in front of mirror)
-    this.smartMirrorDisplay.rotation.y = Math.PI / 2;
-    this.smartMirrorDisplay.position.set(-0.330, 1.55, 0.0);
-    toiletGroup.add(this.smartMirrorDisplay);
+    // Un-mirrored facing -Z (towards bed and camera)
+    this.smartMirrorDisplay.scale.x = -1;
+    this.smartMirrorDisplay.rotation.y = Math.PI;
+    this.smartMirrorDisplay.position.set(0, 1.55, 2.180);
+    bathGroup.add(this.smartMirrorDisplay);
 
-    // =========================================================================
-    // 3D INTERACTIVE BUTTONS ON THE MIRROR FACE (No 2D pop-ups)
-    // =========================================================================
+    // 6. 3D INTERACTIVE BUTTONS ON MIRROR FACE (Facing Bed & Camera)
     this.mirrorButtons = [];
 
     const buttonConfigs = [
@@ -308,7 +386,7 @@ export class ApartmentFurniture {
         title: 'EMAIL COMMS',
         subtitle: 'felixbariq@gmail.com',
         color: '#00F0FF',
-        pos: { y: 1.15, z: -0.28 }
+        pos: { x: -0.28, y: 1.15 }
       },
       {
         id: 'github',
@@ -316,7 +394,7 @@ export class ApartmentFurniture {
         title: 'GITHUB ARCHIVE',
         subtitle: 'github.com/felixpalingan',
         color: '#00F0FF',
-        pos: { y: 1.15, z: 0.28 }
+        pos: { x: 0.28, y: 1.15 }
       },
       {
         id: 'linkedin',
@@ -324,7 +402,7 @@ export class ApartmentFurniture {
         title: 'LINKEDIN NET',
         subtitle: 'linkedin.com/in/felixpalingan',
         color: '#00F0FF',
-        pos: { y: 0.97, z: -0.28 }
+        pos: { x: -0.28, y: 0.97 }
       },
       {
         id: 'return',
@@ -332,12 +410,12 @@ export class ApartmentFurniture {
         title: 'DISENGAGE',
         subtitle: 'RETURN TO ROOM',
         color: '#FF003C',
-        pos: { y: 0.97, z: 0.28 }
+        pos: { x: 0.28, y: 0.97 }
       }
     ];
 
     const btnGeo = new THREE.PlaneGeometry(0.52, 0.14);
-    const chassisGeo = new THREE.BoxGeometry(0.02, 0.144, 0.524);
+    const chassisGeo = new THREE.BoxGeometry(0.524, 0.144, 0.02);
 
     buttonConfigs.forEach(cfg => {
       const normalTex = TextureGenerator.createMirrorButtonTexture(cfg);
@@ -361,11 +439,12 @@ export class ApartmentFurniture {
       });
 
       const btnMesh = new THREE.Mesh(btnGeo, mat);
-      btnMesh.rotation.y = Math.PI / 2; // Face +X into the room
-      btnMesh.position.set(-0.305, cfg.pos.y, cfg.pos.z);
+      btnMesh.scale.x = -1;
+      btnMesh.rotation.y = Math.PI; // Face -Z towards bed
+      btnMesh.position.set(cfg.pos.x, cfg.pos.y, 2.165);
 
       const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
-      chassisMesh.position.set(-0.318, cfg.pos.y, cfg.pos.z);
+      chassisMesh.position.set(cfg.pos.x, cfg.pos.y, 2.176);
 
       btnMesh.userData = {
         id: cfg.id,
@@ -373,35 +452,35 @@ export class ApartmentFurniture {
         normalTex: normalTex,
         hoverTex: hoverTex,
         successTex: successTex,
-        baseX: -0.305,
+        baseZ: 2.165,
         chassis: chassisMesh,
         isHovered: false
       };
 
-      toiletGroup.add(chassisMesh);
-      toiletGroup.add(btnMesh);
+      bathGroup.add(chassisMesh);
+      bathGroup.add(btnMesh);
       this.mirrorButtons.push(btnMesh);
     });
 
-    // Dedicated overhead mirror task light & spotlight creating chrome specular gleam
-    const mirrorLightGeo = new THREE.BoxGeometry(0.08, 0.05, 1.26);
+    // Dedicated overhead vanity light bar
+    const mirrorLightGeo = new THREE.BoxGeometry(1.26, 0.05, 0.08);
     const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.whiteEmissive);
-    mirrorLightMesh.position.set(-0.28, 2.34, 0.0);
-    toiletGroup.add(mirrorLightMesh);
+    mirrorLightMesh.position.set(0, 2.34, 2.15);
+    bathGroup.add(mirrorLightMesh);
 
-    // Dedicated Chrome Specular Spotlight (aimed right at chrome mirror surface)
+    // Specular spotlight aimed at mirror surface from in front
     const mirrorSpot = new THREE.SpotLight(0xf0f6ff, 5.0, 4.5, Math.PI / 3, 0.25, 1.1);
-    mirrorSpot.position.set(0.5, 2.25, 0.1);
-    mirrorSpot.target.position.set(-0.34, 1.55, 0.0);
-    toiletGroup.add(mirrorSpot);
-    toiletGroup.add(mirrorSpot.target);
+    mirrorSpot.position.set(0, 2.25, 1.1);
+    mirrorSpot.target.position.set(0, 1.55, 2.20);
+    bathGroup.add(mirrorSpot);
+    bathGroup.add(mirrorSpot.target);
 
-    // Soft cool ambient point light in front of mirror
+    // Soft cool ambient point light in front of vanity
     this.mirrorAmbient = new THREE.PointLight(0x00F0FF, 2.2, 3.5, 1.3);
-    this.mirrorAmbient.position.set(-0.05, 1.7, 0.0);
-    toiletGroup.add(this.mirrorAmbient);
+    this.mirrorAmbient.position.set(0, 1.7, 1.6);
+    bathGroup.add(this.mirrorAmbient);
 
-    this.group.add(toiletGroup);
+    this.group.add(bathGroup);
   }
 
   /**
@@ -470,8 +549,8 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildNetrunnerWorkstation() {
     const deskGroup = new THREE.Group();
-    // Positioned in bottom-left, rotated 180 deg to face bed (back turned to camera)
-    deskGroup.position.set(-3.1, 0, 1.35);
+    // Positioned in bottom-right (mirrored), facing monitor with back to room
+    deskGroup.position.set(3.0, 0, 1.85);
     deskGroup.rotation.y = Math.PI;
 
     // Main Desk Tabletop (Matte Carbon Fiber weave)
@@ -482,7 +561,7 @@ export class ApartmentFurniture {
     deskTop.receiveShadow = true;
     deskGroup.add(deskTop);
 
-    // Front edge cyan neon trim strip (facing bed)
+    // Front edge cyan neon trim strip (facing bed/room)
     const deskFrontEdge = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.025, 0.025), this.cyanEmissive);
     deskFrontEdge.position.set(0, 0.74, 0.51);
     deskGroup.add(deskFrontEdge);
@@ -600,7 +679,7 @@ export class ApartmentFurniture {
     standBase.position.set(0, 0.74, -0.2);
     deskGroup.add(standBase);
 
-    // Dedicated Overhead Workstation Desk Task Light (illuminates tabletop & keyboard brightly)
+    // Dedicated Overhead Workstation Desk Task Light
     const deskTaskSpot = new THREE.SpotLight(0xffecd0, 3.8, 4.5, Math.PI / 3, 0.35, 1.2);
     deskTaskSpot.position.set(0, 2.1, 0.3);
     deskTaskSpot.target.position.set(0, 0.72, 0.1);
@@ -626,25 +705,25 @@ export class ApartmentFurniture {
       roughness: 0.5
     });
     const kb = new THREE.Mesh(kbGeo, kbMat);
-    kb.position.set(-0.1, 0.77, 0.15);
+    kb.position.set(0.1, 0.77, 0.15);
     deskGroup.add(kb);
 
     // Mouse & Mousepad
     const mousepadGeo = new THREE.BoxGeometry(0.24, 0.005, 0.22);
     const mousepad = new THREE.Mesh(mousepadGeo, this.cushionMaterial);
-    mousepad.position.set(0.36, 0.765, 0.15);
+    mousepad.position.set(-0.36, 0.765, 0.15);
     deskGroup.add(mousepad);
 
-    // PC Server Tower / Rack under desk
+    // PC Server Tower / Rack beside desk (mirrored towards right wall)
     const towerGeo = new THREE.BoxGeometry(0.26, 0.55, 0.6);
     const tower = new THREE.Mesh(towerGeo, this.darkMetal);
-    tower.position.set(0.68, 0.28, 0.05);
+    tower.position.set(-0.68, 0.28, 0.05);
     deskGroup.add(tower);
 
     // Glowing RGB strip on PC tower
     const rgbStripGeo = new THREE.BoxGeometry(0.02, 0.48, 0.02);
     const rgbStrip = new THREE.Mesh(rgbStripGeo, this.cyanEmissive);
-    rgbStrip.position.set(0.55, 0.28, 0.35);
+    rgbStrip.position.set(-0.55, 0.28, 0.35);
     deskGroup.add(rgbStrip);
 
     // Dynamic Netrunner Server Rack Activity LEDs
@@ -654,7 +733,7 @@ export class ApartmentFurniture {
       const ledGeo = new THREE.BoxGeometry(0.018, 0.018, 0.01);
       const ledMat = new THREE.MeshBasicMaterial({ color: ledColors[i] });
       const ledMesh = new THREE.Mesh(ledGeo, ledMat);
-      ledMesh.position.set(0.58 + i * 0.05, 0.51, 0.355);
+      ledMesh.position.set(-0.58 - i * 0.05, 0.51, 0.355);
       deskGroup.add(ledMesh);
       ledMeshes.push({ mesh: ledMesh, color: ledColors[i], phase: i * 1.7 });
     }
@@ -670,33 +749,33 @@ export class ApartmentFurniture {
       }
     });
 
-    // Shelves mounted along left apartment wall beside desk
+    // Shelves mounted along RIGHT apartment wall beside desk (x = -1.25 in deskGroup -> world X = +4.25)
     const shelfGeo = new THREE.BoxGeometry(0.35, 0.05, 1.6);
     const shelf1 = new THREE.Mesh(shelfGeo, this.darkMetal);
-    shelf1.position.set(1.15, 1.8, 0);
+    shelf1.position.set(-1.25, 1.8, 0);
     deskGroup.add(shelf1);
 
     const shelf2 = new THREE.Mesh(shelfGeo, this.darkMetal);
-    shelf2.position.set(1.15, 2.25, 0);
+    shelf2.position.set(-1.25, 2.25, 0);
     deskGroup.add(shelf2);
 
     // Warm shelf strip light
     const shelfLightMesh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 1.4), this.warmOrangeEmissive);
-    shelfLightMesh.position.set(1.12, 1.76, 0);
+    shelfLightMesh.position.set(-1.22, 1.76, 0);
     deskGroup.add(shelfLightMesh);
 
     const shelfPoint = new THREE.PointLight(0xff7722, 1.4, 2.2);
-    shelfPoint.position.set(0.9, 1.7, 0);
+    shelfPoint.position.set(-1.0, 1.7, 0);
     deskGroup.add(shelfPoint);
 
     // Props on shelves: server drive arrays & datashards
     for (let s = -0.5; s <= 0.5; s += 0.25) {
       const box = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.16, 0.18), this.darkMetal);
-      box.position.set(1.15, 1.92, s);
+      box.position.set(-1.25, 1.92, s);
       deskGroup.add(box);
     }
 
-    // Swivel Chair (tucked on the bed side, facing into the desk)
+    // Swivel Chair (tucked on the bed/lounge side, facing into the desk)
     const chairGroup = new THREE.Group();
     chairGroup.position.set(0, 0, 0.75);
     chairGroup.rotation.y = 0.15; // Angled naturally towards the screen
@@ -719,12 +798,12 @@ export class ApartmentFurniture {
 
     deskGroup.add(chairGroup);
 
-    // Samurai Bomber Jacket hanging on the left wall
+    // Samurai Bomber Jacket hanging on the right wall
     const jacketGroup = new THREE.Group();
-    jacketGroup.position.set(1.2, 1.6, 0.85);
+    jacketGroup.position.set(-1.25, 1.6, 0.85);
 
     const jacketHook = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.12, 6), this.darkMetal);
-    jacketHook.rotation.z = Math.PI / 2;
+    jacketHook.rotation.z = -Math.PI / 2;
     jacketGroup.add(jacketHook);
 
     // Leather jacket silhouette (dark leather with yellow Samurai collar)
@@ -957,27 +1036,24 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildWardrobe() {
     const wGroup = new THREE.Group();
-    wGroup.position.set(3.6, 0, 1.9);
+    // Tucked neatly in far front-right corner against right wall
+    wGroup.position.set(3.95, 0, 2.95);
 
     // Main wardrobe cabinet
-    const bodyGeo = new THREE.BoxGeometry(1.5, 2.4, 0.85);
+    const bodyGeo = new THREE.BoxGeometry(0.85, 2.4, 0.7);
     const body = new THREE.Mesh(bodyGeo, this.darkMetal);
     body.position.y = 1.2;
     body.castShadow = true;
     wGroup.add(body);
 
     // Sliding door panel with vertical recess seam
-    const door1 = new THREE.Mesh(new THREE.BoxGeometry(0.72, 2.25, 0.04), this.tanMetal);
-    door1.position.set(-0.35, 1.2, 0.44);
+    const door1 = new THREE.Mesh(new THREE.BoxGeometry(0.78, 2.25, 0.04), this.tanMetal);
+    door1.position.set(0, 1.2, -0.36);
     wGroup.add(door1);
-
-    const door2 = new THREE.Mesh(new THREE.BoxGeometry(0.72, 2.25, 0.04), this.tanMetal);
-    door2.position.set(0.35, 1.2, 0.46);
-    wGroup.add(door2);
 
     // Long vertical industrial handle
     const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.8, 6), this.yellowAccentMaterial);
-    handle.position.set(-0.06, 1.2, 0.48);
+    handle.position.set(-0.25, 1.2, -0.38);
     wGroup.add(handle);
 
     // Status indicator LED (standby green)
@@ -986,7 +1062,7 @@ export class ApartmentFurniture {
       emissive: 0x00FF88,
       emissiveIntensity: 2.0
     }));
-    led.position.set(-0.6, 2.25, 0.48);
+    led.position.set(0.25, 2.25, -0.38);
     wGroup.add(led);
 
     this.group.add(wGroup);

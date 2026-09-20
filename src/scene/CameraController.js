@@ -32,17 +32,17 @@ export class CameraController {
       HOME: {
         name: 'HOME',
         label: 'OVERVIEW // MEGABUILDING H10',
-        position: new THREE.Vector3(0, 1.85, 4.4),
-        target: new THREE.Vector3(0, 1.25, -0.5),
+        position: new THREE.Vector3(0, 2.15, 4.85),
+        target: new THREE.Vector3(0, 1.20, -0.40),
         duration: 1.8,
         ease: 'power2.inOut'
       },
       PROJECTS: {
         name: 'PROJECTS',
         label: 'NETRUNNER WORKSTATION // PROJECTS',
-        // In front of the reversed carbon desk on the bed side, framing the ultrawide terminal
-        position: new THREE.Vector3(-3.1, 1.25, 0.45),
-        target: new THREE.Vector3(-3.1, 1.15, 1.45),
+        // In front of the reversed carbon desk in bottom-right, framing the ultrawide terminal
+        position: new THREE.Vector3(3.00, 1.25, 0.45),
+        target: new THREE.Vector3(3.00, 1.15, 2.00),
         duration: 2.0,
         ease: 'power2.inOut'
       },
@@ -57,25 +57,25 @@ export class CameraController {
       },
       COMM: {
         name: 'COMM',
-        label: 'SMART MIRROR // BIOMETRIC COMM LINK',
-        // In front of the bathroom smart mirror, eye-level facing the mirror on left wall
-        position: new THREE.Vector3(-2.65, 1.55, 0.0),
-        target: new THREE.Vector3(-4.34, 1.55, 0.0),
+        label: 'OPEN BATHROOM // SMART MIRROR LINK',
+        // In open-concept bathroom, facing mirror and sink (which face the bed)
+        position: new THREE.Vector3(-3.10, 1.55, 0.65),
+        target: new THREE.Vector3(-3.10, 1.55, 2.20),
         duration: 1.9,
         ease: 'power2.inOut'
       },
       CONTACT: {
         name: 'COMM',
-        label: 'SMART MIRROR // BIOMETRIC COMM LINK',
-        position: new THREE.Vector3(-2.65, 1.55, 0.0),
-        target: new THREE.Vector3(-4.34, 1.55, 0.0),
+        label: 'OPEN BATHROOM // SMART MIRROR LINK',
+        position: new THREE.Vector3(-3.10, 1.55, 0.65),
+        target: new THREE.Vector3(-3.10, 1.55, 2.20),
         duration: 1.9,
         ease: 'power2.inOut'
       },
       TOPDOWN: {
         name: 'TOPDOWN',
         label: 'ARCHITECTURAL BLUEPRINT // TOP-DOWN VIEW',
-        position: new THREE.Vector3(0.0, 8.2, 0.001),
+        position: new THREE.Vector3(0.0, 8.6, 0.001),
         target: new THREE.Vector3(0.0, 0.0, 0.0),
         duration: 1.8,
         ease: 'power2.inOut'
@@ -118,23 +118,23 @@ export class CameraController {
     if (startName === 'TOPDOWN' || endName === 'TOPDOWN') {
       mid.y = Math.max(startPos.y, endPos.y) + 0.4;
     } else if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
-      // Arc through central aisle to enter the bed/workstation space from the front
-      mid.set(-1.3, 1.68, 2.0);
+      // Arc through right aisle to enter bottom-right workstation
+      mid.set(1.6, 1.75, 2.4);
     } else if (key === 'HOME->COMM' || key === 'COMM->HOME') {
-      // Arc through room aisle into the open restroom entrance
-      mid.set(-1.8, 1.68, 1.8);
+      // Arc through left aisle into the open-concept bathroom
+      mid.set(-1.6, 1.75, 2.4);
     } else if (key === 'HOME->STATS' || key === 'STATS->HOME') {
       // Descend gently into the sunken lounge
       mid.set(0.9, 1.55, 1.5);
     } else if (key === 'PROJECTS->STATS' || key === 'STATS->PROJECTS') {
-      // Traverse across the wide room aisle between workstation and lounge
-      mid.set(0.0, 1.75, 1.2);
+      // Short hop between right workstation and sunken lounge
+      mid.set(2.4, 1.45, 0.0);
     } else if (key === 'PROJECTS->COMM' || key === 'COMM->PROJECTS') {
-      // Short hop along left wall
-      mid.set(-2.6, 1.55, 0.25);
+      // Traverse across the wide room aisle between workstation and bathroom
+      mid.set(0.0, 1.65, 0.6);
     } else if (key === 'STATS->COMM' || key === 'COMM->STATS') {
-      // Cross room from sunken lounge to restroom
-      mid.set(-0.5, 1.72, 0.8);
+      // Cross room diagonally from sunken lounge to open bathroom
+      mid.set(-0.6, 1.65, 0.1);
     }
 
     return mid;

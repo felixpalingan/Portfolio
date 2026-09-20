@@ -73,7 +73,7 @@ class App {
 
   initCamera() {
     const aspect = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.PerspectiveCamera(52, aspect, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(64, aspect, 0.1, 100);
     this.cameraController = new CameraController(this.camera);
   }
 
@@ -260,14 +260,22 @@ class App {
     if (!btn || !btn.userData) return;
     btn.material.map = btn.userData.hoverTex;
     btn.material.needsUpdate = true;
-    gsap.to(btn.position, { x: btn.userData.baseX + 0.012, duration: 0.15 });
+    if (btn.userData.baseZ !== undefined) {
+      gsap.to(btn.position, { z: btn.userData.baseZ - 0.015, duration: 0.15 });
+    } else if (btn.userData.baseX !== undefined) {
+      gsap.to(btn.position, { x: btn.userData.baseX + 0.012, duration: 0.15 });
+    }
   }
 
   resetMirrorButton(btn) {
     if (!btn || !btn.userData) return;
     btn.material.map = btn.userData.normalTex;
     btn.material.needsUpdate = true;
-    gsap.to(btn.position, { x: btn.userData.baseX, duration: 0.15 });
+    if (btn.userData.baseZ !== undefined) {
+      gsap.to(btn.position, { z: btn.userData.baseZ, duration: 0.15 });
+    } else if (btn.userData.baseX !== undefined) {
+      gsap.to(btn.position, { x: btn.userData.baseX, duration: 0.15 });
+    }
   }
 
   showCopyToast(text) {
