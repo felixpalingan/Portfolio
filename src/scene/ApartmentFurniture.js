@@ -460,8 +460,7 @@ export class ApartmentFurniture {
       depthWrite: false
     });
     this.smartMirrorDisplay = new THREE.Mesh(smartMirrorGeo, smartMirrorMat);
-    // Un-mirrored facing -Z (towards bed and camera)
-    this.smartMirrorDisplay.scale.x = -1;
+    // Properly oriented facing -Z (towards bed and COMM camera) so text reads forwards
     this.smartMirrorDisplay.rotation.y = Math.PI;
     this.smartMirrorDisplay.position.set(0, 1.55, 2.180);
     bathGroup.add(this.smartMirrorDisplay);
@@ -469,6 +468,7 @@ export class ApartmentFurniture {
     // 6. 3D INTERACTIVE BUTTONS ON MIRROR FACE (Facing Bed & Camera)
     this.mirrorButtons = [];
 
+    // Note: When camera looks along +Z at the mirror, world +X is on the viewer's LEFT, -X is on the RIGHT
     const buttonConfigs = [
       {
         id: 'email',
@@ -476,7 +476,7 @@ export class ApartmentFurniture {
         title: 'EMAIL COMMS',
         subtitle: 'felixbariq@gmail.com',
         color: '#00F0FF',
-        pos: { x: -0.28, y: 1.15 }
+        pos: { x: 0.28, y: 1.15 } // Screen Left (under photo)
       },
       {
         id: 'github',
@@ -484,7 +484,7 @@ export class ApartmentFurniture {
         title: 'GITHUB ARCHIVE',
         subtitle: 'github.com/felixpalingan',
         color: '#00F0FF',
-        pos: { x: 0.28, y: 1.15 }
+        pos: { x: -0.28, y: 1.15 } // Screen Right (under telemetry)
       },
       {
         id: 'linkedin',
@@ -492,7 +492,7 @@ export class ApartmentFurniture {
         title: 'LINKEDIN NET',
         subtitle: 'linkedin.com/in/felixpalingan',
         color: '#00F0FF',
-        pos: { x: -0.28, y: 0.97 }
+        pos: { x: 0.28, y: 0.97 } // Screen Left
       },
       {
         id: 'return',
@@ -500,7 +500,7 @@ export class ApartmentFurniture {
         title: 'DISENGAGE',
         subtitle: 'RETURN TO ROOM',
         color: '#FF003C',
-        pos: { x: 0.28, y: 0.97 }
+        pos: { x: -0.28, y: 0.97 } // Screen Right
       }
     ];
 
@@ -529,8 +529,8 @@ export class ApartmentFurniture {
       });
 
       const btnMesh = new THREE.Mesh(btnGeo, mat);
-      btnMesh.scale.x = -1;
-      btnMesh.rotation.y = Math.PI; // Face -Z towards bed
+      // Properly oriented facing -Z (towards bed and COMM camera)
+      btnMesh.rotation.y = Math.PI;
       btnMesh.position.set(cfg.pos.x, cfg.pos.y, 2.165);
 
       const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
