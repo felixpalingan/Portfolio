@@ -417,17 +417,112 @@ export class ApartmentFurniture {
     vanityBack.position.set(0, 1.25, 2.30);
     bathGroup.add(vanityBack);
 
-    // Vanity counter & sink below mirror
-    const sinkGeo = new THREE.BoxGeometry(1.5, 0.74, 0.52);
-    const sink = new THREE.Mesh(sinkGeo, this.darkMetal);
-    sink.position.set(0, 0.37, 2.02);
-    bathGroup.add(sink);
+    // Materials for clearly visible sanitary vanity console
+    const whiteCeramicMat = new THREE.MeshStandardMaterial({
+      color: 0xf4f7fb,
+      roughness: 0.12,
+      metalness: 0.06
+    });
 
-    // Chrome faucet / cyber tap
-    const tapGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.18, 8);
-    const tap = new THREE.Mesh(tapGeo, this.chromeFrameMaterial);
-    tap.position.set(0, 0.81, 1.92);
-    bathGroup.add(tap);
+    const vanityCabinetMat = new THREE.MeshStandardMaterial({
+      color: 0x424a5b,
+      roughness: 0.35,
+      metalness: 0.4
+    });
+
+    // Vanity main cabinet body (modern architectural slate gray, NOT pitch black)
+    const cabinetGeo = new THREE.BoxGeometry(1.50, 0.66, 0.50);
+    const vanityCabinet = new THREE.Mesh(cabinetGeo, vanityCabinetMat);
+    vanityCabinet.position.set(0, 0.33, 2.02);
+    vanityCabinet.castShadow = true;
+    vanityCabinet.receiveShadow = true;
+    bathGroup.add(vanityCabinet);
+
+    // Cabinet door vertical division seam
+    const cabinetSeam = new THREE.Mesh(
+      new THREE.BoxGeometry(0.015, 0.60, 0.015),
+      this.darkMetal
+    );
+    cabinetSeam.position.set(0, 0.33, 1.765);
+    bathGroup.add(cabinetSeam);
+
+    // Chrome cabinet door handles
+    const handleGeo = new THREE.BoxGeometry(0.02, 0.12, 0.02);
+    const handleL = new THREE.Mesh(handleGeo, this.chromeFrameMaterial);
+    handleL.position.set(-0.06, 0.42, 1.76);
+    bathGroup.add(handleL);
+
+    const handleR = new THREE.Mesh(handleGeo, this.chromeFrameMaterial);
+    handleR.position.set(0.06, 0.42, 1.76);
+    bathGroup.add(handleR);
+
+    // Visible bright white ceramic countertop slab
+    const counterGeo = new THREE.BoxGeometry(1.54, 0.05, 0.54);
+    const counterTop = new THREE.Mesh(counterGeo, whiteCeramicMat);
+    counterTop.position.set(0, 0.685, 2.02);
+    counterTop.castShadow = true;
+    counterTop.receiveShadow = true;
+    bathGroup.add(counterTop);
+
+    // Sculpted washbasin (Wastafel cuci muka putih terang & berkilau)
+    const basinOuterGeo = new THREE.BoxGeometry(0.72, 0.11, 0.40);
+    const basinOuter = new THREE.Mesh(basinOuterGeo, whiteCeramicMat);
+    basinOuter.position.set(0, 0.74, 1.98);
+    basinOuter.castShadow = true;
+    bathGroup.add(basinOuter);
+
+    // Inner basin cavity (cekungan dalam wastafel)
+    const basinInnerGeo = new THREE.BoxGeometry(0.64, 0.07, 0.32);
+    const basinInnerMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.06,
+      metalness: 0.04
+    });
+    const basinInner = new THREE.Mesh(basinInnerGeo, basinInnerMat);
+    basinInner.position.set(0, 0.77, 1.98);
+    bathGroup.add(basinInner);
+
+    // Chrome drain ring at the bottom of basin
+    const drainGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.015, 16);
+    const drain = new THREE.Mesh(drainGeo, this.chromeFrameMaterial);
+    drain.position.set(0, 0.74, 1.98);
+    bathGroup.add(drain);
+
+    // Sleek chrome cyber faucet / tap
+    const tapStandGeo = new THREE.CylinderGeometry(0.016, 0.018, 0.18, 12);
+    const tapStand = new THREE.Mesh(tapStandGeo, this.chromeFrameMaterial);
+    tapStand.position.set(0, 0.83, 2.13);
+    bathGroup.add(tapStand);
+
+    const tapSpoutGeo = new THREE.BoxGeometry(0.024, 0.02, 0.12);
+    const tapSpout = new THREE.Mesh(tapSpoutGeo, this.chromeFrameMaterial);
+    tapSpout.position.set(0, 0.91, 2.08);
+    bathGroup.add(tapSpout);
+
+    // Mixer control rings (cyan & red indicator)
+    const coldRing = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.03), this.cyanEmissive);
+    coldRing.position.set(-0.07, 0.81, 2.13);
+    bathGroup.add(coldRing);
+
+    const hotRing = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.03), this.pinkEmissive || this.warmOrangeEmissive);
+    hotRing.position.set(0.07, 0.81, 2.13);
+    bathGroup.add(hotRing);
+
+    // Under-counter subtle glow runner strip (highlights the vanity edge)
+    const underGlow = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.015, 0.015), this.dimCyanEmissive);
+    underGlow.position.set(0, 0.655, 1.76);
+    bathGroup.add(underGlow);
+
+    // Vanity accessories: Soap dispenser & rolled hand towel
+    const dispenserGeo = new THREE.CylinderGeometry(0.024, 0.028, 0.13, 12);
+    const dispenser = new THREE.Mesh(dispenserGeo, this.chromeFrameMaterial);
+    dispenser.position.set(0.50, 0.775, 1.96);
+    bathGroup.add(dispenser);
+
+    const towelGeo = new THREE.BoxGeometry(0.18, 0.04, 0.22);
+    const towel = new THREE.Mesh(towelGeo, whiteCeramicMat);
+    towel.position.set(-0.50, 0.73, 1.96);
+    bathGroup.add(towel);
 
     // Wall Mirror Frame (sleek beveled chrome silver chassis facing bed)
     const mirrorFrameGeo = new THREE.BoxGeometry(1.30, 1.54, 0.06);
