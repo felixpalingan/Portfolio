@@ -110,6 +110,21 @@ export class ApartmentFurniture {
       roughness: 0.2
     });
 
+    // Soft dimmed emissives for mirror (reduced 80%)
+    this.dimCyanEmissive = new THREE.MeshStandardMaterial({
+      color: 0x00F0FF,
+      emissive: 0x00F0FF,
+      emissiveIntensity: 0.36,
+      roughness: 0.3
+    });
+
+    this.dimWhiteEmissive = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0xddf0ff,
+      emissiveIntensity: 0.30,
+      roughness: 0.3
+    });
+
     // Chrome Silver Mirror Material (gleaming metallic reflection with procedural chrome environment map)
     const chromeTexture = TextureGenerator.createChromeSilverTexture();
     this.chromeMirrorMaterial = new THREE.MeshStandardMaterial({
@@ -420,42 +435,28 @@ export class ApartmentFurniture {
     mirrorFrame.position.set(0, 1.55, 2.22);
     bathGroup.add(mirrorFrame);
 
-    // Chrome Frame Yellow Hazard Corner Accents
-    const cornerGeo = new THREE.BoxGeometry(0.12, 0.12, 0.02);
-    const cornerOffsets = [
-      { x: -0.60, y: 1.55 + 0.73 },
-      { x: 0.60, y: 1.55 + 0.73 },
-      { x: -0.60, y: 1.55 - 0.73 },
-      { x: 0.60, y: 1.55 - 0.73 }
-    ];
-    cornerOffsets.forEach(pt => {
-      const cMesh = new THREE.Mesh(cornerGeo, this.yellowAccentMaterial);
-      cMesh.position.set(pt.x, pt.y, 2.185);
-      bathGroup.add(cMesh);
-    });
-
     // Base highly-reflective Chrome Silver Mirror Glass (facing bed)
     const mirrorGeo = new THREE.BoxGeometry(1.24, 1.48, 0.015);
     const mirror = new THREE.Mesh(mirrorGeo, this.chromeMirrorMaterial);
     mirror.position.set(0, 1.55, 2.20);
     bathGroup.add(mirror);
 
-    // Perimeter LED backlight strip framing the chrome mirror
+    // Perimeter LED backlight strip framing the chrome mirror (dimmed 80%)
     const perimeterH = new THREE.BoxGeometry(1.26, 0.02, 0.018);
-    const ledTop = new THREE.Mesh(perimeterH, this.cyanEmissive);
+    const ledTop = new THREE.Mesh(perimeterH, this.dimCyanEmissive);
     ledTop.position.set(0, 1.55 + 0.74, 2.185);
     bathGroup.add(ledTop);
 
-    const ledBottom = new THREE.Mesh(perimeterH, this.cyanEmissive);
+    const ledBottom = new THREE.Mesh(perimeterH, this.dimCyanEmissive);
     ledBottom.position.set(0, 1.55 - 0.74, 2.185);
     bathGroup.add(ledBottom);
 
     const perimeterV = new THREE.BoxGeometry(0.02, 1.48, 0.018);
-    const ledLeft = new THREE.Mesh(perimeterV, this.cyanEmissive);
+    const ledLeft = new THREE.Mesh(perimeterV, this.dimCyanEmissive);
     ledLeft.position.set(-0.62, 1.55, 2.185);
     bathGroup.add(ledLeft);
 
-    const ledRight = new THREE.Mesh(perimeterV, this.cyanEmissive);
+    const ledRight = new THREE.Mesh(perimeterV, this.dimCyanEmissive);
     ledRight.position.set(0.62, 1.55, 2.185);
     bathGroup.add(ledRight);
 
@@ -562,21 +563,21 @@ export class ApartmentFurniture {
       this.mirrorButtons.push(btnMesh);
     });
 
-    // Dedicated overhead vanity light bar
+    // Dedicated overhead vanity light bar (dimmed 80%)
     const mirrorLightGeo = new THREE.BoxGeometry(1.26, 0.05, 0.08);
-    const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.whiteEmissive);
+    const mirrorLightMesh = new THREE.Mesh(mirrorLightGeo, this.dimWhiteEmissive);
     mirrorLightMesh.position.set(0, 2.34, 2.15);
     bathGroup.add(mirrorLightMesh);
 
-    // Specular spotlight aimed at mirror surface from in front
-    const mirrorSpot = new THREE.SpotLight(0xf0f6ff, 5.0, 4.5, Math.PI / 3, 0.25, 1.1);
+    // Specular spotlight aimed at mirror surface from in front (dimmed 80%: 5.0 -> 1.0)
+    const mirrorSpot = new THREE.SpotLight(0xf0f6ff, 1.0, 4.5, Math.PI / 3, 0.25, 1.1);
     mirrorSpot.position.set(0, 2.25, 1.1);
     mirrorSpot.target.position.set(0, 1.55, 2.20);
     bathGroup.add(mirrorSpot);
     bathGroup.add(mirrorSpot.target);
 
-    // Soft cool ambient point light in front of vanity
-    this.mirrorAmbient = new THREE.PointLight(0x00F0FF, 2.2, 3.5, 1.3);
+    // Soft cool ambient point light in front of vanity (dimmed 80%: 2.2 -> 0.44)
+    this.mirrorAmbient = new THREE.PointLight(0x00F0FF, 0.44, 3.5, 1.3);
     this.mirrorAmbient.position.set(0, 1.7, 1.6);
     bathGroup.add(this.mirrorAmbient);
 
