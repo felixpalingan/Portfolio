@@ -18,14 +18,26 @@ export class ApartmentFurniture {
     this.group = new THREE.Group();
     this.animatedObjects = []; // Stores objects that require RAF animation (e.g., ceiling fan)
 
-    // Interactive Netrunner Project Repository Terminal State
+    // Interactive Netrunner Project Repository Terminal State (Curved Triple Monitor Setup)
     this.projects = portfolioData.projects || [];
     this.currentProjectIndex = 0;
-    this.projectMonitorScreen = null;
-    this.projectMonitorCanvas = null;
-    this.projectMonitorTexture = null;
-    this.projectControlButtons = [];
     this.currentProjectHover = null;
+    this.hoveredProjectIndex = null;
+    this.projectControlButtons = [];
+
+    // Triple Monitor Battlestation references
+    this.projectMonitorCenter = null;
+    this.projectMonitorLeft = null;
+    this.projectMonitorRight = null;
+    this.projectMonitorScreen = null; // backward compatibility
+    this.projectMonitors = [];
+
+    this.projectCenterCanvas = null;
+    this.projectCenterTexture = null;
+    this.projectLeftCanvas = null;
+    this.projectLeftTexture = null;
+    this.projectRightCanvas = null;
+    this.projectRightTexture = null;
 
     this.initMaterials();
     this.buildSleepingPod();
@@ -778,69 +790,191 @@ export class ApartmentFurniture {
     deskGroup.add(legR);
 
     // =========================================================================
-    // INTERACTIVE ULTRAWIDE DIEGETIC MONITOR (PROJECTS Showcase Terminal)
+    // INTERACTIVE CURVED TRIPLE MONITOR BATTLESTATION (PROJECTS Showcase Terminal)
+    // Left Screen: Shard Directory / Project Selector (720x540)
+    // Center Screen: Main Project Dossier, Tech Stack, & Action Buttons (1024x576)
+    // Right Screen: Live Radar Telemetry, Nav Deck, & Control Manual (720x540)
     // =========================================================================
-    this.projectMonitorCanvas = document.createElement('canvas');
-    this.projectMonitorCanvas.width = 1280;
-    this.projectMonitorCanvas.height = 512;
-    this.projectMonitorTexture = new THREE.CanvasTexture(this.projectMonitorCanvas);
-    this.projectMonitorTexture.minFilter = THREE.LinearFilter;
-    this.projectMonitorTexture.magFilter = THREE.LinearFilter;
 
-    // Render initial active project onto the monitor screen
-    TextureGenerator.renderProjectMonitorCanvas(
-      this.projectMonitorCanvas,
+    // 1. Canvases & Textures
+    this.projectLeftCanvas = document.createElement('canvas');
+    this.projectLeftCanvas.width = 720;
+    this.projectLeftCanvas.height = 540;
+    this.projectLeftTexture = new THREE.CanvasTexture(this.projectLeftCanvas);
+    this.projectLeftTexture.minFilter = THREE.LinearFilter;
+    this.projectLeftTexture.magFilter = THREE.LinearFilter;
+
+    this.projectCenterCanvas = document.createElement('canvas');
+    this.projectCenterCanvas.width = 1024;
+    this.projectCenterCanvas.height = 576;
+    this.projectCenterTexture = new THREE.CanvasTexture(this.projectCenterCanvas);
+    this.projectCenterTexture.minFilter = THREE.LinearFilter;
+    this.projectCenterTexture.magFilter = THREE.LinearFilter;
+
+    this.projectRightCanvas = document.createElement('canvas');
+    this.projectRightCanvas.width = 720;
+    this.projectRightCanvas.height = 540;
+    this.projectRightTexture = new THREE.CanvasTexture(this.projectRightCanvas);
+    this.projectRightTexture.minFilter = THREE.LinearFilter;
+    this.projectRightTexture.magFilter = THREE.LinearFilter;
+
+    // Initial renders
+    TextureGenerator.renderProjectLeftMonitorCanvas(
+      this.projectLeftCanvas,
       this.projects,
       this.currentProjectIndex,
       null
     );
-    this.projectMonitorTexture.needsUpdate = true;
+    this.projectLeftTexture.needsUpdate = true;
 
-    // Monitor display plane (facing +Z in deskGroup, directly facing the camera in PROJECTS view)
-    const monitorGeo = new THREE.PlaneGeometry(1.36, 0.54);
-    const monitorMat = new THREE.MeshBasicMaterial({
-      map: this.projectMonitorTexture,
+    TextureGenerator.renderProjectCenterMonitorCanvas(
+      this.projectCenterCanvas,
+      this.getCurrentProject(),
+      this.currentProjectIndex,
+      this.projects.length,
+      null
+    );
+    this.projectCenterTexture.needsUpdate = true;
+
+    TextureGenerator.renderProjectRightMonitorCanvas(
+      this.projectRightCanvas,
+      this.getCurrentProject(),
+      this.currentProjectIndex,
+      this.projects.length,
+      null
+    );
+    this.projectRightTexture.needsUpdate = true;
+
+    // 2. CENTER MONITOR (16:9 Aspect Ratio)
+    // Width 0.88m, Height 0.50m
+    const centerScreenGeo = new THREE.PlaneGeometry(0.88, 0.50);
+    const centerScreenMat = new THREE.MeshBasicMaterial({
+      map: this.projectCenterTexture,
       side: THREE.DoubleSide
     });
-    this.projectMonitorScreen = new THREE.Mesh(monitorGeo, monitorMat);
-    this.projectMonitorScreen.position.set(0, 1.15, -0.144);
-    this.projectMonitorScreen.userData = {
-      isProjectMonitor: true
+    this.projectMonitorCenter = new THREE.Mesh(centerScreenGeo, centerScreenMat);
+    this.projectMonitorCenter.position.set(0, 1.18, -0.218);
+    this.projectMonitorCenter.userData = {
+      isProjectMonitor: true,
+      monitorType: 'center'
     };
-    deskGroup.add(this.projectMonitorScreen);
+    deskGroup.add(this.projectMonitorCenter);
+    this.projectMonitorScreen = this.projectMonitorCenter; // backward compatibility
 
-    // Bezel / monitor frame chassis
-    const bezelGeo = new THREE.BoxGeometry(1.42, 0.60, 0.04);
-    const bezel = new THREE.Mesh(bezelGeo, this.darkMetal);
-    bezel.position.set(0, 1.15, -0.165);
-    deskGroup.add(bezel);
+    const centerBezelGeo = new THREE.BoxGeometry(0.92, 0.54, 0.035);
+    const centerBezel = new THREE.Mesh(centerBezelGeo, this.darkMetal);
+    centerBezel.position.set(0, 1.18, -0.236);
+    deskGroup.add(centerBezel);
 
-    // Cyan glowing top rim edge on monitor
-    const monitorTopRim = new THREE.Mesh(
-      new THREE.BoxGeometry(1.43, 0.015, 0.02),
+    const centerTopRim = new THREE.Mesh(
+      new THREE.BoxGeometry(0.93, 0.012, 0.02),
       this.cyanEmissive
     );
-    monitorTopRim.position.set(0, 1.45, -0.155);
-    deskGroup.add(monitorTopRim);
+    centerTopRim.position.set(0, 1.455, -0.23);
+    deskGroup.add(centerTopRim);
 
-    // Sleek rear monitor chassis accent stripe (visible from apartment room)
+    // 3. LEFT MONITOR (4:3 Aspect Ratio, Angled inward towards pilot at local +X)
+    // Width 0.64m, Height 0.48m, rotated inward by -0.38 rad
+    const leftMonitorGroup = new THREE.Group();
+    leftMonitorGroup.position.set(0.74, 1.18, -0.13);
+    leftMonitorGroup.rotation.y = -0.38;
+
+    const leftScreenGeo = new THREE.PlaneGeometry(0.64, 0.48);
+    const leftScreenMat = new THREE.MeshBasicMaterial({
+      map: this.projectLeftTexture,
+      side: THREE.DoubleSide
+    });
+    this.projectMonitorLeft = new THREE.Mesh(leftScreenGeo, leftScreenMat);
+    this.projectMonitorLeft.position.set(0, 0, 0.002);
+    this.projectMonitorLeft.userData = {
+      isProjectMonitor: true,
+      monitorType: 'left'
+    };
+    leftMonitorGroup.add(this.projectMonitorLeft);
+
+    const leftBezelGeo = new THREE.BoxGeometry(0.68, 0.52, 0.035);
+    const leftBezel = new THREE.Mesh(leftBezelGeo, this.darkMetal);
+    leftBezel.position.set(0, 0, -0.018);
+    leftMonitorGroup.add(leftBezel);
+
+    const leftTopRim = new THREE.Mesh(
+      new THREE.BoxGeometry(0.69, 0.012, 0.02),
+      this.cyanEmissive
+    );
+    leftTopRim.position.set(0, 0.262, -0.01);
+    leftMonitorGroup.add(leftTopRim);
+    deskGroup.add(leftMonitorGroup);
+
+    // 4. RIGHT MONITOR (4:3 Aspect Ratio, Angled inward towards pilot at local -X)
+    // Width 0.64m, Height 0.48m, rotated inward by +0.38 rad
+    const rightMonitorGroup = new THREE.Group();
+    rightMonitorGroup.position.set(-0.74, 1.18, -0.13);
+    rightMonitorGroup.rotation.y = 0.38;
+
+    const rightScreenGeo = new THREE.PlaneGeometry(0.64, 0.48);
+    const rightScreenMat = new THREE.MeshBasicMaterial({
+      map: this.projectRightTexture,
+      side: THREE.DoubleSide
+    });
+    this.projectMonitorRight = new THREE.Mesh(rightScreenGeo, rightScreenMat);
+    this.projectMonitorRight.position.set(0, 0, 0.002);
+    this.projectMonitorRight.userData = {
+      isProjectMonitor: true,
+      monitorType: 'right'
+    };
+    rightMonitorGroup.add(this.projectMonitorRight);
+
+    const rightBezelGeo = new THREE.BoxGeometry(0.68, 0.52, 0.035);
+    const rightBezel = new THREE.Mesh(rightBezelGeo, this.darkMetal);
+    rightBezel.position.set(0, 0, -0.018);
+    rightMonitorGroup.add(rightBezel);
+
+    const rightTopRim = new THREE.Mesh(
+      new THREE.BoxGeometry(0.69, 0.012, 0.02),
+      this.cyanEmissive
+    );
+    rightTopRim.position.set(0, 0.262, -0.01);
+    rightMonitorGroup.add(rightTopRim);
+    deskGroup.add(rightMonitorGroup);
+
+    // Master array of interactive monitors
+    this.projectMonitors = [
+      this.projectMonitorCenter,
+      this.projectMonitorLeft,
+      this.projectMonitorRight
+    ];
+
+    // Rear monitor chassis accent stripe (visible from apartment room)
     const rearMonitorEmblem = new THREE.Mesh(
-      new THREE.BoxGeometry(0.85, 0.025, 0.02),
+      new THREE.BoxGeometry(0.72, 0.025, 0.02),
       this.cyanEmissive
     );
-    rearMonitorEmblem.position.set(0, 1.25, -0.19);
+    rearMonitorEmblem.position.set(0, 1.25, -0.26);
     deskGroup.add(rearMonitorEmblem);
 
-    // Monitor heavy duty metal stand
-    const standPoleGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.45, 8);
+    // Heavy duty triple monitor desk clamp stand & articulating arms
+    const standPoleGeo = new THREE.CylinderGeometry(0.032, 0.032, 0.52, 10);
     const standPole = new THREE.Mesh(standPoleGeo, this.darkMetal);
-    standPole.position.set(0, 0.95, -0.22);
+    standPole.position.set(0, 0.98, -0.28);
     deskGroup.add(standPole);
 
-    const standBaseGeo = new THREE.BoxGeometry(0.35, 0.02, 0.25);
+    const standBaseGeo = new THREE.BoxGeometry(0.36, 0.025, 0.26);
     const standBase = new THREE.Mesh(standBaseGeo, this.darkMetal);
-    standBase.position.set(0, 0.74, -0.2);
+    standBase.position.set(0, 0.74, -0.26);
     deskGroup.add(standBase);
+
+    // Horizontal heavy articulation support arms extending to left & right monitors
+    const armGeoL = new THREE.BoxGeometry(0.62, 0.024, 0.03);
+    const armL = new THREE.Mesh(armGeoL, this.darkMetal);
+    armL.position.set(0.42, 1.18, -0.21);
+    armL.rotation.y = -0.19;
+    deskGroup.add(armL);
+
+    const armGeoR = new THREE.BoxGeometry(0.62, 0.024, 0.03);
+    const armR = new THREE.Mesh(armGeoR, this.darkMetal);
+    armR.position.set(-0.42, 1.18, -0.21);
+    armR.rotation.y = 0.19;
+    deskGroup.add(armR);
 
     // Dedicated Overhead Workstation Desk Task Light
     const deskTaskSpot = new THREE.SpotLight(0xffecd0, 3.8, 4.5, Math.PI / 3, 0.35, 1.2);
@@ -855,8 +989,8 @@ export class ApartmentFurniture {
     deskGroup.add(deskWarmGlow);
 
     // Monitor glow casting on the desk
-    const monitorLight = new THREE.PointLight(0x00F0FF, 2.2, 2.8, 1.3);
-    monitorLight.position.set(0, 1.15, 0.3);
+    const monitorLight = new THREE.PointLight(0x00F0FF, 2.4, 2.8, 1.3);
+    monitorLight.position.set(0, 1.18, 0.25);
     deskGroup.add(monitorLight);
 
     // Backlit Mechanical Keyboard
@@ -1049,41 +1183,66 @@ export class ApartmentFurniture {
   }
 
   /**
-   * Updates active project on the ultrawide workstation monitor
+   * Updates active project across the Triple Monitor Battlestation
    */
   setProjectIndex(newIndex, hoveredAction = null) {
     if (!this.projects || this.projects.length === 0) return null;
     this.currentProjectIndex = ((newIndex % this.projects.length) + this.projects.length) % this.projects.length;
     this.currentProjectHover = hoveredAction;
-
-    if (this.projectMonitorCanvas && this.projectMonitorTexture) {
-      TextureGenerator.renderProjectMonitorCanvas(
-        this.projectMonitorCanvas,
-        this.projects,
-        this.currentProjectIndex,
-        hoveredAction
-      );
-      this.projectMonitorTexture.needsUpdate = true;
-    }
-
-    return this.projects[this.currentProjectIndex];
+    this.updateAllMonitors();
+    return this.getCurrentProject();
   }
 
   /**
-   * Updates hover state highlights on the workstation monitor
+   * Updates hover state highlights across the Triple Monitor Battlestation
    */
-  setProjectHover(hoveredAction) {
-    if (this.currentProjectHover === hoveredAction) return;
+  setProjectHover(hoveredAction, hoveredIndex = null) {
+    if (this.currentProjectHover === hoveredAction && this.hoveredProjectIndex === hoveredIndex) return;
     this.currentProjectHover = hoveredAction;
+    this.hoveredProjectIndex = hoveredIndex;
+    this.updateAllMonitors();
+  }
 
-    if (this.projectMonitorCanvas && this.projectMonitorTexture) {
-      TextureGenerator.renderProjectMonitorCanvas(
-        this.projectMonitorCanvas,
+  /**
+   * Redraws canvases and marks textures for all three monitors
+   */
+  updateAllMonitors() {
+    const currentProj = this.getCurrentProject();
+    if (!currentProj) return;
+
+    // Center Monitor: Project dossier
+    if (this.projectCenterCanvas && this.projectCenterTexture) {
+      TextureGenerator.renderProjectCenterMonitorCanvas(
+        this.projectCenterCanvas,
+        currentProj,
+        this.currentProjectIndex,
+        this.projects.length,
+        this.currentProjectHover
+      );
+      this.projectCenterTexture.needsUpdate = true;
+    }
+
+    // Left Monitor: Shard directory list
+    if (this.projectLeftCanvas && this.projectLeftTexture) {
+      TextureGenerator.renderProjectLeftMonitorCanvas(
+        this.projectLeftCanvas,
         this.projects,
         this.currentProjectIndex,
-        hoveredAction
+        this.hoveredProjectIndex
       );
-      this.projectMonitorTexture.needsUpdate = true;
+      this.projectLeftTexture.needsUpdate = true;
+    }
+
+    // Right Monitor: Telemetry & nav controls
+    if (this.projectRightCanvas && this.projectRightTexture) {
+      TextureGenerator.renderProjectRightMonitorCanvas(
+        this.projectRightCanvas,
+        currentProj,
+        this.currentProjectIndex,
+        this.projects.length,
+        this.currentProjectHover
+      );
+      this.projectRightTexture.needsUpdate = true;
     }
   }
 

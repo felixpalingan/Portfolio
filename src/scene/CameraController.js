@@ -41,10 +41,10 @@ export class CameraController {
       PROJECTS: {
         name: 'PROJECTS',
         label: 'NETRUNNER WORKSTATION // PROJECTS',
-        // In front of the reversed carbon desk in bottom-right, framing the ultrawide terminal
-        position: new THREE.Vector3(3.00, 1.25, 0.45),
-        target: new THREE.Vector3(3.00, 1.15, 2.00),
-        duration: 2.0,
+        // Brought much closer (Z = 1.15m) so the triple battlestation screens and text are crystal clear
+        position: new THREE.Vector3(3.00, 1.18, 1.15),
+        target: new THREE.Vector3(3.00, 1.18, 2.05),
+        duration: 1.9,
         ease: 'power2.inOut'
       },
       STATS: {
@@ -120,7 +120,7 @@ export class CameraController {
       mid.y = Math.max(startPos.y, endPos.y) + 0.4;
     } else if (key === 'HOME->PROJECTS' || key === 'PROJECTS->HOME') {
       // Arc through right aisle to enter bottom-right workstation
-      mid.set(1.6, 1.75, 2.1);
+      mid.set(1.9, 1.65, 2.2);
     } else if (key === 'HOME->COMM' || key === 'COMM->HOME') {
       // Arc through left aisle into the open-concept bathroom
       mid.set(-1.6, 1.75, 2.1);
@@ -129,10 +129,10 @@ export class CameraController {
       mid.set(0.8, 1.55, 1.4);
     } else if (key === 'PROJECTS->STATS' || key === 'STATS->PROJECTS') {
       // Short hop between right workstation and sunken lounge
-      mid.set(2.4, 1.45, 0.0);
+      mid.set(2.4, 1.45, 0.4);
     } else if (key === 'PROJECTS->COMM' || key === 'COMM->PROJECTS') {
       // Traverse across the wide room aisle between workstation and bathroom
-      mid.set(0.0, 1.65, 0.6);
+      mid.set(0.0, 1.65, 0.9);
     } else if (key === 'STATS->COMM' || key === 'COMM->STATS') {
       // Cross room diagonally from sunken lounge to open bathroom
       mid.set(-0.6, 1.65, 0.1);

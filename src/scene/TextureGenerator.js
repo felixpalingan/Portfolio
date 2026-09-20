@@ -511,105 +511,197 @@ export class TextureGenerator {
   /**
    * Generates interactive project repository terminal canvas for workstation ultrawide monitor
    */
-  static renderProjectMonitorCanvas(canvas, projects, currentIndex, hoveredAction = null) {
+  /**
+   * LEFT MONITOR (Directory Shards): Displays selectable project list cards
+   * Canvas: 720 x 540
+   */
+  static renderProjectLeftMonitorCanvas(canvas, projects, currentIndex, hoveredIndex = null) {
     const w = canvas.width;
     const h = canvas.height;
     const ctx = canvas.getContext('2d');
-    const project = projects[currentIndex] || projects[0];
 
     // Background & carbon grid
-    ctx.fillStyle = '#060911';
+    ctx.fillStyle = '#060912';
     ctx.fillRect(0, 0, w, h);
 
-    // Subtle matrix scanlines
+    // Scanlines
     ctx.fillStyle = 'rgba(0, 240, 255, 0.025)';
     for (let y = 0; y < h; y += 4) {
       ctx.fillRect(0, y, w, 2);
     }
 
-    // Top Header bar
+    // Header bar
     ctx.fillStyle = '#0b111e';
-    ctx.fillRect(0, 0, w, 32);
+    ctx.fillRect(0, 0, w, 44);
     ctx.strokeStyle = '#00F0FF';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(0, 32);
-    ctx.lineTo(w, 32);
+    ctx.moveTo(0, 44);
+    ctx.lineTo(w, 44);
     ctx.stroke();
 
     ctx.fillStyle = '#00F0FF';
-    ctx.font = 'bold 15px monospace';
+    ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('⚡ NETRUNNER OS v4.81 // ARASAKA ARCHIVE EXPLORER // WATSON SUBNET [SECURE]', 24, 21);
+    ctx.fillText('⚡ REPO ARCHIVE // SHARD SELECTOR', 20, 28);
 
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '13px monospace';
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#00FF66';
-    ctx.fillText(`SYSTEM DAEMON: ACTIVE ● [0${currentIndex + 1} / 0${projects.length}]`, w - 24, 21);
+    ctx.fillText('[CLICK TO MOUNT]', w - 20, 28);
 
-    // 4 Project Selector Tabs
-    const tabY = 40;
-    const tabH = 38;
-    const tabW = 290;
-    const tabGap = 16;
-    const tabStartX = 24;
+    // 4 Clickable Project Cards
+    const cardStartX = 20;
+    const cardW = w - 40; // 680px
+    const cardH = 104;
+    const cardGap = 14;
+    const startY = 58;
 
     projects.forEach((p, idx) => {
-      const tx = tabStartX + idx * (tabW + tabGap);
+      const cy = startY + idx * (cardH + cardGap);
       const isActive = idx === currentIndex;
-      const isHovered = hoveredAction === `tab_${idx}`;
+      const isHovered = hoveredIndex === idx;
 
-      // Tab Background
+      // Card Background
       if (isActive) {
         ctx.fillStyle = 'rgba(0, 240, 255, 0.22)';
       } else if (isHovered) {
         ctx.fillStyle = 'rgba(0, 240, 255, 0.10)';
       } else {
-        ctx.fillStyle = 'rgba(12, 18, 30, 0.85)';
+        ctx.fillStyle = 'rgba(11, 16, 26, 0.88)';
       }
-      ctx.fillRect(tx, tabY, tabW, tabH);
+      ctx.fillRect(cardStartX, cy, cardW, cardH);
 
-      // Tab Border
-      ctx.strokeStyle = isActive ? (p.color || '#00F0FF') : (isHovered ? '#FFFFFF' : 'rgba(0, 240, 255, 0.35)');
-      ctx.lineWidth = isActive ? 2 : 1;
-      ctx.strokeRect(tx, tabY, tabW, tabH);
+      // Card Border
+      ctx.strokeStyle = isActive ? (p.color || '#00F0FF') : (isHovered ? '#FFFFFF' : 'rgba(0, 240, 255, 0.28)');
+      ctx.lineWidth = isActive ? 2.5 : (isHovered ? 2 : 1);
+      ctx.strokeRect(cardStartX, cy, cardW, cardH);
 
+      // Left Accent Strip
       if (isActive) {
         ctx.fillStyle = p.color || '#00F0FF';
-        ctx.fillRect(tx, tabY, 6, tabH);
-        ctx.fillRect(tx, tabY + tabH - 3, tabW, 3);
+        ctx.fillRect(cardStartX, cy, 8, cardH);
+      } else if (isHovered) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(cardStartX, cy, 4, cardH);
       }
 
-      ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.65)');
-      ctx.font = isActive ? 'bold 15px monospace' : '14px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(p.tabTitle || `0${idx + 1} // ${p.title.substring(0, 14)}`, tx + tabW / 2, tabY + 24);
+      // Shard Index Badge
+      ctx.fillStyle = isActive ? (p.color || '#00F0FF') : 'rgba(0, 240, 255, 0.6)';
+      ctx.font = 'bold 18px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`[SHARD 0${idx + 1}]`, cardStartX + 20, cy + 32);
+
+      // Title
+      ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.9)');
+      ctx.font = 'bold 22px monospace';
+      ctx.fillText(p.title, cardStartX + 20, cy + 62);
+
+      // Category & Year
+      ctx.fillStyle = isActive ? '#FCEE09' : 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '14px monospace';
+      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + 88);
+
+      // Status Pill on Right of Card
+      ctx.textAlign = 'right';
+      if (isActive) {
+        ctx.fillStyle = '#00FF66';
+        ctx.font = 'bold 14px monospace';
+        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 20, cy + 40);
+        ctx.fillStyle = 'rgba(0, 255, 102, 0.4)';
+        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 20, cy + 68);
+      } else {
+        ctx.fillStyle = isHovered ? '#00F0FF' : 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '14px monospace';
+        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 20, cy + 55);
+      }
     });
 
+    // Bottom Status Bar
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('WATSON NEURAL ARCHIVE // 4 SHARDS DETECTED // 100% HEALTH', w / 2, h - 12);
+  }
+
+  static getLeftMonitorActionAtUV(u, v) {
+    const y = (1 - v) * 540;
+    const startY = 58;
+    const cardH = 104;
+    const cardGap = 14;
+
+    for (let i = 0; i < 4; i++) {
+      const cy = startY + i * (cardH + cardGap);
+      if (y >= cy && y <= cy + cardH) {
+        return { action: 'select', index: i };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * CENTER MONITOR (Main Dossier): Displays large, crystal-clear project details & links
+   * Canvas: 1024 x 576 (16:9)
+   */
+  static renderProjectCenterMonitorCanvas(canvas, project, currentIndex, total, hoveredAction = null) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const ctx = canvas.getContext('2d');
+
+    // Background & carbon grid
+    ctx.fillStyle = '#060912';
+    ctx.fillRect(0, 0, w, h);
+
+    // Scanlines
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.025)';
+    for (let y = 0; y < h; y += 4) {
+      ctx.fillRect(0, y, w, 2);
+    }
+
+    // Top Header Bar
+    ctx.fillStyle = '#0b111e';
+    ctx.fillRect(0, 0, w, 40);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 40);
+    ctx.lineTo(w, 40);
+    ctx.stroke();
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 16px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`⚡ NETRUNNER OS // PROJECT DOSSIER // [0${currentIndex + 1} / 0${total}]`, 24, 26);
+
+    ctx.fillStyle = '#00FF66';
+    ctx.textAlign = 'right';
+    ctx.fillText(`● STATUS: ${project.status || 'PRODUCTION READY'}`, w - 24, 26);
+
     // Main Left Section: Project details
-    const leftX = 28;
+    const leftX = 36;
 
     // Category & Year Tagline
     ctx.textAlign = 'left';
     ctx.fillStyle = '#FCEE09';
-    ctx.font = 'bold 15px monospace';
-    ctx.fillText(`// ${project.category.toUpperCase()} — YEAR: ${project.year}`, leftX, 115);
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText(`// CATEGORY: ${project.category.toUpperCase()} — RELEASE: ${project.year}`, leftX, 85);
 
-    // Title
+    // Title (Huge & Legible)
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 36px monospace';
-    ctx.fillText(project.title, leftX, 160);
+    ctx.font = 'bold 44px monospace';
+    ctx.fillText(project.title, leftX, 138);
 
     // Color indicator under-title line
     ctx.fillStyle = project.color || '#00F0FF';
-    ctx.fillRect(leftX, 172, 160, 3);
+    ctx.fillRect(leftX, 154, 220, 4);
 
-    // Description text (word-wrapped)
-    ctx.fillStyle = 'rgba(220, 235, 255, 0.88)';
-    ctx.font = '17px monospace';
+    // Description text (word-wrapped with generous line-height)
+    ctx.fillStyle = 'rgba(230, 242, 255, 0.92)';
+    ctx.font = '20px monospace';
     const words = project.description.split(' ');
     let line = '';
-    let lineY = 205;
-    const maxLineWidth = 720;
+    let lineY = 196;
+    const maxLineWidth = 940;
 
     for (let n = 0; n < words.length; n++) {
       const testLine = line + words[n] + ' ';
@@ -617,246 +709,298 @@ export class TextureGenerator {
       if (metrics.width > maxLineWidth && n > 0) {
         ctx.fillText(line, leftX, lineY);
         line = words[n] + ' ';
-        lineY += 26;
+        lineY += 30;
       } else {
         line = testLine;
       }
     }
     ctx.fillText(line, leftX, lineY);
 
-    // Tags list
-    const tagY = 295;
-    ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
-    ctx.font = 'bold 14px monospace';
-    ctx.fillText('CORE STACK:', leftX, tagY + 16);
+    // Core Tech Stack Badges
+    const tagY = lineY + 36;
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText('CORE LOADOUT:', leftX, tagY + 18);
 
-    let tagX = leftX + 115;
+    let tagX = leftX + 140;
     if (project.tags && project.tags.length > 0) {
       project.tags.forEach(tag => {
-        const tw = ctx.measureText(tag).width + 20;
-        ctx.fillStyle = 'rgba(0, 240, 255, 0.1)';
-        ctx.fillRect(tagX, tagY, tw, 26);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(tagX, tagY, tw, 26);
+        ctx.font = 'bold 16px monospace';
+        const tw = ctx.measureText(tag).width + 24;
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+        ctx.fillRect(tagX, tagY, tw, 30);
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.55)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(tagX, tagY, tw, 30);
 
-        ctx.fillStyle = '#EAF4FF';
-        ctx.fillText(tag, tagX + 10, tagY + 18);
-        tagX += tw + 10;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(tag, tagX + 12, tagY + 21);
+        tagX += tw + 12;
       });
     }
 
     // Telemetry metric cards
-    const mY = 345;
-    const mCardW = 230;
+    const mY = tagY + 54;
+    const mCardW = 300;
     const metricsData = [
-      { label: 'LATENCY', val: project.metrics?.latency || '1.4ms', color: '#00FF66' },
+      { label: 'LATENCY', val: project.metrics?.latency || '1.2ms', color: '#00FF66' },
       { label: 'NODES', val: project.metrics?.nodes || '1,024 Active', color: '#00F0FF' },
-      { label: 'STATUS', val: project.status || 'DEPLOYED // PROD', color: '#FCEE09' }
+      { label: 'CLEARANCE', val: project.metrics?.security || 'ICE-Bypass Clean', color: '#FCEE09' }
     ];
 
     metricsData.forEach((m, i) => {
-      const mx = leftX + i * (mCardW + 14);
+      const mx = leftX + i * (mCardW + 24);
       ctx.fillStyle = 'rgba(10, 16, 28, 0.9)';
-      ctx.fillRect(mx, mY, mCardW, 58);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fillRect(mx, mY, mCardW, 64);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
       ctx.lineWidth = 1;
-      ctx.strokeRect(mx, mY, mCardW, 58);
+      ctx.strokeRect(mx, mY, mCardW, 64);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.font = '12px monospace';
-      ctx.fillText(m.label, mx + 14, mY + 22);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.font = '13px monospace';
+      ctx.fillText(m.label, mx + 16, mY + 24);
 
       ctx.fillStyle = m.color;
-      ctx.font = 'bold 16px monospace';
-      ctx.fillText(m.val, mx + 14, mY + 46);
+      ctx.font = 'bold 18px monospace';
+      ctx.fillText(m.val, mx + 16, mY + 50);
     });
 
-    // Right Section: Holographic Radar Wireframe Box
-    const rx = 780;
-    const ry = 98;
-    const rw = 470;
-    const rh = 232;
+    // Huge Action Buttons at Bottom
+    const actY = mY + 84;
+    const actH = 62;
 
-    ctx.fillStyle = 'rgba(8, 12, 22, 0.95)';
+    // Button 1: OPEN GITHUB REPOSITORY
+    const repoW = 460;
+    const repoX = leftX;
+    const isRepoHovered = hoveredAction === 'repo';
+    ctx.fillStyle = isRepoHovered ? 'rgba(0, 240, 255, 0.45)' : 'rgba(0, 240, 255, 0.18)';
+    ctx.fillRect(repoX, actY, repoW, actH);
+    ctx.strokeStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.lineWidth = isRepoHovered ? 3 : 2;
+    ctx.strokeRect(repoX, actY, repoW, actH);
+
+    ctx.fillStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
+    ctx.font = 'bold 20px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + repoW / 2, actY + 39);
+
+    // Button 2: LIVE DEMO
+    const liveW = 460;
+    const liveX = repoX + repoW + 24;
+    const isLiveHovered = hoveredAction === 'live';
+    ctx.fillStyle = isLiveHovered ? 'rgba(252, 238, 9, 0.45)' : 'rgba(252, 238, 9, 0.18)';
+    ctx.fillRect(liveX, actY, liveW, actH);
+    ctx.strokeStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
+    ctx.lineWidth = isLiveHovered ? 3 : 2;
+    ctx.strokeRect(liveX, actY, liveW, actH);
+
+    ctx.fillStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
+    ctx.font = 'bold 20px monospace';
+    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + liveW / 2, actY + 39);
+  }
+
+  static getCenterMonitorActionAtUV(u, v) {
+    const x = u * 1024;
+    const y = (1 - v) * 576;
+
+    // Check bottom action buttons
+    if (y >= 450 && y <= 560) {
+      if (x >= 36 && x <= 496) return { action: 'repo' };
+      if (x >= 520 && x <= 980) return { action: 'live' };
+    }
+    return null;
+  }
+
+  /**
+   * RIGHT MONITOR (Telemetry & Nav Deck): Radar wireframe, live waveforms, next/prev controls
+   * Canvas: 720 x 540
+   */
+  static renderProjectRightMonitorCanvas(canvas, project, currentIndex, total, hoveredAction = null) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const ctx = canvas.getContext('2d');
+
+    // Background & carbon grid
+    ctx.fillStyle = '#060912';
+    ctx.fillRect(0, 0, w, h);
+
+    // Scanlines
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.025)';
+    for (let y = 0; y < h; y += 4) {
+      ctx.fillRect(0, y, w, 2);
+    }
+
+    // Header bar
+    ctx.fillStyle = '#0b111e';
+    ctx.fillRect(0, 0, w, 44);
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 44);
+    ctx.lineTo(w, 44);
+    ctx.stroke();
+
+    ctx.fillStyle = '#00F0FF';
+    ctx.font = 'bold 16px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('⚡ TELEMETRY // NAV DECK', 20, 28);
+
+    ctx.fillStyle = '#00FF66';
+    ctx.font = '13px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('SERVER: NOMINAL ●', w - 20, 28);
+
+    // Holographic Radar Box
+    const rx = 24;
+    const ry = 60;
+    const rw = w - 48; // 672px
+    const rh = 240;
+
+    ctx.fillStyle = 'rgba(8, 14, 24, 0.95)';
     ctx.fillRect(rx, ry, rw, rh);
     ctx.strokeStyle = project.color || '#00F0FF';
     ctx.lineWidth = 1.5;
     ctx.strokeRect(rx, ry, rw, rh);
 
-    // Corner hazard trims
+    // Corner hazard accents
     ctx.fillStyle = '#FCEE09';
-    ctx.fillRect(rx, ry, 12, 3);
-    ctx.fillRect(rx, ry, 3, 12);
-    ctx.fillRect(rx + rw - 12, ry, 12, 3);
-    ctx.fillRect(rx + rw - 3, ry, 3, 12);
-    ctx.fillRect(rx, ry + rh - 3, 12, 3);
-    ctx.fillRect(rx, ry + rh - 12, 3, 12);
-    ctx.fillRect(rx + rw - 12, ry + rh - 3, 12, 3);
-    ctx.fillRect(rx + rw - 3, ry + rh - 12, 3, 12);
+    ctx.fillRect(rx, ry, 14, 3);
+    ctx.fillRect(rx, ry, 3, 14);
+    ctx.fillRect(rx + rw - 14, ry, 14, 3);
+    ctx.fillRect(rx + rw - 3, ry, 3, 14);
+    ctx.fillRect(rx, ry + rh - 3, 14, 3);
+    ctx.fillRect(rx, ry + rh - 14, 3, 14);
+    ctx.fillRect(rx + rw - 14, ry + rh - 3, 14, 3);
+    ctx.fillRect(rx + rw - 3, ry + rh - 14, 3, 14);
 
-    // Grid in radar box
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+    // Radar grid
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
     ctx.lineWidth = 1;
-    for (let gx = rx + 30; gx < rx + rw; gx += 30) {
+    for (let gx = rx + 36; gx < rx + rw; gx += 36) {
       ctx.beginPath();
       ctx.moveTo(gx, ry);
       ctx.lineTo(gx, ry + rh);
       ctx.stroke();
     }
-    for (let gy = ry + 25; gy < ry + rh; gy += 25) {
+    for (let gy = ry + 30; gy < ry + rh; gy += 30) {
       ctx.beginPath();
       ctx.moveTo(rx, gy);
       ctx.lineTo(rx + rw, gy);
       ctx.stroke();
     }
 
-    // Radar circle & crosshair
+    // Radar Circle & Crosshair
     const cx = rx + rw / 2;
     const cy = ry + rh / 2;
     ctx.strokeStyle = project.color || '#00F0FF';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.arc(cx, cy, 60, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 75, 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 35, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Crosshairs
     ctx.beginPath();
-    ctx.moveTo(cx - 75, cy);
-    ctx.lineTo(cx + 75, cy);
-    ctx.moveTo(cx, cy - 75);
-    ctx.lineTo(cx, cy + 75);
+    ctx.moveTo(cx - 95, cy);
+    ctx.lineTo(cx + 95, cy);
+    ctx.moveTo(cx, cy - 95);
+    ctx.lineTo(cx, cy + 95);
     ctx.stroke();
 
-    // Wireframe Box header & footer labels
+    // Radar labels
     ctx.fillStyle = project.color || '#00F0FF';
-    ctx.font = 'bold 13px monospace';
+    ctx.font = 'bold 15px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(`ID: ${project.id.toUpperCase()}`, rx + 14, ry + 22);
+    ctx.fillText(`TARGET ID: ${project.id.toUpperCase()}`, rx + 18, ry + 26);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = '#00FF66';
-    ctx.fillText('ICE INTEGRITY: 100%', rx + rw - 14, ry + 22);
+    ctx.fillText('ICE BREACH: 100% SECURE', rx + rw - 18, ry + 26);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 14px monospace';
-    ctx.fillText(project.tagline || 'SYSTEM DATA SHARD ARCHIVE', cx, ry + rh - 16);
+    ctx.font = 'bold 15px monospace';
+    ctx.fillText(project.tagline || 'SYSTEM DATA SHARD ARCHIVE', cx, ry + rh - 18);
 
-    // Right Nav Controls: PREV / NEXT buttons
-    const btnY = 345;
-    const btnH = 58;
+    // Large Nav Buttons Section
+    const btnY = 325;
+    const btnH = 68;
+    const btnW = 200;
 
     // PREV Button
-    const prevW = 145;
     const prevX = rx;
     const isPrevHovered = hoveredAction === 'prev';
-    ctx.fillStyle = isPrevHovered ? 'rgba(0, 240, 255, 0.35)' : 'rgba(12, 18, 30, 0.9)';
-    ctx.fillRect(prevX, btnY, prevW, btnH);
+    ctx.fillStyle = isPrevHovered ? 'rgba(0, 240, 255, 0.4)' : 'rgba(14, 20, 32, 0.9)';
+    ctx.fillRect(prevX, btnY, btnW, btnH);
     ctx.strokeStyle = isPrevHovered ? '#FFFFFF' : '#00F0FF';
     ctx.lineWidth = isPrevHovered ? 2.5 : 1.5;
-    ctx.strokeRect(prevX, btnY, prevW, btnH);
+    ctx.strokeRect(prevX, btnY, btnW, btnH);
 
     ctx.fillStyle = isPrevHovered ? '#FFFFFF' : '#00F0FF';
-    ctx.font = 'bold 17px monospace';
+    ctx.font = 'bold 20px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('◄ PREV', prevX + prevW / 2, btnY + 36);
+    ctx.fillText('◄ PREV SHARD', prevX + btnW / 2, btnY + 42);
 
-    // Index Badge
-    const idxW = 150;
-    const idxX = prevX + prevW + 15;
-    ctx.fillStyle = 'rgba(8, 12, 20, 0.8)';
+    // Shard Counter Center Display
+    const idxX = prevX + btnW + 20;
+    const idxW = rw - 2 * btnW - 40;
+    ctx.fillStyle = 'rgba(10, 16, 26, 0.85)';
     ctx.fillRect(idxX, btnY, idxW, btnH);
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
     ctx.lineWidth = 1;
     ctx.strokeRect(idxX, btnY, idxW, btnH);
 
     ctx.fillStyle = '#FCEE09';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(`PROJECT ${currentIndex + 1} / ${projects.length}`, idxX + idxW / 2, btnY + 36);
+    ctx.font = 'bold 22px monospace';
+    ctx.fillText(`0${currentIndex + 1} / 0${total}`, idxX + idxW / 2, btnY + 34);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '12px monospace';
+    ctx.fillText('SHARD MOUNTED', idxX + idxW / 2, btnY + 54);
 
     // NEXT Button
-    const nextW = 145;
-    const nextX = idxX + idxW + 15;
+    const nextX = idxX + idxW + 20;
     const isNextHovered = hoveredAction === 'next';
-    ctx.fillStyle = isNextHovered ? 'rgba(0, 240, 255, 0.35)' : 'rgba(12, 18, 30, 0.9)';
+    ctx.fillStyle = isNextHovered ? 'rgba(0, 240, 255, 0.4)' : 'rgba(14, 20, 32, 0.9)';
     ctx.fillRect(nextX, btnY, nextW, btnH);
     ctx.strokeStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
     ctx.lineWidth = isNextHovered ? 2.5 : 1.5;
     ctx.strokeRect(nextX, btnY, nextW, btnH);
 
     ctx.fillStyle = isNextHovered ? '#FFFFFF' : '#00F0FF';
-    ctx.font = 'bold 17px monospace';
-    ctx.fillText('NEXT ►', nextX + nextW / 2, btnY + 36);
+    ctx.font = 'bold 20px monospace';
+    ctx.fillText('NEXT SHARD ►', nextX + btnW / 2, btnY + 42);
 
-    // Bottom Action Bar: GITHUB REPO & LIVE PREVIEW buttons
-    const actY = 432;
-    const actH = 56;
+    // Bottom Navigation Guide Card
+    const guideY = 416;
+    const guideH = 104;
+    ctx.fillStyle = 'rgba(8, 12, 20, 0.9)';
+    ctx.fillRect(rx, guideY, rw, guideH);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(rx, guideY, rw, guideH);
 
-    // Button 1: GITHUB REPO
-    const repoW = 410;
-    const repoX = leftX;
-    const isRepoHovered = hoveredAction === 'repo';
-    ctx.fillStyle = isRepoHovered ? 'rgba(0, 240, 255, 0.4)' : 'rgba(0, 240, 255, 0.15)';
-    ctx.fillRect(repoX, actY, repoW, actH);
-    ctx.strokeStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
-    ctx.lineWidth = isRepoHovered ? 2.5 : 1.5;
-    ctx.strokeRect(repoX, actY, repoW, actH);
-
-    ctx.fillStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
-    ctx.font = 'bold 18px monospace';
+    ctx.fillStyle = '#FCEE09';
+    ctx.font = 'bold 14px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + 24, actY + 35);
+    ctx.fillText('OPERATOR CONTROL MANUAL:', rx + 20, guideY + 28);
 
-    // Button 2: LIVE PREVIEW / DEMO
-    const liveW = 340;
-    const liveX = repoX + repoW + 16;
-    const isLiveHovered = hoveredAction === 'live';
-    ctx.fillStyle = isLiveHovered ? 'rgba(252, 238, 9, 0.4)' : 'rgba(252, 238, 9, 0.15)';
-    ctx.fillRect(liveX, actY, liveW, actH);
-    ctx.strokeStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
-    ctx.lineWidth = isLiveHovered ? 2.5 : 1.5;
-    ctx.strokeRect(liveX, actY, liveW, actH);
-
-    ctx.fillStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
-    ctx.font = 'bold 18px monospace';
-    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + 24, actY + 35);
-
-    // Instructions on the right
-    ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.font = '13px monospace';
-    ctx.fillText('[ CLICK TABS / BUTTONS // USE ◄ / ► KEYS ]', w - 28, actY + 35);
+    ctx.fillStyle = 'rgba(230, 242, 255, 0.85)';
+    ctx.font = '14px monospace';
+    ctx.fillText('• KLIK SHARD DI MONITOR KIRI UNTUK LANGSUNG PILIH PROYEK', rx + 20, guideY + 52);
+    ctx.fillText('• KLIK TOMBOL GITHUB / DEMO DI MONITOR TENGAH UNTUK AKSES REPO', rx + 20, guideY + 74);
+    ctx.fillText('• SHORTCUT KEYBOARD: ◄ / ► / A / D SIKLUS PROYEK // O UNTUK REPO', rx + 20, guideY + 96);
   }
 
-  /**
-   * Translates UV (0 to 1) coordinates from Raycaster hit on monitor plane
-   * into specific clickable button action
-   */
-  static getProjectActionAtUV(u, v) {
-    const x = u * 1280;
-    const y = (1 - v) * 512;
+  static getRightMonitorActionAtUV(u, v) {
+    const x = u * 720;
+    const y = (1 - v) * 540;
 
-    // 1. Top tabs
-    if (y >= 40 && y <= 78) {
-      if (x >= 24 && x <= 314) return { action: 'tab', index: 0 };
-      if (x >= 330 && x <= 620) return { action: 'tab', index: 1 };
-      if (x >= 636 && x <= 926) return { action: 'tab', index: 2 };
-      if (x >= 942 && x <= 1232) return { action: 'tab', index: 3 };
-    }
-    // 2. Nav buttons (PREV / NEXT)
-    if (y >= 345 && y <= 405) {
-      if (x >= 780 && x <= 925) return { action: 'prev' };
-      if (x >= 1105 && x <= 1250) return { action: 'next' };
-    }
-    // 3. Action bar buttons (REPO / LIVE)
-    if (y >= 430 && y <= 490) {
-      if (x >= 28 && x <= 440) return { action: 'repo' };
-      if (x >= 454 && x <= 800) return { action: 'live' };
+    if (y >= 325 && y <= 395) {
+      if (x >= 24 && x <= 224) return { action: 'prev' };
+      if (x >= 496 && x <= 696) return { action: 'next' };
     }
     return null;
   }

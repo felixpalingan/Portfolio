@@ -166,7 +166,9 @@ class App {
       ) {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const interactiveObjs = [];
-        if (this.room.furniture.projectMonitorScreen) {
+        if (this.room.furniture.projectMonitors) {
+          interactiveObjs.push(...this.room.furniture.projectMonitors);
+        } else if (this.room.furniture.projectMonitorScreen) {
           interactiveObjs.push(this.room.furniture.projectMonitorScreen);
         }
         if (this.room.furniture.projectControlButtons) {
@@ -177,14 +179,34 @@ class App {
         if (intersects.length > 0) {
           const hit = intersects[0];
           if (hit.object.userData?.isProjectMonitor && hit.uv) {
-            const actionObj = TextureGenerator.getProjectActionAtUV(hit.uv.x, hit.uv.y);
-            if (actionObj) {
-              document.body.style.cursor = 'pointer';
-              const actionKey = actionObj.action === 'tab' ? `tab_${actionObj.index}` : actionObj.action;
-              this.room.furniture.setProjectHover(actionKey);
-            } else {
-              document.body.style.cursor = 'default';
-              this.room.furniture.setProjectHover(null);
+            const mType = hit.object.userData.monitorType || 'center';
+            if (mType === 'center') {
+              const actionObj = TextureGenerator.getCenterMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj) {
+                document.body.style.cursor = 'pointer';
+                this.room.furniture.setProjectHover(actionObj.action, null);
+              } else {
+                document.body.style.cursor = 'default';
+                this.room.furniture.setProjectHover(null, null);
+              }
+            } else if (mType === 'left') {
+              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj && actionObj.action === 'select') {
+                document.body.style.cursor = 'pointer';
+                this.room.furniture.setProjectHover('select', actionObj.index);
+              } else {
+                document.body.style.cursor = 'default';
+                this.room.furniture.setProjectHover(null, null);
+              }
+            } else if (mType === 'right') {
+              const actionObj = TextureGenerator.getRightMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj) {
+                document.body.style.cursor = 'pointer';
+                this.room.furniture.setProjectHover(actionObj.action, null);
+              } else {
+                document.body.style.cursor = 'default';
+                this.room.furniture.setProjectHover(null, null);
+              }
             }
           } else if (hit.object.userData?.isDeskButton) {
             document.body.style.cursor = 'pointer';
@@ -193,7 +215,7 @@ class App {
           }
         } else {
           document.body.style.cursor = 'default';
-          this.room.furniture.setProjectHover(null);
+          this.room.furniture.setProjectHover(null, null);
           if (this.hoveredDeskBtn) {
             this.hoveredDeskBtn.material.emissiveIntensity = 0.35;
             this.hoveredDeskBtn = null;
@@ -242,7 +264,7 @@ class App {
         }
       }
 
-      // PROJECTS Workstation Monitor & Desk Buttons Click
+      // PROJECTS Workstation Triple Monitor & Desk Buttons Click
       if (
         this.cameraController &&
         this.cameraController.currentAnchor === 'PROJECTS' &&
@@ -250,7 +272,9 @@ class App {
       ) {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const interactiveObjs = [];
-        if (this.room.furniture.projectMonitorScreen) {
+        if (this.room.furniture.projectMonitors) {
+          interactiveObjs.push(...this.room.furniture.projectMonitors);
+        } else if (this.room.furniture.projectMonitorScreen) {
           interactiveObjs.push(this.room.furniture.projectMonitorScreen);
         }
         if (this.room.furniture.projectControlButtons) {
@@ -261,29 +285,36 @@ class App {
         if (intersects.length > 0) {
           const hit = intersects[0];
           if (hit.object.userData?.isProjectMonitor && hit.uv) {
-            const actionObj = TextureGenerator.getProjectActionAtUV(hit.uv.x, hit.uv.y);
-            if (actionObj) {
-              if (actionObj.action === 'tab') {
-                const p = this.room.furniture.setProjectIndex(actionObj.index);
-                if (p) this.showCopyToast(`⚡ PROJECT LOADED: ${p.title}`);
-              } else if (actionObj.action === 'prev') {
-                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
-                if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
-              } else if (actionObj.action === 'next') {
-                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
-                if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
-              } else if (actionObj.action === 'repo') {
+            const mType = hit.object.userData.monitorType || 'center';
+            if (mType === 'center') {
+              const actionObj = TextureGenerator.getCenterMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj?.action === 'repo') {
                 const p = this.room.furniture.getCurrentProject();
                 if (p?.repoUrl) {
                   window.open(p.repoUrl, '_blank');
                   this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
                 }
-              } else if (actionObj.action === 'live') {
+              } else if (actionObj?.action === 'live') {
                 const p = this.room.furniture.getCurrentProject();
                 if (p?.liveUrl) {
                   window.open(p.liveUrl, '_blank');
                   this.showCopyToast(`⚡ LAUNCHING DEMO: ${p.title}`);
                 }
+              }
+            } else if (mType === 'left') {
+              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj && actionObj.action === 'select') {
+                const p = this.room.furniture.setProjectIndex(actionObj.index);
+                if (p) this.showCopyToast(`⚡ SHARD MOUNTED: ${p.title}`);
+              }
+            } else if (mType === 'right') {
+              const actionObj = TextureGenerator.getRightMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              if (actionObj?.action === 'prev') {
+                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
+                if (p) this.showCopyToast(`⚡ PREVIOUS SHARD: ${p.title}`);
+              } else if (actionObj?.action === 'next') {
+                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
+                if (p) this.showCopyToast(`⚡ NEXT SHARD: ${p.title}`);
               }
             }
           } else if (hit.object.userData?.isDeskButton) {
@@ -299,10 +330,10 @@ class App {
 
             if (action === 'prev') {
               const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
-              if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
+              if (p) this.showCopyToast(`⚡ PREVIOUS SHARD: ${p.title}`);
             } else if (action === 'next') {
               const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
-              if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
+              if (p) this.showCopyToast(`⚡ NEXT SHARD: ${p.title}`);
             } else if (action === 'repo') {
               const p = this.room.furniture.getCurrentProject();
               if (p?.repoUrl) {
