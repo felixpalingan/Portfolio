@@ -73,7 +73,7 @@ class App {
 
   initCamera() {
     const aspect = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.PerspectiveCamera(64, aspect, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(80, aspect, 0.1, 100);
     this.cameraController = new CameraController(this.camera);
   }
 
