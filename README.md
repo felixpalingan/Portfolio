@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="./public/default.jpg" alt="Felix Palingan Avatar" width="130" style="border-radius: 50%; border: 3px solid #00F0FF; box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);" />
-</p>
-
 <h1 align="center">⚡ FELIX PALINGAN // 3D CYBERPUNK PORTFOLIO</h1>
 
 <p align="center">
