@@ -17,5 +17,8 @@ Thumbs.db
 .grok/
 .hermes/
 .opencode/
-# Project specific
+# Project specific & internal documentation
 reference/
+PRODUCT.md
+*.prd.md
+
