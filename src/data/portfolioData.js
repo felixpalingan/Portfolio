@@ -158,8 +158,10 @@ export const portfolioData = {
 
   contact: {
     email: "felixbariq@gmail.com",
+    website: "https://portfolio-felix-bariq.vercel.app",
     github: "https://github.com/felixpalingan",
     linkedin: "https://www.linkedin.com/in/almakius-felix-bariq-hekopung/",
+    linkedinId: "https://id.linkedin.com/in/almakius-felix-bariq-hekopung-a59695394",
     commFrequency: "98.7 MHz NET_CHANNEL",
     location: "Watson District, Megabuilding H10"
   }

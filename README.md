@@ -6,8 +6,8 @@
 </p>
 
 <p align="center">
-  <a href="https://portfolio-felix-3bfd.vercel.app">
-    <img src="https://img.shields.io/badge/Live_Demo-portfolio--felix.vercel.app-00F0FF?style=for-the-badge&logo=vercel&logoColor=black" alt="Live Demo" />
+  <a href="https://portfolio-felix-bariq.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Demo-portfolio--felix--bariq.vercel.app-00F0FF?style=for-the-badge&logo=vercel&logoColor=black" alt="Live Demo" />
   </a>
   <a href="https://threejs.org/">
     <img src="https://img.shields.io/badge/Three.js-r174-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" />
@@ -31,7 +31,7 @@ Conventional developer portfolios rely on flat, static project cards that fail t
 
 Instead of navigating standard pages, every section transition physically choreographs the camera across the apartment in real-time WebGL space. Evaluators, recruiters, and engineering leaders explore real production projects directly rendered onto an in-scene **Triple-Monitor Battlestation**, inspect career memory shards through an authentic **Braindance (BD) Neural Wreath Visor**, and engage direct communication channels via a **Diegetic Smart Bathroom Mirror**.
 
-🌐 **Production Deployment**: [https://portfolio-felix-3bfd.vercel.app](https://portfolio-felix-3bfd.vercel.app)
+🌐 **Production Deployment**: [https://portfolio-felix-bariq.vercel.app](https://portfolio-felix-bariq.vercel.app)
 
 ---
 
@@ -206,7 +206,7 @@ This project is open-source and released under the terms of the [MIT License](LI
 **Felix Palingan (Almakius Felix Bariq Hekopung)**  
 *Full Stack Web Developer & Creative Engineer*
 
-- **Live Portfolio**: [https://portfolio-felix-3bfd.vercel.app](https://portfolio-felix-3bfd.vercel.app)
+- **Live Portfolio**: [https://portfolio-felix-bariq.vercel.app](https://portfolio-felix-bariq.vercel.app)
 - **GitHub**: [@felixpalingan](https://github.com/felixpalingan)
 - **LinkedIn**: [Almakius Felix Bariq Hekopung](https://www.linkedin.com/in/almakius-felix-bariq-hekopung/)
 - **Email**: [felixbariq@gmail.com](mailto:felixbariq@gmail.com)
