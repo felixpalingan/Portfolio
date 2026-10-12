@@ -5,6 +5,8 @@ import { portfolioData } from './data/portfolioData.js';
 import { ApartmentRoom } from './scene/ApartmentRoom.js';
 import { CameraController } from './scene/CameraController.js';
 import { TextureGenerator } from './scene/TextureGenerator.js';
+import { BDPlaybackOverlay } from './scene/BDPlaybackOverlay.js';
+import { cyberAudio } from './scene/CyberAudio.js';
 
 class App {
   constructor() {
@@ -19,6 +21,13 @@ class App {
     this.hoveredMirrorBtn = null;
     this.hoveredProjectAction = null;
     this.hoveredDeskBtn = null;
+    this.hoveredBDWreath = false;
+
+    // Braindance (BD) State
+    this.isBDActive = false;
+    this.isBDEntrancePlaying = false;
+    this.bdOverlay = null;
+    this.bdLaunchPrompt = null;
 
     try {
       console.log("[CYBERPUNK] Booting Megabuilding H10 matrix...");
@@ -71,12 +80,12 @@ class App {
   initScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x07080c);
-    this.scene.fog = new THREE.FogExp2(0x07080c, 0.035);
+    this.scene.fog = new THREE.FogExp2(0x07080c, 0.018);
   }
 
   initCamera() {
     const aspect = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.PerspectiveCamera(80, aspect, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(80, aspect, 0.05, 100);
     this.cameraController = new CameraController(this.camera);
   }
 
@@ -118,6 +127,7 @@ class App {
   }
 
   initEvents() {
+    this.initBraindance();
     window.addEventListener('resize', () => this.onResize());
 
     // Mousemove for parallax & 3D mirror button hover detection
@@ -190,7 +200,8 @@ class App {
                 this.room.furniture.setProjectHover(null, null);
               }
             } else if (mType === 'left') {
-              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              const totalP = this.room?.furniture?.projects?.length || 2;
+              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y, totalP);
               if (actionObj && actionObj.action === 'select') {
                 document.body.style.cursor = 'pointer';
                 this.room.furniture.setProjectHover('select', actionObj.index);
@@ -222,13 +233,56 @@ class App {
           }
         }
       }
+
+      // BD Headset Hover Detection in STATS view
+      if (
+        this.cameraController &&
+        this.cameraController.currentAnchor === 'STATS' &&
+        this.room?.furniture?.bdClickableMeshes &&
+        !this.isBDActive
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.room.furniture.bdClickableMeshes);
+        if (intersects.length > 0) {
+          document.body.style.cursor = 'pointer';
+          this.hoveredBDWreath = true;
+          if (this.room.furniture.bdLedMesh) {
+            this.room.furniture.bdLedMesh.material.color.setHex(0xFCEE09);
+          }
+        } else {
+          if (this.hoveredBDWreath) {
+            document.body.style.cursor = 'default';
+            this.hoveredBDWreath = false;
+            if (this.room.furniture.bdLedMesh) {
+              this.room.furniture.bdLedMesh.material.color.setHex(0x00FF66);
+            }
+          }
+        }
+      }
     });
 
-    // 3D Interactive Clicks (Mirror Buttons in COMM & Workstation Monitor in PROJECTS)
+    // 3D Interactive Clicks (Mirror Buttons in COMM, Workstation Monitor in PROJECTS, BD Headset in STATS)
     window.addEventListener('click', (e) => {
-      // Ignore click if clicking 2D navigation bar buttons
-      if (e.target.closest('.hud-nav-btn') || e.target.closest('.hud-header')) {
+      // Ignore click if clicking 2D navigation bar buttons or BD overlay controls
+      if (e.target.closest('.hud-nav-btn') || e.target.closest('.hud-header') || e.target.closest('#bd-playback-overlay') || e.target.closest('#bd-launch-prompt')) {
         return;
+      }
+
+      // STATS Sunken Lounge BD Headset Click
+      if (
+        this.cameraController &&
+        this.cameraController.currentAnchor === 'STATS' &&
+        this.room?.furniture?.bdClickableMeshes &&
+        !this.isBDActive
+      ) {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.room.furniture.bdClickableMeshes);
+        if (intersects.length > 0) {
+          if (!this.isBDActive && !this.isBDEntrancePlaying) {
+            this.playBraindanceEntrance();
+          }
+          return;
+        }
       }
 
       // COMM Mirror Buttons Click
@@ -257,7 +311,7 @@ class App {
           } else if (id === 'github') {
             window.open('https://github.com/felixpalingan', '_blank');
           } else if (id === 'linkedin') {
-            window.open('https://linkedin.com/in/felixpalingan', '_blank');
+            window.open('https://www.linkedin.com/in/almakius-felix-bariq-hekopung/', '_blank');
           } else if (id === 'return') {
             document.getElementById('nav-btn-home')?.click();
           }
@@ -302,19 +356,17 @@ class App {
                 }
               }
             } else if (mType === 'left') {
-              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y);
+              const totalP = this.room?.furniture?.projects?.length || 2;
+              const actionObj = TextureGenerator.getLeftMonitorActionAtUV(hit.uv.x, hit.uv.y, totalP);
               if (actionObj && actionObj.action === 'select') {
-                const p = this.room.furniture.setProjectIndex(actionObj.index);
-                if (p) this.showCopyToast(`⚡ SHARD MOUNTED: ${p.title}`);
+                this.room.furniture.setProjectIndex(actionObj.index);
               }
             } else if (mType === 'right') {
               const actionObj = TextureGenerator.getRightMonitorActionAtUV(hit.uv.x, hit.uv.y);
               if (actionObj?.action === 'prev') {
-                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
-                if (p) this.showCopyToast(`⚡ PREVIOUS SHARD: ${p.title}`);
+                this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
               } else if (actionObj?.action === 'next') {
-                const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
-                if (p) this.showCopyToast(`⚡ NEXT SHARD: ${p.title}`);
+                this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
               }
             }
           } else if (hit.object.userData?.isDeskButton) {
@@ -329,11 +381,9 @@ class App {
             });
 
             if (action === 'prev') {
-              const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
-              if (p) this.showCopyToast(`⚡ PREVIOUS SHARD: ${p.title}`);
+              this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
             } else if (action === 'next') {
-              const p = this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
-              if (p) this.showCopyToast(`⚡ NEXT SHARD: ${p.title}`);
+              this.room.furniture.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
             } else if (action === 'repo') {
               const p = this.room.furniture.getCurrentProject();
               if (p?.repoUrl) {
@@ -352,6 +402,7 @@ class App {
 
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
+        cyberAudio.playClick();
         let anchor = btn.getAttribute('data-nav');
         if (anchor === 'CONTACT') anchor = 'COMM';
 
@@ -367,11 +418,18 @@ class App {
       });
     });
 
-    // Camera transition lifecycle hooks for 3D Wall Mirror & Top-Down Blueprint
+    // Camera transition lifecycle hooks for 3D Wall Mirror, Sunken Lounge BD, & Top-Down Blueprint
     if (this.cameraController) {
       this.cameraController.onTransitionStart = (anchor) => {
         // While camera is in flight, mirror remains clean chrome silver
         if (this.room) this.room.setMirrorActive(false);
+
+        // If navigating away from STATS, disengage BD
+        if (anchor?.name !== 'STATS') {
+          if (this.isBDActive || this.isBDEntrancePlaying) {
+            this.disengageBraindance();
+          }
+        }
 
         // Temporarily lift the ceiling during TOP-DOWN blueprint view
         const isTop = anchor?.name === 'TOPDOWN';
@@ -380,9 +438,16 @@ class App {
 
       this.cameraController.onTransitionComplete = (anchor) => {
         // Only once camera stops and aims directly at the wall mirror:
-        // fade in image, info, and 3D buttons right on the mirror face
         if (anchor.name === 'COMM') {
           if (this.room) this.room.setMirrorActive(true);
+        }
+
+        // Camera is now seated on the couch at STATS!
+        // Start headset descent and camera tracking animation
+        if (anchor.name === 'STATS') {
+          if (!this.isBDActive && !this.isBDEntrancePlaying) {
+            this.playBraindanceEntrance();
+          }
         }
 
         const isTop = anchor.name === 'TOPDOWN';
@@ -390,29 +455,62 @@ class App {
       };
     }
 
-    // Quick Keyboard Shortcuts (1: HOME, 2: PROJECTS, 3: STATS, 4: COMM, 5/T: TOP-DOWN, Escape: HOME)
-    // In PROJECTS view: ◄ / ► arrow keys or A / D browse projects, O opens repo
+    // Quick Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
+      // While in active Braindance playback session
+      if (this.isBDActive) {
+        if (e.key === 'Escape') {
+          this.disengageBraindance();
+          document.getElementById('nav-btn-home')?.click();
+          return;
+        } else if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
+          cyberAudio.playTick();
+          this.bdOverlay?.prevShard();
+        } else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
+          cyberAudio.playTick();
+          this.bdOverlay?.nextShard();
+        } else if (e.key === ' ' || e.code === 'Space') {
+          e.preventDefault();
+        } else if (e.key === '1') {
+          cyberAudio.playClick();
+          if (this.bdOverlay) {
+            this.bdOverlay.currentMode = 'EXPERIENCES';
+            this.bdOverlay.render();
+          }
+        } else if (e.key === '2') {
+          cyberAudio.playClick();
+          if (this.bdOverlay) {
+            this.bdOverlay.currentMode = 'STATS';
+            this.bdOverlay.render();
+          }
+        }
+        return; // Don't trigger room navigation while inside BD session
+      }
+
       if (e.key === '1' || e.key === 'Escape') {
         document.getElementById('nav-btn-home')?.click();
       } else if (e.key === '2') {
         document.getElementById('nav-btn-projects')?.click();
       } else if (e.key === '3') {
-        document.getElementById('nav-btn-stats')?.click();
+        if (this.cameraController?.currentAnchor === 'STATS') {
+          if (!this.isBDActive && !this.isBDEntrancePlaying) {
+            this.playBraindanceEntrance();
+          }
+        } else {
+          document.getElementById('nav-btn-stats')?.click();
+        }
       } else if (e.key === '4') {
         document.getElementById('nav-btn-contact')?.click();
       } else if (e.key === '5' || e.key.toLowerCase() === 't') {
         document.getElementById('nav-btn-topdown')?.click();
       }
 
-      // Keyboard browsing while at Netrunner Workstation
+      // Keyboard browsing while at Netrunner Workstation (no toasts)
       if (this.cameraController && this.cameraController.currentAnchor === 'PROJECTS') {
         if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
-          const p = this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
-          if (p) this.showCopyToast(`⚡ PREVIOUS PROJECT: ${p.title}`);
+          this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
         } else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
-          const p = this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
-          if (p) this.showCopyToast(`⚡ NEXT PROJECT: ${p.title}`);
+          this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
         } else if (e.key.toLowerCase() === 'o') {
           const p = this.room?.furniture?.getCurrentProject();
           if (p?.repoUrl) {
@@ -422,6 +520,96 @@ class App {
         }
       }
     });
+
+    // Mouse wheel scrolling for projects at Netrunner Workstation (no toasts)
+    window.addEventListener('wheel', (e) => {
+      if (this.cameraController && this.cameraController.currentAnchor === 'PROJECTS') {
+        if (Math.abs(e.deltaY) > 20) {
+          if (e.deltaY > 0) {
+            this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex + 1);
+          } else {
+            this.room?.furniture?.setProjectIndex(this.room.furniture.currentProjectIndex - 1);
+          }
+        }
+      }
+    }, { passive: true });
+  }
+
+  initBraindance() {
+    this.bdOverlay = new BDPlaybackOverlay({
+      onDisengage: () => {
+        this.disengageBraindance();
+        document.getElementById('nav-btn-home')?.click();
+      }
+    });
+  }
+
+  playBraindanceEntrance() {
+    if (this.isBDActive || this.isBDEntrancePlaying) return;
+    this.isBDEntrancePlaying = true;
+
+    // Resting headset position in world coordinates: (2.775, 1.87, -2.497)
+    // Seated camera position: (2.70, 0.72, -2.80)
+    // Resting camera look target: (2.95, 0.48, -1.80)
+    const lookUpTarget = new THREE.Vector3(2.775, 1.87, -2.497);
+    const lookDownTarget = new THREE.Vector3(2.95, 0.48, -1.80);
+
+    // Step 1: Camera tilts UP to look at the suspended VR visor & cord
+    this.cameraController?.animateTarget(lookUpTarget, 0.45, 'power2.out', () => {
+      // Step 2: Cable unclamp tick / descending sound
+      cyberAudio.playTick();
+
+      // Step 3: Camera smoothly follows the VR headset downwards while it lowers to our eyes
+      this.cameraController?.animateTarget(lookDownTarget, 1.25, 'power2.inOut');
+
+      // Headset lowers from ceiling down in front of our eyes
+      this.room?.engageBD(this.camera, () => {
+        // Step 4: Visor reaches face & docks to camera with holographic projection beam
+        this.isBDEntrancePlaying = false;
+        this.isBDActive = true;
+
+        cyberAudio.playBDEngage();
+        this.flashBDScreen();
+
+        if (this.bdOverlay) {
+          this.bdOverlay.show();
+        }
+      });
+    });
+  }
+
+  flashBDScreen() {
+    const flash = document.createElement('div');
+    flash.style.position = 'fixed';
+    flash.style.inset = '0';
+    flash.style.zIndex = '70';
+    flash.style.background = 'rgba(0, 240, 255, 0.45)';
+    flash.style.mixBlendMode = 'screen';
+    flash.style.pointerEvents = 'none';
+    document.body.appendChild(flash);
+    gsap.to(flash, {
+      opacity: 0,
+      duration: 0.35,
+      onComplete: () => flash.remove()
+    });
+  }
+
+  disengageBraindance() {
+    this.isBDEntrancePlaying = false;
+    if (!this.isBDActive) {
+      if (this.room) this.room.disengageBD(this.camera);
+      return;
+    }
+    this.isBDActive = false;
+
+    if (this.bdOverlay) {
+      this.bdOverlay.hide();
+    }
+
+    cyberAudio.playBDDisengage();
+    if (this.room) {
+      this.room.disengageBD(this.camera);
+    }
   }
 
   highlightMirrorButton(btn) {
@@ -471,9 +659,9 @@ class App {
 
     const delta = this.clock.getDelta();
 
-    // Update animated room elements (ceiling fan, 360 ticker, vinyl turntable, server LEDs)
+    // Update animated room elements (ceiling fan, 360 ticker, vinyl turntable, server LEDs, 3D cityscape)
     if (this.room) {
-      this.room.update();
+      this.room.update(this.clock.getElapsedTime());
     }
 
     // Update camera controller (GSAP transitions & smooth parallax)

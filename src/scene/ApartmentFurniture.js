@@ -39,6 +39,21 @@ export class ApartmentFurniture {
     this.projectRightCanvas = null;
     this.projectRightTexture = null;
 
+    // Braindance (BD) Headset & Holographic Playback State
+    this.loungeGroup = null;
+    this.bdWreathGroup = null;
+    this.bdClickableMeshes = [];
+    this.bdHoloEmitter = null;
+    this.bdHoloSpotLight = null;
+    this.bdHoloRings = [];
+    this.bdLedMesh = null;
+    this.bdCord = null;
+    this.isDockedToCamera = false;
+    this.bdIsEngaged = false;
+    this.bdRestPosition = { x: -0.275, y: 2.25, z: -0.447 };
+    this.bdRestRotation = { x: 0, y: Math.PI, z: 0 };
+    this.bdEngagedPosition = { x: -0.275, y: 1.012, z: -0.447 };
+
     this.initMaterials();
     this.buildSleepingPod();
     this.buildOpenBathroom();
@@ -697,7 +712,7 @@ export class ApartmentFurniture {
         id: 'linkedin',
         icon: '◆',
         title: 'LINKEDIN NET',
-        subtitle: 'linkedin.com/in/felixpalingan',
+        subtitle: 'in/almakius-felix-bariq-hekopung',
         color: '#00F0FF',
         pos: { x: 0.28, y: 0.97 } // Screen Left
       },
@@ -892,6 +907,7 @@ export class ApartmentFurniture {
     this.projectLeftTexture = new THREE.CanvasTexture(this.projectLeftCanvas);
     this.projectLeftTexture.minFilter = THREE.LinearFilter;
     this.projectLeftTexture.magFilter = THREE.LinearFilter;
+    this.projectLeftCanvas._ownerTexture = this.projectLeftTexture;
 
     this.projectCenterCanvas = document.createElement('canvas');
     this.projectCenterCanvas.width = 1024;
@@ -899,6 +915,7 @@ export class ApartmentFurniture {
     this.projectCenterTexture = new THREE.CanvasTexture(this.projectCenterCanvas);
     this.projectCenterTexture.minFilter = THREE.LinearFilter;
     this.projectCenterTexture.magFilter = THREE.LinearFilter;
+    this.projectCenterCanvas._ownerTexture = this.projectCenterTexture;
 
     this.projectRightCanvas = document.createElement('canvas');
     this.projectRightCanvas.width = 720;
@@ -906,6 +923,7 @@ export class ApartmentFurniture {
     this.projectRightTexture = new THREE.CanvasTexture(this.projectRightCanvas);
     this.projectRightTexture.minFilter = THREE.LinearFilter;
     this.projectRightTexture.magFilter = THREE.LinearFilter;
+    this.projectRightCanvas._ownerTexture = this.projectRightTexture;
 
     // Initial renders
     TextureGenerator.renderProjectLeftMonitorCanvas(
@@ -1052,18 +1070,7 @@ export class ApartmentFurniture {
     standBase.position.set(0, 0.74, -0.26);
     deskGroup.add(standBase);
 
-    // Horizontal heavy articulation support arms extending to left & right monitors
-    const armGeoL = new THREE.BoxGeometry(0.62, 0.024, 0.03);
-    const armL = new THREE.Mesh(armGeoL, this.darkMetal);
-    armL.position.set(0.42, 1.18, -0.21);
-    armL.rotation.y = -0.19;
-    deskGroup.add(armL);
-
-    const armGeoR = new THREE.BoxGeometry(0.62, 0.024, 0.03);
-    const armR = new THREE.Mesh(armGeoR, this.darkMetal);
-    armR.position.set(-0.42, 1.18, -0.21);
-    armR.rotation.y = 0.19;
-    deskGroup.add(armR);
+    // Clean triple monitor mount (arms removed to prevent clipping through screens)
 
     // Dedicated Overhead Workstation Desk Task Light
     const deskTaskSpot = new THREE.SpotLight(0xffecd0, 3.8, 4.5, Math.PI / 3, 0.35, 1.2);
@@ -1344,6 +1351,7 @@ export class ApartmentFurniture {
   // ===========================================================================
   buildSunkenLounge() {
     const loungeGroup = new THREE.Group();
+    this.loungeGroup = loungeGroup;
     // Positioned down inside the deepened sunken arena (y = -0.38)
     loungeGroup.position.set(3.05, -0.38, -2.05);
 
@@ -1526,24 +1534,353 @@ export class ApartmentFurniture {
       }
     });
 
-    // Braindance (BD) Headset Unit suspended nearby
+    // =========================================================================
+    // BRAINDANCE (BD) HEADSET UNIT (AUTHENTIC CYBERPUNK 2077 BD WREATH)
+    // Modeled precisely after the reference image: curved forehead arch,
+    // temple housing blocks with illuminated blue neural crystals, dual cranial
+    // electrode suction discs, articulated downward ocular arms & optic diodes.
+    // =========================================================================
+    // Ceiling mount socket in sunken lounge ceiling (y = 3.18)
+    const socketGeo = new THREE.CylinderGeometry(0.04, 0.05, 0.06, 12);
+    const socket = new THREE.Mesh(socketGeo, this.darkMetal);
+    socket.position.set(this.bdRestPosition.x, 3.15, this.bdRestPosition.z);
+    loungeGroup.add(socket);
+
+    // Dynamic suspension cord spanning from ceiling downwards to wreath
+    const cordGeo = new THREE.CylinderGeometry(0.005, 0.005, 1.0, 8);
+    cordGeo.translate(0, -0.5, 0); // pivot at top of cylinder
+    const cord = new THREE.Mesh(cordGeo, this.darkMetal);
+    cord.position.set(this.bdRestPosition.x, 3.18, this.bdRestPosition.z);
+    loungeGroup.add(cord);
+    this.bdCord = cord;
+
     const bdGroup = new THREE.Group();
-    bdGroup.position.set(0.65, 1.9, -0.4);
+    bdGroup.position.set(this.bdRestPosition.x, this.bdRestPosition.y, this.bdRestPosition.z);
+    bdGroup.rotation.set(this.bdRestRotation.x, this.bdRestRotation.y, this.bdRestRotation.z);
 
-    const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 1.0, 6), this.darkMetal);
-    cord.position.y = 0.5;
-    bdGroup.add(cord);
+    const frameMat = this.darkMetal;
+    const carbonMat = new THREE.MeshStandardMaterial({
+      color: 0x14171d,
+      roughness: 0.38,
+      metalness: 0.82
+    });
+    const chromeMat = new THREE.MeshStandardMaterial({
+      color: 0x8a94a6,
+      roughness: 0.22,
+      metalness: 0.96
+    });
+    const blueCrystalMat = new THREE.MeshBasicMaterial({
+      color: 0x00D9FF
+    });
+    const lensEmissiveMat = new THREE.MeshBasicMaterial({
+      color: 0x00F0FF
+    });
 
-    const visor = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.1, 0.14), this.darkMetal);
-    bdGroup.add(visor);
+    // 1. Central Forehead Brow Arch
+    const browCenter = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.022, 0.026), carbonMat);
+    browCenter.position.set(0, 0.04, -0.01);
+    bdGroup.add(browCenter);
 
-    const lens = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.04, 0.02), this.cyanEmissive);
-    lens.position.set(0, 0, 0.075);
-    bdGroup.add(lens);
+    const browLeft = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.024), frameMat);
+    browLeft.position.set(-0.085, 0.038, 0.02);
+    browLeft.rotation.y = 0.35;
+    bdGroup.add(browLeft);
+
+    const browRight = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.024), frameMat);
+    browRight.position.set(0.085, 0.038, 0.02);
+    browRight.rotation.y = -0.35;
+    bdGroup.add(browRight);
+
+    // 2. Temple Side Housing Blocks & Cranial Suction Discs
+    [-1, 1].forEach(side => {
+      const isL = side === -1;
+      const xSign = side;
+
+      // Temple module body
+      const templeGeo = new THREE.BoxGeometry(0.028, 0.048, 0.16);
+      const temple = new THREE.Mesh(templeGeo, carbonMat);
+      temple.position.set(xSign * 0.135, 0.025, 0.09);
+      temple.rotation.y = xSign * -0.08;
+      bdGroup.add(temple);
+
+      // Metallic reinforcement trim
+      const trimGeo = new THREE.BoxGeometry(0.008, 0.018, 0.14);
+      const trim = new THREE.Mesh(trimGeo, chromeMat);
+      trim.position.set(xSign * 0.148, 0.035, 0.09);
+      trim.rotation.y = xSign * -0.08;
+      bdGroup.add(trim);
+
+      // Glowing Blue/Cyan Neural Crystal on upper-rear (exact reference feature)
+      const crystalGeo = new THREE.BoxGeometry(0.018, 0.024, 0.035);
+      const crystal = new THREE.Mesh(crystalGeo, blueCrystalMat);
+      crystal.position.set(xSign * 0.138, 0.054, 0.155);
+      crystal.rotation.x = 0.25;
+      bdGroup.add(crystal);
+
+      // 3. Dual Cranial Neural Electrodes / Suction Discs (Upper & Lower)
+      // Upper suction electrode stalk & pad
+      const stalkUpper = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.045, 8), chromeMat);
+      stalkUpper.position.set(xSign * 0.11, 0.02, 0.06);
+      stalkUpper.rotation.z = xSign * (Math.PI / 2 + 0.2);
+      bdGroup.add(stalkUpper);
+
+      const discUpper = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.005, 24), frameMat);
+      discUpper.position.set(xSign * 0.088, 0.028, 0.06);
+      discUpper.rotation.z = Math.PI / 2;
+      bdGroup.add(discUpper);
+
+      const padUpper = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.017, 0.003, 16), chromeMat);
+      padUpper.position.set(xSign * 0.085, 0.028, 0.06);
+      padUpper.rotation.z = Math.PI / 2;
+      bdGroup.add(padUpper);
+
+      // Lower suction electrode stalk & pad
+      const stalkLower = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.038, 8), chromeMat);
+      stalkLower.position.set(xSign * 0.115, -0.015, 0.10);
+      stalkLower.rotation.z = xSign * (Math.PI / 2 - 0.2);
+      bdGroup.add(stalkLower);
+
+      const discLower = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.005, 24), frameMat);
+      discLower.position.set(xSign * 0.096, -0.022, 0.10);
+      discLower.rotation.z = Math.PI / 2;
+      bdGroup.add(discLower);
+
+      // 4. Downward / Forward Ocular Projector Arms
+      const ocularArmGeo = new THREE.BoxGeometry(0.014, 0.018, 0.11);
+      const ocularArm = new THREE.Mesh(ocularArmGeo, frameMat);
+      ocularArm.position.set(xSign * 0.115, -0.015, -0.025);
+      ocularArm.rotation.x = -0.45;
+      ocularArm.rotation.y = xSign * 0.2;
+      bdGroup.add(ocularArm);
+
+      // Micro Cyber-Wiring Conduit along the arm
+      const wireGeo = new THREE.CylinderGeometry(0.0018, 0.0018, 0.095, 6);
+      const wireMat = new THREE.MeshBasicMaterial({ color: isL ? 0x00F0FF : 0xFF003C });
+      const wire = new THREE.Mesh(wireGeo, wireMat);
+      wire.position.set(xSign * 0.124, -0.012, -0.025);
+      wire.rotation.x = -0.45;
+      wire.rotation.y = xSign * 0.2;
+      bdGroup.add(wire);
+
+      // Optic Diode Projector Tip
+      const tipGeo = new THREE.BoxGeometry(0.02, 0.016, 0.03);
+      const tip = new THREE.Mesh(tipGeo, carbonMat);
+      tip.position.set(xSign * 0.095, -0.05, -0.065);
+      bdGroup.add(tip);
+
+      // Glowing Optic Lens Face (where holographic rays project forward)
+      const lensGeo = new THREE.CylinderGeometry(0.008, 0.008, 0.006, 16);
+      lensGeo.rotateX(Math.PI / 2);
+      const lens = new THREE.Mesh(lensGeo, lensEmissiveMat);
+      lens.position.set(xSign * 0.095, -0.05, -0.08);
+      bdGroup.add(lens);
+
+      // Status indicator mini-LED on temple
+      const ledGeo = new THREE.SphereGeometry(0.006, 8, 8);
+      const bdLed = new THREE.Mesh(ledGeo, new THREE.MeshBasicMaterial({ color: 0x00FF66 }));
+      bdLed.position.set(xSign * 0.146, 0.02, 0.03);
+      bdGroup.add(bdLed);
+      if (isL) this.bdLedMesh = bdLed;
+    });
+
+    // 5. Holographic AR Projection System (emanating directly from BD glasses!)
+    const holoProjGroup = new THREE.Group();
+    holoProjGroup.visible = false;
+    holoProjGroup.position.set(0, -0.05, -0.08);
+
+    // Dual volumetric light projection cones (beaming forward from each lens)
+    this.bdHoloRings = [];
+    [-0.095, 0.095].forEach(xOff => {
+      // Forward volumetric conical light cone
+      const coneGeo = new THREE.CylinderGeometry(0.38, 0.015, 1.1, 24, 1, true);
+      coneGeo.rotateX(-Math.PI / 2); // point forward along -Z
+      coneGeo.translate(0, 0, -0.55); // base at lens, tip expanding forward
+
+      const coneMat = new THREE.MeshBasicMaterial({
+        color: 0x00F0FF,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+      const cone = new THREE.Mesh(coneGeo, coneMat);
+      cone.position.set(xOff, 0, 0);
+      holoProjGroup.add(cone);
+
+      // Holographic focal rings inside each beam
+      const ringGeo = new THREE.RingGeometry(0.06, 0.065, 24);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xFCEE09,
+        transparent: true,
+        opacity: 0.55,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.set(xOff, 0, -0.35);
+      holoProjGroup.add(ring);
+      this.bdHoloRings.push(ring);
+    });
+
+    // Forward Spotlight casting dynamic cyan holographic light
+    const holoSpotLight = new THREE.SpotLight(0x00F0FF, 5.0, 3.5, Math.PI / 3, 0.5, 1.2);
+    holoSpotLight.position.set(0, 0, 0);
+    holoSpotLight.target.position.set(0, 0, -2.5);
+    holoProjGroup.add(holoSpotLight);
+    holoProjGroup.add(holoSpotLight.target);
+    this.bdHoloSpotLight = holoSpotLight;
+
+    // Ambient cyan glow right at the glasses
+    const holoGlow = new THREE.PointLight(0x00F0FF, 3.0, 1.5);
+    holoGlow.position.set(0, 0, -0.05);
+    holoProjGroup.add(holoGlow);
+
+    bdGroup.add(holoProjGroup);
+    this.bdHoloEmitter = holoProjGroup;
+
+    // Invisible Hit Box for 3D mouse click
+    const hitBoxGeo = new THREE.BoxGeometry(0.42, 0.35, 0.35);
+    const hitBoxMat = new THREE.MeshBasicMaterial({ visible: false });
+    const hitBox = new THREE.Mesh(hitBoxGeo, hitBoxMat);
+    hitBox.userData = { isBDWreath: true };
+    bdGroup.add(hitBox);
 
     loungeGroup.add(bdGroup);
+    this.bdWreathGroup = bdGroup;
+    this.bdClickableMeshes = [hitBox, browCenter];
 
     this.group.add(loungeGroup);
+    this.updateBDCord();
+
+    // Register holographic projection shimmer loop
+    this.animatedObjects.push({
+      update: () => {
+        if (this.bdHoloEmitter && this.bdHoloEmitter.visible) {
+          const time = Date.now() * 0.003;
+          if (this.bdHoloSpotLight) {
+            this.bdHoloSpotLight.intensity = 4.2 + Math.sin(time * 3) * 0.6;
+          }
+          if (this.bdHoloRings) {
+            this.bdHoloRings.forEach((r, i) => {
+              r.rotation.z += (i % 2 === 0 ? 0.02 : -0.02);
+            });
+          }
+        }
+      }
+    });
+  }
+
+  updateBDCord() {
+    if (!this.bdCord || !this.bdWreathGroup) return;
+    const len = Math.max(0.05, 3.18 - (this.bdWreathGroup.position.y + 0.045));
+    this.bdCord.scale.set(1, len, 1);
+  }
+
+  dockBDToCamera(camera) {
+    if (!this.bdWreathGroup || !camera || this.isDockedToCamera) return;
+    this.isDockedToCamera = true;
+
+    // Reparent from loungeGroup to camera
+    camera.add(this.bdWreathGroup);
+    // Position directly around the camera view (peripheral frame)
+    this.bdWreathGroup.position.set(0, -0.042, -0.26);
+    this.bdWreathGroup.rotation.set(0, 0, 0);
+
+    // Hide ceiling cord while wearing wreath
+    if (this.bdCord) this.bdCord.visible = false;
+
+    // Turn on the glasses' forward holographic projection beam & cyan status LED
+    if (this.bdHoloEmitter) this.bdHoloEmitter.visible = true;
+    if (this.bdLedMesh) this.bdLedMesh.material.color.setHex(0x00F0FF);
+  }
+
+  undockBDFromCamera(camera) {
+    if (!this.bdWreathGroup || !this.isDockedToCamera) return;
+    this.isDockedToCamera = false;
+
+    // Turn off holographic projection beam
+    if (this.bdHoloEmitter) this.bdHoloEmitter.visible = false;
+    if (this.bdLedMesh) this.bdLedMesh.material.color.setHex(0x00FF66);
+
+    // Reparent back to loungeGroup at seated eye position
+    if (this.loungeGroup) {
+      this.loungeGroup.add(this.bdWreathGroup);
+      this.bdWreathGroup.position.set(this.bdEngagedPosition.x, this.bdEngagedPosition.y, this.bdEngagedPosition.z);
+      this.bdWreathGroup.rotation.set(0, Math.PI, 0);
+    }
+
+    // Make suspension cord visible again
+    if (this.bdCord) {
+      this.bdCord.visible = true;
+      this.updateBDCord();
+    }
+  }
+
+  engageBD(camera, onComplete) {
+    if (!this.bdWreathGroup || !this.loungeGroup) return;
+    this.bdIsEngaged = true;
+
+    gsap.killTweensOf(this.bdWreathGroup.position);
+    gsap.killTweensOf(this.bdWreathGroup.rotation);
+
+    // Smooth descent from high ceiling to seated eye level
+    gsap.to(this.bdWreathGroup.position, {
+      x: this.bdEngagedPosition.x,
+      y: this.bdEngagedPosition.y,
+      z: this.bdEngagedPosition.z,
+      duration: 1.25,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        this.updateBDCord();
+      },
+      onComplete: () => {
+        // Dock directly onto camera for diegetic peripheral view and holographic projection
+        this.dockBDToCamera(camera);
+        if (onComplete) onComplete();
+      }
+    });
+
+    gsap.to(this.bdWreathGroup.rotation, {
+      x: 0,
+      y: Math.PI,
+      z: 0,
+      duration: 1.25,
+      ease: 'power2.inOut'
+    });
+  }
+
+  disengageBD(camera, onComplete) {
+    if (!this.bdWreathGroup) return;
+    this.bdIsEngaged = false;
+
+    // Undock from camera and place back in room
+    this.undockBDFromCamera(camera);
+
+    gsap.killTweensOf(this.bdWreathGroup.position);
+    gsap.killTweensOf(this.bdWreathGroup.rotation);
+
+    gsap.to(this.bdWreathGroup.position, {
+      x: this.bdRestPosition.x,
+      y: this.bdRestPosition.y,
+      z: this.bdRestPosition.z,
+      duration: 1.0,
+      ease: 'power2.out',
+      onUpdate: () => {
+        this.updateBDCord();
+      },
+      onComplete: () => {
+        if (onComplete) onComplete();
+      }
+    });
+
+    gsap.to(this.bdWreathGroup.rotation, {
+      x: this.bdRestRotation.x,
+      y: this.bdRestRotation.y,
+      z: this.bdRestRotation.z,
+      duration: 1.0,
+      ease: 'power2.out'
+    });
   }
 
   // ===========================================================================

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TextureGenerator } from './TextureGenerator.js';
 import { ApartmentFurniture } from './ApartmentFurniture.js';
+import { LowPolyCityscape } from './LowPolyCityscape.js';
 
 /**
  * ApartmentRoom (Room Shell & Interior)
@@ -304,118 +305,30 @@ export class ApartmentRoom {
   }
 
   createNightCitySkyline(backdropZ, centerY) {
-    // 1. Initial fallback canvas while high-resolution anime panorama loads
-    const fallbackCanvas = document.createElement('canvas');
-    fallbackCanvas.width = 64;
-    fallbackCanvas.height = 36;
-    const fCtx = fallbackCanvas.getContext('2d');
-    const fGrad = fCtx.createLinearGradient(0, 0, 0, 36);
-    fGrad.addColorStop(0, '#030814');
-    fGrad.addColorStop(0.5, '#071629');
-    fGrad.addColorStop(1, '#02050b');
-    fCtx.fillStyle = fGrad;
-    fCtx.fillRect(0, 0, 64, 36);
-    const fallbackTexture = new THREE.CanvasTexture(fallbackCanvas);
+    // 3D Low-Poly Cyberpunk Cityscape (Wenay_Anime.jpg inspired architecture & neon)
+    this.cityscape = new LowPolyCityscape();
+    // Pushed back significantly across the urban canyon & scaled up so buildings feel grand, not crowding the window glass
+    this.cityscape.group.position.set(0.15, -0.7, -5.2);
+    this.cityscape.group.scale.set(1.45, 1.45, 1.45);
+    this.group.add(this.cityscape.group);
 
-    // 2. Curved Panorama Geometry (16:9 widescreen, wrapping around the apartment horizon)
-    // Width 11.2m, Height 6.3m, with smooth backwards curvature at the edges for immersive depth
-    const skylineGeo = new THREE.PlaneGeometry(11.2, 6.3, 40, 1);
-    const pos = skylineGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const zOffset = -(x * x) * 0.024;
-      pos.setZ(i, zOffset);
-    }
-    skylineGeo.computeVertexNormals();
-
-    const skylineMat = new THREE.MeshBasicMaterial({
-      map: fallbackTexture,
-      fog: false,
-      side: THREE.FrontSide
-    });
-
-    // 3. Load High-Definition Night City Skyline (Faithful to Wenay_Anime.jpg)
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(
-      '/night_city_panoramic.jpg',
-      (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = true;
-        skylineMat.map = texture;
-        skylineMat.needsUpdate = true;
-      },
-      undefined,
-      (err) => {
-        console.warn('[ApartmentRoom] Loading /night_city_panoramic.jpg failed, fallback to /wenay_city_skyline.jpg', err);
-        textureLoader.load('/wenay_city_skyline.jpg', (altTex) => {
-          altTex.colorSpace = THREE.SRGBColorSpace;
-          skylineMat.map = altTex;
-          skylineMat.needsUpdate = true;
-        });
-      }
-    );
-
-    const skylineMesh = new THREE.Mesh(skylineGeo, skylineMat);
-    // Positioned at X = 0.15 (matching window center), Y = 2.05 (framing the central Lucy billboard & Arasaka towers), Z = backdropZ
-    skylineMesh.position.set(0.15, 2.05, backdropZ);
-    this.group.add(skylineMesh);
-
-    // 4. Live 3D Flying Aerodynes (AVs) with neon engine trails gliding in the sky
-    this.cityAVs = [];
-    const avConfigs = [
-      { y: 2.75, z: backdropZ + 0.45, speed: 0.008, color: 0x00F0FF, minX: -5.0, maxX: 5.0, startX: -1.2 },
-      { y: 2.45, z: backdropZ + 0.65, speed: -0.006, color: 0xFF003C, minX: -5.0, maxX: 5.0, startX: 2.8 },
-      { y: 3.10, z: backdropZ + 0.35, speed: 0.005, color: 0xFCEE09, minX: -5.0, maxX: 5.0, startX: -3.5 }
-    ];
-
-    avConfigs.forEach((cfg) => {
-      const avGroup = new THREE.Group();
-      // Vehicle chassis
-      const avMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const avMesh = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.045, 0.09), avMat);
-      avGroup.add(avMesh);
-
-      // Glowing engine trail
-      const trailMat = new THREE.MeshBasicMaterial({
-        color: cfg.color,
-        transparent: true,
-        opacity: 0.85
-      });
-      const trailLen = 0.65;
-      const trailGeo = new THREE.BoxGeometry(trailLen, 0.02, 0.02);
-      const trailMesh = new THREE.Mesh(trailGeo, trailMat);
-      trailMesh.position.x = cfg.speed > 0 ? -trailLen / 2 : trailLen / 2;
-      avGroup.add(trailMesh);
-
-      avGroup.position.set(cfg.startX, cfg.y, cfg.z);
-      this.group.add(avGroup);
-      this.cityAVs.push({
-        mesh: avGroup,
-        speed: cfg.speed,
-        minX: cfg.minX,
-        maxX: cfg.maxX
-      });
-    });
-
-    // 5. Authentic Atmospheric Neon Glow pouring into the room through the window
+    // Atmospheric neon illumination entering the apartment window
     const windowZ = -this.depth / 2;
 
-    // Cool cyan volumetric skyline ambient spot
-    const windowLight = new THREE.SpotLight(0x00F0FF, 0.38, 10, Math.PI / 3, 0.45, 1.2);
+    // Cool cyan volumetric skyline ambient spotlight
+    const windowLight = new THREE.SpotLight(0x00F0FF, 0.42, 11, Math.PI / 3, 0.45, 1.2);
     windowLight.position.set(0.15, centerY + 0.4, windowZ - 0.2);
     windowLight.target.position.set(0.15, 1.0, 0);
     this.group.add(windowLight);
     this.group.add(windowLight.target);
 
     // Arasaka Tower Crimson Neon Glow on the left
-    const arasakaNeonLight = new THREE.PointLight(0xFF003C, 0.32, 6.5, 1.2);
+    const arasakaNeonLight = new THREE.PointLight(0xFF003C, 0.35, 7.0, 1.2);
     arasakaNeonLight.position.set(-1.2, centerY + 0.3, windowZ - 0.4);
     this.group.add(arasakaNeonLight);
 
     // Warm street/billboard gold bounce on the window sill
-    const cityAmberLight = new THREE.PointLight(0xFFA834, 0.28, 6, 1.2);
+    const cityAmberLight = new THREE.PointLight(0xFFA834, 0.30, 6.5, 1.2);
     cityAmberLight.position.set(0.8, centerY - 0.4, windowZ - 0.4);
     this.group.add(cityAmberLight);
   }
@@ -447,20 +360,25 @@ export class ApartmentRoom {
     }
   }
 
-  update() {
+  engageBD(camera, onComplete) {
+    if (this.furniture) {
+      this.furniture.engageBD(camera, onComplete);
+    }
+  }
+
+  disengageBD(camera, onComplete) {
+    if (this.furniture) {
+      this.furniture.disengageBD(camera, onComplete);
+    }
+  }
+
+  update(time) {
     if (this.furniture) {
       this.furniture.update();
     }
-    // Update outside flying aerodynes (AVs)
-    if (this.cityAVs && this.cityAVs.length > 0) {
-      this.cityAVs.forEach(av => {
-        av.mesh.position.x += av.speed;
-        if (av.speed > 0 && av.mesh.position.x > av.maxX) {
-          av.mesh.position.x = av.minX;
-        } else if (av.speed < 0 && av.mesh.position.x < av.minX) {
-          av.mesh.position.x = av.maxX;
-        }
-      });
+    // Update outside 3D low-poly cityscape (AV traffic, blinking warning beacons)
+    if (this.cityscape) {
+      this.cityscape.update(time);
     }
   }
 }

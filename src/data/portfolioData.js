@@ -8,12 +8,14 @@ export const portfolioData = {
   profile: {
     handle: "FELIX PALINGAN",
     codename: "V_NETRUNNER",
+    fullName: "Almakius Felix Bariq Hekopung",
     title: "Full Stack Web Developer & Creative Engineer",
     affiliation: "Megabuilding H10, Little China, Watson",
     location: "Night City / Indonesia",
     status: "OPEN FOR CONTRACTS",
     bio: "Full Stack Web Developer with a strong passion for immersive web experiences, high-performance architecture, and interactive 3D WebGL interfaces. Building bleeding-edge software from front-end diegetic UIs to resilient distributed back-ends.",
-    avatarPlaceholder: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='400' height='400' fill='%230b0d14'/><polygon points='40,20 360,20 380,40 380,360 360,380 40,380 20,360 20,40' fill='none' stroke='%2300F0FF' stroke-width='4'/><circle cx='200' cy='160' r='60' fill='none' stroke='%23FCEE09' stroke-width='4'/><path d='M100 320 Q200 240 300 320' fill='none' stroke='%23FCEE09' stroke-width='4'/><text x='200' y='365' fill='%2300F0FF' font-family='monospace' font-size='18' text-anchor='middle' font-weight='bold'>OPERATIVE: FELIX</text></svg>"
+    avatar: "/default.jpg",
+    avatarPlaceholder: "/default.jpg"
   },
 
   stats: [
@@ -45,91 +47,119 @@ export const portfolioData = {
 
   projects: [
     {
-      id: "holo-core",
-      title: "ARASAKA ICE-BREAKER",
-      tabTitle: "01 // ICE-BREAKER",
-      tagline: "3D TELEMETRY & NETWORK TOPOLOGY GRAPH",
-      category: "Full Stack & WebGL",
-      year: "2026",
-      status: "PRODUCTION READY // DEPLOYED",
-      description: "High-performance security monitoring dashboard featuring real-time node telemetry, interactive 3D topology graph, and automated penetration testing visualizer.",
-      tags: ["Three.js", "WebGL", "TypeScript", "Node.js", "WebSocket"],
-      liveUrl: "https://github.com/felixpalingan",
-      repoUrl: "https://github.com/felixpalingan",
-      color: "#00F0FF",
-      metrics: {
-        latency: "1.2ms",
-        nodes: "1,024 active",
-        security: "ICE-Bypass Clean"
-      },
-      imagePlaceholder: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='340' viewBox='0 0 600 340'><rect width='600' height='340' fill='%230b0d14'/><rect x='10' y='10' width='580' height='320' fill='none' stroke='%2300F0FF' stroke-dasharray='8 4' stroke-width='2'/><text x='300' y='150' fill='%2300F0FF' font-family='sans-serif' font-size='22' text-anchor='middle' font-weight='bold'>ARASAKA ICE-BREAKER</text><text x='300' y='185' fill='%23FCEE09' font-family='monospace' font-size='14' text-anchor='middle'>[TELEMETRY &amp; 3D TOPOLOGY]</text><text x='300' y='230' fill='%23888' font-family='monospace' font-size='12' text-anchor='middle'>PLACEHOLDER // REPLACE IN PORTFOLIODATA.JS</text></svg>"
-    },
-    {
-      id: "trauma-net",
-      title: "TRAUMA DISPATCH V2",
-      tabTitle: "02 // TRAUMA-NET",
-      tagline: "DISTRIBUTED GEOSPATIAL EMERGENCY ROUTING",
-      category: "Distributed Web App",
+      id: "iron-pixels",
+      title: "IRONPIXELS",
+      tabTitle: "01 // IRONPIXELS",
+      tagline: "16-BIT GAMIFIED WORKOUT TRACKER & CO-OP RAID RPG",
+      category: "Full Stack & PWA",
       year: "2025",
       status: "PRODUCTION READY // DEPLOYED",
-      description: "Emergency dispatch routing engine for rapid medical response. Real-time GPS triangulation, geospatial routing algorithms, and offline-first PWA architecture.",
-      tags: ["React", "FastAPI", "PostgreSQL", "Leaflet", "TailwindCSS"],
-      liveUrl: "https://github.com/felixpalingan",
-      repoUrl: "https://github.com/felixpalingan",
-      color: "#FF003C",
+      description: "Gamified fitness tracking PWA that fuses weightlifting routines with retro 16-bit MMORPG dungeon progression. Features authoritative Relative Volume Scoring (RVS), realtime multi-device Co-Op boss raids via Supabase WebSockets, and zero-latency Web Audio chiptune SFX.",
+      tags: ["Next.js 15", "Supabase", "React 19", "TypeScript", "TailwindCSS", "Framer Motion", "WebSockets"],
+      liveUrl: "https://iron-pixels.vercel.app",
+      repoUrl: "https://github.com/felixpalingan/IronPixels",
+      color: "#00FF66",
       metrics: {
-        latency: "4.8ms",
-        nodes: "256 ambulances",
-        security: "HIPAA Encrypted"
+        latency: "< 50ms WS",
+        nodes: "Realtime Co-Op",
+        security: "RLS & CAS Engine"
       },
-      imagePlaceholder: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='340' viewBox='0 0 600 340'><rect width='600' height='340' fill='%2314070a'/><rect x='10' y='10' width='580' height='320' fill='none' stroke='%23FF003C' stroke-dasharray='8 4' stroke-width='2'/><text x='300' y='150' fill='%23FF003C' font-family='sans-serif' font-size='22' text-anchor='middle' font-weight='bold'>TRAUMA DISPATCH V2</text><text x='300' y='185' fill='%23FCEE09' font-family='monospace' font-size='14' text-anchor='middle'>[GEOSPATIAL ROUTING ENGINE]</text><text x='300' y='230' fill='%23888' font-family='monospace' font-size='12' text-anchor='middle'>PLACEHOLDER // REPLACE IN PORTFOLIODATA.JS</text></svg>"
+      image: "/ironpixels_icon.png",
+      imagePlaceholder: "/ironpixels_icon.png"
     },
     {
-      id: "kiroshi-hud",
-      title: "KIROSHI OPTICAL ENGINE",
-      tabTitle: "03 // KIROSHI-HUD",
-      tagline: "CLIENT-SIDE WASM COMPUTER VISION & HUD OVERLAY",
-      category: "Computer Vision & UI",
+      id: "oit",
+      title: "OIT",
+      tabTitle: "02 // OIT",
+      tagline: "HIGH-PERFORMANCE REAL-TIME WORKSPACE & WEBRTC CALLING",
+      category: "Real-Time Comms & WebRTC",
       year: "2025",
       status: "PRODUCTION READY // DEPLOYED",
-      description: "Browser-based object detection and real-time augmented HUD overlay using client-side WebAssembly models and hardware-accelerated canvas rendering.",
-      tags: ["WebAssembly", "JavaScript", "Canvas API", "TensorFlow.js"],
-      liveUrl: "https://github.com/felixpalingan",
-      repoUrl: "https://github.com/felixpalingan",
-      color: "#FCEE09",
+      description: "High-performance real-time communication platform engineered for high-velocity teams and tech communities. Features sub-100ms instant messaging via Supabase CDC, low-latency LiveKit Cloud SFU audio/video calling, 4-tier RBAC moderation, and an iconic dark glassmorphic UI.",
+      tags: ["Next.js 16", "LiveKit WebRTC", "Supabase", "Zustand", "TypeScript", "TailwindCSS"],
+      liveUrl: "https://oit-seven.vercel.app",
+      repoUrl: "https://github.com/felixpalingan/Oit",
+      color: "#FF5C00",
       metrics: {
-        latency: "16.6ms (60 FPS)",
-        nodes: "Browser WASM",
-        security: "Zero-Server Leak"
+        latency: "Sub-100ms CDC",
+        nodes: "LiveKit SFU",
+        security: "4-Tier RBAC"
       },
-      imagePlaceholder: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='340' viewBox='0 0 600 340'><rect width='600' height='340' fill='%23141407'/><rect x='10' y='10' width='580' height='320' fill='none' stroke='%23FCEE09' stroke-dasharray='8 4' stroke-width='2'/><text x='300' y='150' fill='%23FCEE09' font-family='sans-serif' font-size='22' text-anchor='middle' font-weight='bold'>KIROSHI OPTICAL ENGINE</text><text x='300' y='185' fill='%2300F0FF' font-family='monospace' font-size='14' text-anchor='middle'>[CLIENT-SIDE WASM CV HUD]</text><text x='300' y='230' fill='%23888' font-family='monospace' font-size='12' text-anchor='middle'>PLACEHOLDER // REPLACE IN PORTFOLIODATA.JS</text></svg>"
+      image: "/oit_logo.png",
+      imagePlaceholder: "/oit_logo.png"
+    }
+  ],
+
+  experiences: [
+    {
+      id: "exp-current",
+      period: "2024 - PRESENT",
+      role: "Lead Full Stack & Creative Engineer",
+      company: "Digital Forge // Independent Operative",
+      location: "Remote / Indonesia",
+      layer: "CORE_ARCH // 01",
+      layerColor: "#00F0FF",
+      summary: "Architecting high-performance web applications, interactive 3D WebGL experiences, and fault-tolerant microservices.",
+      highlights: [
+        "Engineered immersive 3D web applications with Three.js & GLSL shaders running at 60 FPS across desktop and mobile.",
+        "Built resilient REST & GraphQL APIs with Node.js and TypeScript serving thousands of daily active client requests.",
+        "Streamlined automated CI/CD deployment pipelines using Docker, GitHub Actions, and cloud edge infrastructure."
+      ],
+      techStack: ["TypeScript", "Three.js", "React / Next.js", "Node.js", "PostgreSQL", "Docker"]
     },
     {
-      id: "nightcity-market",
-      title: "BLACK MARKET EXCHANGE",
-      tabTitle: "04 // BLACK-MARKET",
-      tagline: "HIGH-THROUGHPUT FINTECH PAYMENT GATEWAY",
-      category: "Fintech & E-Commerce",
-      year: "2024",
-      status: "PRODUCTION READY // DEPLOYED",
-      description: "High-throughput marketplace platform supporting secure multi-currency transactions, idempotent payments, automated order matching, and webhooks.",
-      tags: ["Next.js", "Prisma", "Redis", "Stripe API", "Docker"],
-      liveUrl: "https://github.com/felixpalingan",
-      repoUrl: "https://github.com/felixpalingan",
-      color: "#00F0FF",
-      metrics: {
-        latency: "2.4ms",
-        nodes: "Idempotent Flow",
-        security: "PCI-DSS Level 1"
-      },
-      imagePlaceholder: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='340' viewBox='0 0 600 340'><rect width='600' height='340' fill='%230b0d14'/><rect x='10' y='10' width='580' height='320' fill='none' stroke='%2300F0FF' stroke-dasharray='8 4' stroke-width='2'/><text x='300' y='150' fill='%2300F0FF' font-family='sans-serif' font-size='22' text-anchor='middle' font-weight='bold'>BLACK MARKET EXCHANGE</text><text x='300' y='185' fill='%23FF003C' font-family='monospace' font-size='14' text-anchor='middle'>[FINTECH PAYMENT GATEWAY]</text><text x='300' y='230' fill='%23888' font-family='monospace' font-size='12' text-anchor='middle'>PLACEHOLDER // REPLACE IN PORTFOLIODATA.JS</text></svg>"
+      id: "exp-2023",
+      period: "2023 - 2024",
+      role: "Full Stack Web Developer",
+      company: "Nexus Labs // Tech Collective",
+      location: "Jakarta, Indonesia",
+      layer: "SYS_NET // 02",
+      layerColor: "#FCEE09",
+      summary: "Developed scalable multi-tenant client portals, responsive dashboard UIs, and real-time WebSocket data pipelines.",
+      highlights: [
+        "Created real-time event streaming dashboards processing high-frequency data streams with zero UI lag.",
+        "Refactored legacy database schemas into optimized PostgreSQL models, slashing query latency by 45%.",
+        "Collaborated with UI/UX teams to implement fluid micro-animations and WCAG-compliant design systems."
+      ],
+      techStack: ["React", "FastAPI / Python", "TailwindCSS", "PostgreSQL", "Redis", "WebSockets"]
+    },
+    {
+      id: "exp-2022",
+      period: "2022 - 2023",
+      role: "Frontend & UI/UX Engineer",
+      company: "CyberMatrix Studio",
+      location: "Surabaya, Indonesia",
+      layer: "RAW_VISUAL // 03",
+      layerColor: "#FF0055",
+      summary: "Focused on cutting-edge interactive web prototypes, design systems, and responsive single-page web applications.",
+      highlights: [
+        "Delivered 15+ production websites with custom GSAP transitions and pixel-perfect design alignment.",
+        "Built modular component libraries with React and TypeScript, boosting team development velocity by 30%.",
+        "Optimized web performance and Core Web Vitals to score 98+ on Google Lighthouse."
+      ],
+      techStack: ["JavaScript", "TypeScript", "GSAP", "HTML5 Canvas", "Vue.js", "REST APIs"]
+    },
+    {
+      id: "exp-edu",
+      period: "2020 - 2024",
+      role: "Bachelor in Computer Science / Information Systems",
+      company: "University Academic Academy",
+      location: "Indonesia",
+      layer: "FOUNDATION // 04",
+      layerColor: "#00FF66",
+      summary: "Comprehensive academic grounding in Data Structures, Algorithms, Software Engineering, and Database Architecture.",
+      highlights: [
+        "Graduated with High Honors focusing on Computer Networks, Distributed Systems, and Modern Web Tech.",
+        "Led university developer workshops on Web Development, Git workflows, and UI engineering."
+      ],
+      techStack: ["Algorithms", "Data Structures", "System Design", "Database Systems", "OOP"]
     }
   ],
 
   contact: {
     email: "felixbariq@gmail.com",
     github: "https://github.com/felixpalingan",
-    linkedin: "https://linkedin.com/in/felixpalingan",
+    linkedin: "https://www.linkedin.com/in/almakius-felix-bariq-hekopung/",
     commFrequency: "98.7 MHz NET_CHANNEL",
     location: "Watson District, Megabuilding H10"
   }

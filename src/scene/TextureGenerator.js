@@ -5,6 +5,7 @@ import * as THREE from 'three';
  * Optimized for rapid generation and high performance.
  */
 export class TextureGenerator {
+  static projectImgCache = new Map();
   /**
    * Generates hexagonal floor tile texture matching Megabuilding H10
    */
@@ -427,7 +428,7 @@ export class TextureGenerator {
 
       texture.needsUpdate = true;
     };
-    avatarImg.src = '/felix_avatar.jpg';
+    avatarImg.src = '/default.jpg';
 
     return texture;
   }
@@ -512,6 +513,17 @@ export class TextureGenerator {
    * Generates interactive project repository terminal canvas for workstation ultrawide monitor
    */
   /**
+   * Card layout geometry helper for Left Monitor
+   */
+  static getLeftMonitorCardGeometry(total = 2) {
+    const cardStartX = 20;
+    const cardGap = total <= 2 ? 22 : 14;
+    const cardH = total <= 2 ? 180 : 104;
+    const startY = total <= 2 ? 66 : 58;
+    return { cardStartX, cardGap, cardH, startY };
+  }
+
+  /**
    * LEFT MONITOR (Directory Shards): Displays selectable project list cards
    * Canvas: 720 x 540
    */
@@ -519,6 +531,8 @@ export class TextureGenerator {
     const w = canvas.width;
     const h = canvas.height;
     const ctx = canvas.getContext('2d');
+    const total = projects.length;
+    const { cardStartX, cardGap, cardH, startY } = TextureGenerator.getLeftMonitorCardGeometry(total);
 
     // Background & carbon grid
     ctx.fillStyle = '#060912';
@@ -550,12 +564,7 @@ export class TextureGenerator {
     ctx.textAlign = 'right';
     ctx.fillText('[CLICK TO MOUNT]', w - 20, 28);
 
-    // 4 Clickable Project Cards
-    const cardStartX = 20;
     const cardW = w - 40; // 680px
-    const cardH = 104;
-    const cardGap = 14;
-    const startY = 58;
 
     projects.forEach((p, idx) => {
       const cy = startY + idx * (cardH + cardGap);
@@ -594,43 +603,82 @@ export class TextureGenerator {
 
       // Title
       ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.9)');
-      ctx.font = 'bold 22px monospace';
-      ctx.fillText(p.title, cardStartX + 20, cy + 62);
+      ctx.font = 'bold 26px monospace';
+      ctx.fillText(p.title, cardStartX + 20, cy + 68);
 
       // Category & Year
-      ctx.fillStyle = isActive ? '#FCEE09' : 'rgba(255, 255, 255, 0.5)';
-      ctx.font = '14px monospace';
-      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + 88);
+      ctx.fillStyle = isActive ? '#FCEE09' : 'rgba(255, 255, 255, 0.65)';
+      ctx.font = 'bold 15px monospace';
+      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + 98);
+
+      // Tagline or Tags summary for spacious cards
+      if (cardH >= 150 && p.tagline) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.font = '13px monospace';
+        ctx.fillText(`◈ ${p.tagline}`, cardStartX + 20, cy + 128);
+
+        // Tech badges line
+        if (p.tags && p.tags.length > 0) {
+          ctx.fillStyle = 'rgba(0, 240, 255, 0.65)';
+          ctx.font = '12px monospace';
+          ctx.fillText(`LOADOUT: ${p.tags.slice(0, 4).join(' • ')}`, cardStartX + 20, cy + 154);
+        }
+      }
 
       // Status Pill on Right of Card
       ctx.textAlign = 'right';
       if (isActive) {
         ctx.fillStyle = '#00FF66';
         ctx.font = 'bold 14px monospace';
-        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 20, cy + 40);
-        ctx.fillStyle = 'rgba(0, 255, 102, 0.4)';
-        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 20, cy + 68);
+        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 24, cy + 40);
+        ctx.fillStyle = 'rgba(0, 255, 102, 0.55)';
+        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 24, cy + 68);
       } else {
-        ctx.fillStyle = isHovered ? '#00F0FF' : 'rgba(255, 255, 255, 0.4)';
-        ctx.font = '14px monospace';
-        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 20, cy + 55);
+        ctx.fillStyle = isHovered ? '#00F0FF' : 'rgba(255, 255, 255, 0.5)';
+        ctx.font = 'bold 14px monospace';
+        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 24, cy + 55);
+      }
+
+      // Optional project icon thumbnail in card if available
+      if (p.image && cardH >= 150) {
+        const thumbBoxX = cardStartX + cardW - 100;
+        const thumbBoxY = cy + 85;
+        const thumbBoxSize = 72;
+
+        ctx.fillStyle = 'rgba(8, 14, 26, 0.9)';
+        ctx.fillRect(thumbBoxX, thumbBoxY, thumbBoxSize, thumbBoxSize);
+        ctx.strokeStyle = isActive ? (p.color || '#00F0FF') : 'rgba(0, 240, 255, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(thumbBoxX, thumbBoxY, thumbBoxSize, thumbBoxSize);
+
+        let img = TextureGenerator.projectImgCache.get(p.image);
+        if (!img) {
+          img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            TextureGenerator.projectImgCache.set(p.image, img);
+            if (canvas._ownerTexture) canvas._ownerTexture.needsUpdate = true;
+          };
+          img.src = p.image;
+          TextureGenerator.projectImgCache.set(p.image, img);
+        } else if (img.complete && img.naturalWidth > 0) {
+          ctx.drawImage(img, thumbBoxX + 4, thumbBoxY + 4, thumbBoxSize - 8, thumbBoxSize - 8);
+        }
       }
     });
 
     // Bottom Status Bar
-    ctx.fillStyle = 'rgba(0, 240, 255, 0.4)';
-    ctx.font = '12px monospace';
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.6)';
+    ctx.font = '13px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('WATSON NEURAL ARCHIVE // 4 SHARDS DETECTED // 100% HEALTH', w / 2, h - 12);
+    ctx.fillText(`WATSON NEURAL ARCHIVE // ${total} ACTIVE SHARDS DETECTED // 100% HEALTH`, w / 2, h - 14);
   }
 
-  static getLeftMonitorActionAtUV(u, v) {
+  static getLeftMonitorActionAtUV(u, v, totalProjects = 2) {
     const y = (1 - v) * 540;
-    const startY = 58;
-    const cardH = 104;
-    const cardGap = 14;
+    const { cardH, cardGap, startY } = TextureGenerator.getLeftMonitorCardGeometry(totalProjects);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < totalProjects; i++) {
       const cy = startY + i * (cardH + cardGap);
       if (y >= cy && y <= cy + cardH) {
         return { action: 'select', index: i };
@@ -680,6 +728,44 @@ export class TextureGenerator {
     // Main Left Section: Project details
     const leftX = 36;
 
+    // Project Logo Box on Top Right of Dossier
+    const logoSize = 130;
+    const logoX = w - logoSize - 36;
+    const logoY = 56;
+
+    ctx.fillStyle = 'rgba(10, 16, 28, 0.95)';
+    ctx.fillRect(logoX, logoY, logoSize, logoSize);
+    ctx.strokeStyle = project.color || '#00F0FF';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(logoX, logoY, logoSize, logoSize);
+
+    // Reticle corner accents
+    ctx.fillStyle = '#FCEE09';
+    ctx.fillRect(logoX, logoY, 12, 2.5);
+    ctx.fillRect(logoX, logoY, 2.5, 12);
+    ctx.fillRect(logoX + logoSize - 12, logoY, 12, 2.5);
+    ctx.fillRect(logoX + logoSize - 2.5, logoY, 2.5, 12);
+    ctx.fillRect(logoX, logoY + logoSize - 2.5, 12, 2.5);
+    ctx.fillRect(logoX, logoY + logoSize - 12, 2.5, 12);
+    ctx.fillRect(logoX + logoSize - 12, logoY + logoSize - 2.5, 12, 2.5);
+    ctx.fillRect(logoX + logoSize - 2.5, logoY + logoSize - 12, 2.5, 12);
+
+    if (project.image) {
+      let img = TextureGenerator.projectImgCache.get(project.image);
+      if (!img) {
+        img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          TextureGenerator.projectImgCache.set(project.image, img);
+          if (canvas._ownerTexture) canvas._ownerTexture.needsUpdate = true;
+        };
+        img.src = project.image;
+        TextureGenerator.projectImgCache.set(project.image, img);
+      } else if (img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, logoX + 8, logoY + 8, logoSize - 16, logoSize - 16);
+      }
+    }
+
     // Category & Year Tagline
     ctx.textAlign = 'left';
     ctx.fillStyle = '#FCEE09';
@@ -697,11 +783,11 @@ export class TextureGenerator {
 
     // Description text (word-wrapped with generous line-height)
     ctx.fillStyle = 'rgba(230, 242, 255, 0.92)';
-    ctx.font = '20px monospace';
+    ctx.font = '19px monospace';
     const words = project.description.split(' ');
     let line = '';
     let lineY = 196;
-    const maxLineWidth = 940;
+    const maxLineWidth = logoX - leftX - 28; // avoid overlapping logo box
 
     for (let n = 0; n < words.length; n++) {
       const testLine = line + words[n] + ' ';
@@ -709,7 +795,7 @@ export class TextureGenerator {
       if (metrics.width > maxLineWidth && n > 0) {
         ctx.fillText(line, leftX, lineY);
         line = words[n] + ' ';
-        lineY += 30;
+        lineY += 28;
       } else {
         line = testLine;
       }

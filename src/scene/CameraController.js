@@ -49,11 +49,11 @@ export class CameraController {
       },
       STATS: {
         name: 'STATS',
-        label: 'SUNKEN LOUNGE // OPERATIVE STATS',
-        // Inside the lounge arena, framing couch, coffee table & 360 green marquee
-        position: new THREE.Vector3(1.6, 1.05, -0.6),
-        target: new THREE.Vector3(3.05, 0.75, -2.05),
-        duration: 1.9,
+        label: 'SUNKEN LOUNGE // BRAINDANCE & STATS',
+        // Seated on lounge couch directly at Braindance station, facing coffee table & 360 display
+        position: new THREE.Vector3(2.70, 0.72, -2.80),
+        target: new THREE.Vector3(2.95, 0.48, -1.80),
+        duration: 1.8,
         ease: 'power2.inOut'
       },
       COMM: {
@@ -94,6 +94,8 @@ export class CameraController {
 
     // Active tween reference for safe cancellation
     this.activeTween = null;
+    this.targetTween = null;
+    this.isTrackingTarget = false;
 
     // Callback handlers for UI integration
     this.onTransitionStart = null;
@@ -188,6 +190,11 @@ export class CameraController {
       this.activeTween.kill();
       this.activeTween = null;
     }
+    if (this.targetTween) {
+      this.targetTween.kill();
+      this.targetTween = null;
+      this.isTrackingTarget = false;
+    }
 
     const duration = this.prefersReducedMotion ? 0.2 : anchor.duration;
     const tweenObj = { t: 0 };
@@ -232,6 +239,33 @@ export class CameraController {
   }
 
   /**
+   * Smoothly animates the camera lookAt target (e.g. tracking descending VR headset)
+   */
+  animateTarget(newTarget, duration = 1.0, ease = 'power2.inOut', onComplete = null) {
+    if (this.targetTween) {
+      this.targetTween.kill();
+      this.targetTween = null;
+    }
+    this.isTrackingTarget = true;
+    this.targetTween = gsap.to(this.baseTarget, {
+      x: newTarget.x,
+      y: newTarget.y,
+      z: newTarget.z,
+      duration: this.prefersReducedMotion ? 0.1 : duration,
+      ease,
+      onUpdate: () => {
+        this.target.copy(this.baseTarget);
+        this.camera.lookAt(this.target);
+      },
+      onComplete: () => {
+        this.targetTween = null;
+        this.isTrackingTarget = false;
+        if (onComplete) onComplete();
+      }
+    });
+  }
+
+  /**
    * Receives normalized mouse coordinates from main application
    */
   setMouse(x, y) {
@@ -244,6 +278,11 @@ export class CameraController {
    */
   update() {
     if (this.isTransitioning) {
+      return;
+    }
+
+    if (this.isTrackingTarget) {
+      this.camera.lookAt(this.target);
       return;
     }
 
