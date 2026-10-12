@@ -156,8 +156,6 @@ graph TD
 ├── index.html               # Main HTML entry point & loading screen
 ├── vercel.json              # Vercel deployment routing configuration
 ├── vite.config.js           # Vite build configuration
-├── CONTRIBUTING.md          # Open-source contribution guidelines
-├── SECURITY.md              # Security and vulnerability disclosure policy
 └── LICENSE                  # MIT License
 ```
 
@@ -201,11 +199,9 @@ graph TD
 
 ---
 
-## 🛡️ Documentation & Governance
+## 📄 License
 
-- **License**: Released under the terms of the [MIT License](LICENSE).
-- **Contributing**: Please review our [Contributing Guidelines](CONTRIBUTING.md) before submitting Pull Requests.
-- **Security**: For vulnerability disclosure guidelines, see our [Security Policy](SECURITY.md).
+This project is open-source and released under the terms of the [MIT License](LICENSE).
 
 ---
 
