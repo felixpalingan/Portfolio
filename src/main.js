@@ -501,8 +501,6 @@ class App {
         }
       } else if (e.key === '4') {
         document.getElementById('nav-btn-contact')?.click();
-      } else if (e.key === '5' || e.key.toLowerCase() === 't') {
-        document.getElementById('nav-btn-topdown')?.click();
       }
 
       // Keyboard browsing while at Netrunner Workstation (no toasts)

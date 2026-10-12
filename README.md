@@ -44,7 +44,7 @@ graph TD
     User["👤 Evaluator / Visitor"]
 
     subgraph HUD_Layer["HUD & Interactive Interface Layer"]
-        Nav["🧭 Top HUD Navigation 01-05"]
+        Nav["🧭 Bottom HUD Navigation 01-04"]
         Toast["🔔 Cyber Toast Notifications"]
         BD_HUD["🥽 Braindance HUD Visor Overlay"]
         Audio["🔊 Web Audio API Sound Synthesizer"]
@@ -52,7 +52,7 @@ graph TD
 
     subgraph Camera_Engine["Cinematic Camera Controller"]
         Cam["🎥 PerspectiveCamera fov=48 near=0.05"]
-        Anchors["📍 5 Spatial Camera Anchors: HOME, PROJECTS, STATS, COMM, TOPDOWN"]
+        Anchors["📍 4 Spatial Camera Anchors: HOME, PROJECTS, STATS, COMM"]
         Spline["✨ GSAP Bezier Arc & Non-Linear LookAt Tracking"]
     end
 
