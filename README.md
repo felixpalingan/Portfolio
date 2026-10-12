@@ -23,6 +23,10 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="assets/banner.png" alt="Felix Palingan 3D WebGL Cyberpunk Portfolio Showcase" width="100%" />
+</p>
+
 ---
 
 ## 📖 Overview
