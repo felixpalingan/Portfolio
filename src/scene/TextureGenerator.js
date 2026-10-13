@@ -6,6 +6,58 @@ import * as THREE from 'three';
  */
 export class TextureGenerator {
   static projectImgCache = new Map();
+
+  /**
+   * Preload all critical image assets (screenshots, icons, avatar)
+   * Resolves when all assets are loaded into cache
+   */
+  static preloadAllAssets(onProgress = null) {
+    const urls = [
+      '/default.jpg',
+      '/felix_avatar.jpg',
+      '/ironpixels_icon.png',
+      '/ironpixels_preview.png',
+      '/oit_logo.png',
+      '/oit_preview.png',
+      '/preview.png'
+    ];
+
+    let loaded = 0;
+    const total = urls.length;
+
+    const promises = urls.map(url => {
+      return new Promise(resolve => {
+        if (TextureGenerator.projectImgCache.has(url)) {
+          const cached = TextureGenerator.projectImgCache.get(url);
+          if (cached && cached.complete && cached.naturalWidth > 0) {
+            loaded++;
+            if (onProgress) onProgress(loaded / total, url);
+            resolve(cached);
+            return;
+          }
+        }
+
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          TextureGenerator.projectImgCache.set(url, img);
+          loaded++;
+          if (onProgress) onProgress(loaded / total, url);
+          resolve(img);
+        };
+        img.onerror = () => {
+          console.warn(`[TextureGenerator] Preload notice for ${url}`);
+          loaded++;
+          if (onProgress) onProgress(loaded / total, url);
+          resolve(null);
+        };
+        img.src = url;
+      });
+    });
+
+    return Promise.all(promises);
+  }
+
   /**
    * Generates hexagonal floor tile texture matching Megabuilding H10
    */
@@ -405,15 +457,14 @@ export class TextureGenerator {
 
     renderBase();
 
-    // Load authentic avatar image and render onto photo box
-    const avatarImg = new Image();
-    avatarImg.crossOrigin = 'anonymous';
-    avatarImg.onload = () => {
+    // Check cache first for instant synchronous render
+    const photoX = 56;
+    const photoY = 175;
+    const photoSize = 340;
+
+    const drawAvatar = (img) => {
       renderBase();
-      const photoX = 56;
-      const photoY = 175;
-      const photoSize = 340;
-      ctx.drawImage(avatarImg, photoX, photoY, photoSize, photoSize);
+      ctx.drawImage(img, photoX, photoY, photoSize, photoSize);
 
       // Cyan HUD facial targeting brackets overlay on top of photo
       ctx.strokeStyle = '#00F0FF';
@@ -428,7 +479,25 @@ export class TextureGenerator {
 
       texture.needsUpdate = true;
     };
-    avatarImg.src = '/default.jpg';
+
+    let cachedAvatar = TextureGenerator.projectImgCache.get('/default.jpg') || TextureGenerator.projectImgCache.get('/felix_avatar.jpg');
+    if (cachedAvatar && cachedAvatar.complete && cachedAvatar.naturalWidth > 0) {
+      drawAvatar(cachedAvatar);
+    } else {
+      // Biometric scanning loading indicator
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
+      ctx.font = 'bold 15px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('[ BIOMETRIC SCAN IN PROGRESS... ]', photoX + photoSize / 2, photoY + photoSize / 2);
+
+      const avatarImg = new Image();
+      avatarImg.crossOrigin = 'anonymous';
+      avatarImg.onload = () => {
+        TextureGenerator.projectImgCache.set('/default.jpg', avatarImg);
+        drawAvatar(avatarImg);
+      };
+      avatarImg.src = '/default.jpg';
+    }
 
     return texture;
   }
@@ -758,11 +827,23 @@ export class TextureGenerator {
         img.onload = () => {
           TextureGenerator.projectImgCache.set(project.image, img);
           if (canvas._ownerTexture) canvas._ownerTexture.needsUpdate = true;
+          if (canvas._redrawCallback) canvas._redrawCallback();
         };
         img.src = project.image;
         TextureGenerator.projectImgCache.set(project.image, img);
-      } else if (img.complete && img.naturalWidth > 0) {
+      }
+      
+      if (img && img.complete && img.naturalWidth > 0) {
         ctx.drawImage(img, logoX + 8, logoY + 8, logoSize - 16, logoSize - 16);
+      } else {
+        // High-tech logo loading indicator
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+        ctx.fillRect(logoX + 8, logoY + 8, logoSize - 16, logoSize - 16);
+        ctx.fillStyle = project.color || '#00F0FF';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('LOADING', logoX + logoSize / 2, logoY + logoSize / 2 - 4);
+        ctx.fillText('SHARD...', logoX + logoSize / 2, logoY + logoSize / 2 + 14);
       }
     }
 
@@ -955,6 +1036,7 @@ export class TextureGenerator {
         previewImg.onload = () => {
           TextureGenerator.projectImgCache.set(previewSrc, previewImg);
           if (canvas._ownerTexture) canvas._ownerTexture.needsUpdate = true;
+          if (canvas._redrawCallback) canvas._redrawCallback();
         };
         previewImg.src = previewSrc;
         TextureGenerator.projectImgCache.set(previewSrc, previewImg);
@@ -995,7 +1077,7 @@ export class TextureGenerator {
     }
 
     if (!hasDrawnPreview) {
-      // Fallback: Radar grid & circle
+      // Animated High-Tech Cyberpunk Loading & Buffering State
       ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
       ctx.lineWidth = 1;
       for (let gx = rx + 36; gx < rx + rw; gx += 36) {
@@ -1013,22 +1095,46 @@ export class TextureGenerator {
 
       const cx = rx + rw / 2;
       const cy = ry + rh / 2;
+
+      // Scanning sweep line
+      const now = performance.now() * 0.002;
+      const scanY = ry + (Math.sin(now) * 0.5 + 0.5) * (rh - 24) + 12;
+      const scanGrad = ctx.createLinearGradient(rx, scanY - 14, rx, scanY + 14);
+      scanGrad.addColorStop(0, 'rgba(0, 240, 255, 0)');
+      scanGrad.addColorStop(0.5, 'rgba(0, 240, 255, 0.45)');
+      scanGrad.addColorStop(1, 'rgba(0, 240, 255, 0)');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(rx, scanY - 14, rw, 28);
+
+      // Rotating cyber crosshairs & rings
+      ctx.save();
+      ctx.translate(cx, cy - 14);
+      ctx.rotate(now * 1.2);
       ctx.strokeStyle = project.color || '#00F0FF';
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.arc(cx, cy, 75, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-32, -32, 64, 64);
+      ctx.restore();
 
+      ctx.save();
+      ctx.translate(cx, cy - 14);
+      ctx.rotate(-now * 2);
+      ctx.strokeStyle = '#FCEE09';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+      ctx.arc(0, 0, 46, 0, Math.PI * 1.5);
       ctx.stroke();
+      ctx.restore();
 
-      ctx.beginPath();
-      ctx.moveTo(cx - 95, cy);
-      ctx.lineTo(cx + 95, cy);
-      ctx.moveTo(cx, cy - 95);
-      ctx.lineTo(cx, cy + 95);
-      ctx.stroke();
+      // Loading HUD text & pulse
+      ctx.fillStyle = '#00F0FF';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('⚡ DOWNLOADING HIGH-RES SHARD FEED...', cx, cy + 54);
+
+      ctx.fillStyle = '#00FF66';
+      ctx.font = 'bold 13px monospace';
+      const dots = '.'.repeat(Math.floor((now * 4) % 4) + 1);
+      ctx.fillText(`BUFFERING // ${project.title} // DECRYPTING ICE STREAM ${dots}`, cx, cy + 78);
     }
 
     // Border & hazard accents

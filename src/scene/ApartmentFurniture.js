@@ -908,6 +908,7 @@ export class ApartmentFurniture {
     this.projectLeftTexture.minFilter = THREE.LinearFilter;
     this.projectLeftTexture.magFilter = THREE.LinearFilter;
     this.projectLeftCanvas._ownerTexture = this.projectLeftTexture;
+    this.projectLeftCanvas._redrawCallback = () => this.updateAllMonitors();
 
     this.projectCenterCanvas = document.createElement('canvas');
     this.projectCenterCanvas.width = 1024;
@@ -916,6 +917,7 @@ export class ApartmentFurniture {
     this.projectCenterTexture.minFilter = THREE.LinearFilter;
     this.projectCenterTexture.magFilter = THREE.LinearFilter;
     this.projectCenterCanvas._ownerTexture = this.projectCenterTexture;
+    this.projectCenterCanvas._redrawCallback = () => this.updateAllMonitors();
 
     this.projectRightCanvas = document.createElement('canvas');
     this.projectRightCanvas.width = 720;
@@ -924,6 +926,7 @@ export class ApartmentFurniture {
     this.projectRightTexture.minFilter = THREE.LinearFilter;
     this.projectRightTexture.magFilter = THREE.LinearFilter;
     this.projectRightCanvas._ownerTexture = this.projectRightTexture;
+    this.projectRightCanvas._redrawCallback = () => this.updateAllMonitors();
 
     // Initial renders
     TextureGenerator.renderProjectLeftMonitorCanvas(

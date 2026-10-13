@@ -29,19 +29,30 @@ class App {
     this.bdOverlay = null;
     this.bdLaunchPrompt = null;
 
+    this.init();
+  }
+
+  async init() {
     try {
       console.log("[CYBERPUNK] Booting Megabuilding H10 matrix...");
-      this.updateProgress(20, "INITIALIZING WEBGL 3D PIPELINE [20%]");
+      this.updateProgress(15, "INITIALIZING WEBGL 3D PIPELINE [15%]");
       
       this.initScene();
       this.initCamera();
       this.initRenderer();
       this.initLights();
 
-      this.updateProgress(60, "GENERATING APARTMENT GEOMETRY [60%]");
+      this.updateProgress(35, "PRELOADING NEURAL SHARD MEDIA [35%]");
+      await TextureGenerator.preloadAllAssets((progress, url) => {
+        const pct = Math.round(35 + progress * 35);
+        const shortName = url.replace('/', '');
+        this.updateProgress(pct, `BUFFERING SHARD: ${shortName} [${pct}%]`);
+      });
+
+      this.updateProgress(75, "GENERATING APARTMENT GEOMETRY [75%]");
       this.initRoom();
 
-      this.updateProgress(85, "CONNECTING NIGHT CITY SKYLINE [85%]");
+      this.updateProgress(90, "CONNECTING NIGHT CITY SKYLINE [90%]");
       this.initEvents();
 
       this.updateProgress(100, "NEURAL LINK ESTABLISHED [100%]");
