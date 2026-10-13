@@ -936,9 +936,9 @@ export class TextureGenerator {
       ctx.fillText(m.val, mx + 14, mY + 49);
     });
 
-    // Huge Action Buttons at Bottom
-    const actY = mY + 84;
-    const actH = 64;
+    // Action Buttons Pinned at Bottom of Center Monitor Canvas (h = 576)
+    const actY = 490;
+    const actH = 66;
 
     // Button 1: OPEN GITHUB REPOSITORY
     const repoW = 460;
@@ -953,7 +953,7 @@ export class TextureGenerator {
     ctx.fillStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
     ctx.font = 'bold 22px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + repoW / 2, actY + 40);
+    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + repoW / 2, actY + 41);
 
     // Button 2: LIVE DEMO
     const liveW = 460;
@@ -967,17 +967,17 @@ export class TextureGenerator {
 
     ctx.fillStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
     ctx.font = 'bold 22px monospace';
-    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + liveW / 2, actY + 40);
+    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + liveW / 2, actY + 41);
   }
 
   static getCenterMonitorActionAtUV(u, v) {
     const x = u * 1024;
     const y = (1 - v) * 576;
 
-    // Check bottom action buttons
-    if (y >= 450 && y <= 560) {
-      if (x >= 36 && x <= 496) return { action: 'repo' };
-      if (x >= 520 && x <= 980) return { action: 'live' };
+    // Generous, foolproof hit detection covering entire bottom action area (y >= 440 to 576)
+    if (y >= 440 && y <= 576) {
+      if (x >= 20 && x <= 508) return { action: 'repo' };
+      if (x > 508 && x <= 1004) return { action: 'live' };
     }
     return null;
   }

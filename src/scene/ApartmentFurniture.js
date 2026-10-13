@@ -1126,7 +1126,7 @@ export class ApartmentFurniture {
         id: 'prev',
         label: '◄ PREV',
         color: 0x00F0FF,
-        x: -0.22,
+        x: -0.24,
         action: 'prev',
         toast: 'SWITCHING TO PREVIOUS PROJECT'
       },
@@ -1134,17 +1134,25 @@ export class ApartmentFurniture {
         id: 'next',
         label: 'NEXT ►',
         color: 0x00F0FF,
-        x: 0.0,
+        x: -0.08,
         action: 'next',
         toast: 'SWITCHING TO NEXT PROJECT'
       },
       {
         id: 'repo',
         label: '◈ GITHUB',
-        color: 0xFCEE09,
-        x: 0.22,
+        color: 0x00F0FF,
+        x: 0.08,
         action: 'repo',
         toast: 'OPENING GITHUB REPOSITORY'
+      },
+      {
+        id: 'live',
+        label: '⚡ DEMO',
+        color: 0xFCEE09,
+        x: 0.24,
+        action: 'live',
+        toast: 'LAUNCHING LIVE DEMO'
       }
     ];
 
@@ -1156,7 +1164,7 @@ export class ApartmentFurniture {
         emissive: btnCfg.color,
         emissiveIntensity: 0.35
       });
-      const btnMesh = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.016, 0.07), btnMat);
+      const btnMesh = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.016, 0.07), btnMat);
       btnMesh.position.set(btnCfg.x, 0.776, -0.02);
       btnMesh.userData = {
         isDeskButton: true,

@@ -41,9 +41,9 @@ export class CameraController {
       PROJECTS: {
         name: 'PROJECTS',
         label: 'NETRUNNER WORKSTATION // PROJECTS',
-        // Brought much closer (Z = 1.42m, ~64cm from screens) for crystal-clear readability
-        position: new THREE.Vector3(3.00, 1.20, 1.42),
-        target: new THREE.Vector3(3.00, 1.18, 2.068),
+        // Moved back slightly (Z = 1.28m, ~79cm from screens) for optimal framing of screens, action links, and desk pad
+        position: new THREE.Vector3(3.00, 1.22, 1.28),
+        target: new THREE.Vector3(3.00, 1.16, 2.068),
         duration: 1.9,
         ease: 'power2.inOut'
       },

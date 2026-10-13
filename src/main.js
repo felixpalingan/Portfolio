@@ -274,6 +274,10 @@ class App {
 
     // 3D Interactive Clicks (Mirror Buttons in COMM, Workstation Monitor in PROJECTS, BD Headset in STATS)
     window.addEventListener('click', (e) => {
+      // Always synchronize mouse raycast coordinates with the exact click event position
+      this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
       // Ignore click if clicking 2D navigation bar buttons or BD overlay controls
       if (e.target.closest('.hud-nav-btn') || e.target.closest('.hud-header') || e.target.closest('#bd-playback-overlay') || e.target.closest('#bd-launch-prompt')) {
         return;
@@ -320,9 +324,9 @@ class App {
               }, 2500);
             });
           } else if (id === 'github') {
-            window.open('https://github.com/felixpalingan', '_blank');
+            this.openUrlSafe('https://github.com/felixpalingan');
           } else if (id === 'linkedin') {
-            window.open('https://www.linkedin.com/in/almakius-felix-bariq-hekopung/', '_blank');
+            this.openUrlSafe('https://www.linkedin.com/in/almakius-felix-bariq-hekopung/');
           } else if (id === 'return') {
             document.getElementById('nav-btn-home')?.click();
           }
@@ -356,13 +360,13 @@ class App {
               if (actionObj?.action === 'repo') {
                 const p = this.room.furniture.getCurrentProject();
                 if (p?.repoUrl) {
-                  window.open(p.repoUrl, '_blank');
+                  this.openUrlSafe(p.repoUrl);
                   this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
                 }
               } else if (actionObj?.action === 'live') {
                 const p = this.room.furniture.getCurrentProject();
                 if (p?.liveUrl) {
-                  window.open(p.liveUrl, '_blank');
+                  this.openUrlSafe(p.liveUrl);
                   this.showCopyToast(`⚡ LAUNCHING DEMO: ${p.title}`);
                 }
               }
@@ -398,8 +402,14 @@ class App {
             } else if (action === 'repo') {
               const p = this.room.furniture.getCurrentProject();
               if (p?.repoUrl) {
-                window.open(p.repoUrl, '_blank');
+                this.openUrlSafe(p.repoUrl);
                 this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
+              }
+            } else if (action === 'live') {
+              const p = this.room.furniture.getCurrentProject();
+              if (p?.liveUrl) {
+                this.openUrlSafe(p.liveUrl);
+                this.showCopyToast(`⚡ LAUNCHING DEMO: ${p.title}`);
               }
             }
           }
@@ -523,8 +533,14 @@ class App {
         } else if (e.key.toLowerCase() === 'o') {
           const p = this.room?.furniture?.getCurrentProject();
           if (p?.repoUrl) {
-            window.open(p.repoUrl, '_blank');
+            this.openUrlSafe(p.repoUrl);
             this.showCopyToast(`⚡ OPENING GITHUB: ${p.title}`);
+          }
+        } else if (e.key.toLowerCase() === 'l' || e.key === 'Enter') {
+          const p = this.room?.furniture?.getCurrentProject();
+          if (p?.liveUrl) {
+            this.openUrlSafe(p.liveUrl);
+            this.showCopyToast(`⚡ LAUNCHING DEMO: ${p.title}`);
           }
         }
       }
@@ -640,6 +656,22 @@ class App {
       gsap.to(btn.position, { z: btn.userData.baseZ, duration: 0.15 });
     } else if (btn.userData.baseX !== undefined) {
       gsap.to(btn.position, { x: btn.userData.baseX, duration: 0.15 });
+    }
+  }
+
+  openUrlSafe(url) {
+    if (!url) return;
+    cyberAudio.playClick();
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => a.remove(), 200);
+    } catch {
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   }
 
