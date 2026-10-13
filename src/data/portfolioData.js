@@ -65,7 +65,8 @@ export const portfolioData = {
         security: "RLS & CAS Engine"
       },
       image: "/ironpixels_icon.png",
-      imagePlaceholder: "/ironpixels_icon.png"
+      imagePlaceholder: "/ironpixels_icon.png",
+      preview: "/ironpixels_preview.png"
     },
     {
       id: "oit",
@@ -86,7 +87,8 @@ export const portfolioData = {
         security: "4-Tier RBAC"
       },
       image: "/oit_logo.png",
-      imagePlaceholder: "/oit_logo.png"
+      imagePlaceholder: "/oit_logo.png",
+      preview: "/oit_preview.png"
     }
   ],
 

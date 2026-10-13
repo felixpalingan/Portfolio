@@ -41,9 +41,9 @@ export class CameraController {
       PROJECTS: {
         name: 'PROJECTS',
         label: 'NETRUNNER WORKSTATION // PROJECTS',
-        // Brought much closer (Z = 1.15m) so the triple battlestation screens and text are crystal clear
-        position: new THREE.Vector3(3.00, 1.18, 1.15),
-        target: new THREE.Vector3(3.00, 1.18, 2.05),
+        // Brought much closer (Z = 1.42m, ~64cm from screens) for crystal-clear readability
+        position: new THREE.Vector3(3.00, 1.20, 1.42),
+        target: new THREE.Vector3(3.00, 1.18, 2.068),
         duration: 1.9,
         ease: 'power2.inOut'
       },
@@ -286,8 +286,8 @@ export class CameraController {
       return;
     }
 
-    // Subtle parallax responsive to mouse movement
-    const parallaxIntensity = this.currentAnchor === 'HOME' ? 0.18 : 0.05;
+    // Subtle parallax responsive to mouse movement (higher in PROJECTS to look across triple screens)
+    const parallaxIntensity = this.currentAnchor === 'HOME' ? 0.18 : (this.currentAnchor === 'PROJECTS' ? 0.16 : 0.05);
     const targetCamX = this.basePosition.x + this.mouse.x * parallaxIntensity;
     const targetCamY = this.basePosition.y + this.mouse.y * (parallaxIntensity * 0.5);
 

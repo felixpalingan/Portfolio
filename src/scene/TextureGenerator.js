@@ -781,13 +781,13 @@ export class TextureGenerator {
     ctx.fillStyle = project.color || '#00F0FF';
     ctx.fillRect(leftX, 154, 220, 4);
 
-    // Description text (word-wrapped with generous line-height)
-    ctx.fillStyle = 'rgba(230, 242, 255, 0.92)';
-    ctx.font = '19px monospace';
+    // Description text (bold 21px high-contrast white with 30px line height)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 21px monospace';
     const words = project.description.split(' ');
     let line = '';
     let lineY = 196;
-    const maxLineWidth = logoX - leftX - 28; // avoid overlapping logo box
+    const maxLineWidth = logoX - leftX - 24; // avoid overlapping logo box
 
     for (let n = 0; n < words.length; n++) {
       const testLine = line + words[n] + ' ';
@@ -795,7 +795,7 @@ export class TextureGenerator {
       if (metrics.width > maxLineWidth && n > 0) {
         ctx.fillText(line, leftX, lineY);
         line = words[n] + ' ';
-        lineY += 28;
+        lineY += 30;
       } else {
         line = testLine;
       }
@@ -803,9 +803,9 @@ export class TextureGenerator {
     ctx.fillText(line, leftX, lineY);
 
     // Core Tech Stack Badges
-    const tagY = lineY + 36;
+    const tagY = lineY + 34;
     ctx.fillStyle = '#FCEE09';
-    ctx.font = 'bold 16px monospace';
+    ctx.font = 'bold 17px monospace';
     ctx.fillText('CORE LOADOUT:', leftX, tagY + 18);
 
     let tagX = leftX + 140;
@@ -813,9 +813,9 @@ export class TextureGenerator {
       project.tags.forEach(tag => {
         ctx.font = 'bold 16px monospace';
         const tw = ctx.measureText(tag).width + 24;
-        ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.14)';
         ctx.fillRect(tagX, tagY, tw, 30);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.55)';
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.65)';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(tagX, tagY, tw, 30);
 
@@ -826,7 +826,7 @@ export class TextureGenerator {
     }
 
     // Telemetry metric cards
-    const mY = tagY + 54;
+    const mY = tagY + 52;
     const mCardW = 300;
     const metricsData = [
       { label: 'LATENCY', val: project.metrics?.latency || '1.2ms', color: '#00FF66' },
@@ -838,51 +838,51 @@ export class TextureGenerator {
       const mx = leftX + i * (mCardW + 24);
       ctx.fillStyle = 'rgba(10, 16, 28, 0.9)';
       ctx.fillRect(mx, mY, mCardW, 64);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.20)';
       ctx.lineWidth = 1;
       ctx.strokeRect(mx, mY, mCardW, 64);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-      ctx.font = '13px monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.font = 'bold 13px monospace';
       ctx.fillText(m.label, mx + 16, mY + 24);
 
       ctx.fillStyle = m.color;
-      ctx.font = 'bold 18px monospace';
+      ctx.font = 'bold 20px monospace';
       ctx.fillText(m.val, mx + 16, mY + 50);
     });
 
     // Huge Action Buttons at Bottom
     const actY = mY + 84;
-    const actH = 62;
+    const actH = 64;
 
     // Button 1: OPEN GITHUB REPOSITORY
     const repoW = 460;
     const repoX = leftX;
     const isRepoHovered = hoveredAction === 'repo';
-    ctx.fillStyle = isRepoHovered ? 'rgba(0, 240, 255, 0.45)' : 'rgba(0, 240, 255, 0.18)';
+    ctx.fillStyle = isRepoHovered ? 'rgba(0, 240, 255, 0.50)' : 'rgba(0, 240, 255, 0.20)';
     ctx.fillRect(repoX, actY, repoW, actH);
     ctx.strokeStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
     ctx.lineWidth = isRepoHovered ? 3 : 2;
     ctx.strokeRect(repoX, actY, repoW, actH);
 
     ctx.fillStyle = isRepoHovered ? '#FFFFFF' : '#00F0FF';
-    ctx.font = 'bold 20px monospace';
+    ctx.font = 'bold 22px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + repoW / 2, actY + 39);
+    ctx.fillText('◈ OPEN GITHUB REPOSITORY ↗', repoX + repoW / 2, actY + 40);
 
     // Button 2: LIVE DEMO
     const liveW = 460;
     const liveX = repoX + repoW + 24;
     const isLiveHovered = hoveredAction === 'live';
-    ctx.fillStyle = isLiveHovered ? 'rgba(252, 238, 9, 0.45)' : 'rgba(252, 238, 9, 0.18)';
+    ctx.fillStyle = isLiveHovered ? 'rgba(252, 238, 9, 0.50)' : 'rgba(252, 238, 9, 0.20)';
     ctx.fillRect(liveX, actY, liveW, actH);
     ctx.strokeStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
     ctx.lineWidth = isLiveHovered ? 3 : 2;
     ctx.strokeRect(liveX, actY, liveW, actH);
 
     ctx.fillStyle = isLiveHovered ? '#FFFFFF' : '#FCEE09';
-    ctx.font = 'bold 20px monospace';
-    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + liveW / 2, actY + 39);
+    ctx.font = 'bold 22px monospace';
+    ctx.fillText('⚡ RUN LIVE DEMO ↗', liveX + liveW / 2, actY + 40);
   }
 
   static getCenterMonitorActionAtUV(u, v) {
@@ -936,19 +936,106 @@ export class TextureGenerator {
     ctx.textAlign = 'right';
     ctx.fillText('SERVER: NOMINAL ●', w - 20, 28);
 
-    // Holographic Radar Box
+    // Live Production UI Snapshot Feed Box (672 x 250)
     const rx = 24;
-    const ry = 60;
+    const ry = 58;
     const rw = w - 48; // 672px
-    const rh = 240;
+    const rh = 250;
 
     ctx.fillStyle = 'rgba(8, 14, 24, 0.95)';
     ctx.fillRect(rx, ry, rw, rh);
+
+    let hasDrawnPreview = false;
+    const previewSrc = project.preview || project.image;
+    if (previewSrc) {
+      let previewImg = TextureGenerator.projectImgCache.get(previewSrc);
+      if (!previewImg) {
+        previewImg = new Image();
+        previewImg.crossOrigin = 'anonymous';
+        previewImg.onload = () => {
+          TextureGenerator.projectImgCache.set(previewSrc, previewImg);
+          if (canvas._ownerTexture) canvas._ownerTexture.needsUpdate = true;
+        };
+        previewImg.src = previewSrc;
+        TextureGenerator.projectImgCache.set(previewSrc, previewImg);
+      } else if (previewImg.complete && previewImg.naturalWidth > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(rx, ry, rw, rh);
+        ctx.clip();
+
+        // Draw image cover to fill the 16:9 feed box seamlessly
+        const imgRatio = previewImg.naturalWidth / previewImg.naturalHeight;
+        const boxRatio = rw / rh;
+        let sW, sH, sX, sY;
+        if (imgRatio > boxRatio) {
+          sH = previewImg.naturalHeight;
+          sW = sH * boxRatio;
+          sX = (previewImg.naturalWidth - sW) / 2;
+          sY = 0;
+        } else {
+          sW = previewImg.naturalWidth;
+          sH = sW / boxRatio;
+          sX = 0;
+          sY = (previewImg.naturalHeight - sH) / 2;
+        }
+        ctx.drawImage(previewImg, sX, sY, sW, sH, rx, ry, rw, rh);
+
+        // Subtle gradient vignette & scanline effect
+        const grad = ctx.createLinearGradient(rx, ry, rx, ry + rh);
+        grad.addColorStop(0, 'rgba(6, 9, 18, 0.45)');
+        grad.addColorStop(0.5, 'rgba(6, 9, 18, 0.10)');
+        grad.addColorStop(1, 'rgba(6, 9, 18, 0.70)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(rx, ry, rw, rh);
+
+        ctx.restore();
+        hasDrawnPreview = true;
+      }
+    }
+
+    if (!hasDrawnPreview) {
+      // Fallback: Radar grid & circle
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+      ctx.lineWidth = 1;
+      for (let gx = rx + 36; gx < rx + rw; gx += 36) {
+        ctx.beginPath();
+        ctx.moveTo(gx, ry);
+        ctx.lineTo(gx, ry + rh);
+        ctx.stroke();
+      }
+      for (let gy = ry + 30; gy < ry + rh; gy += 30) {
+        ctx.beginPath();
+        ctx.moveTo(rx, gy);
+        ctx.lineTo(rx + rw, gy);
+        ctx.stroke();
+      }
+
+      const cx = rx + rw / 2;
+      const cy = ry + rh / 2;
+      ctx.strokeStyle = project.color || '#00F0FF';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 75, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(cx - 95, cy);
+      ctx.lineTo(cx + 95, cy);
+      ctx.moveTo(cx, cy - 95);
+      ctx.lineTo(cx, cy + 95);
+      ctx.stroke();
+    }
+
+    // Border & hazard accents
     ctx.strokeStyle = project.color || '#00F0FF';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.strokeRect(rx, ry, rw, rh);
 
-    // Corner hazard accents
     ctx.fillStyle = '#FCEE09';
     ctx.fillRect(rx, ry, 14, 3);
     ctx.fillRect(rx, ry, 3, 14);
@@ -959,56 +1046,39 @@ export class TextureGenerator {
     ctx.fillRect(rx + rw - 14, ry + rh - 3, 14, 3);
     ctx.fillRect(rx + rw - 3, ry + rh - 14, 3, 14);
 
-    // Radar grid
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+    // Overlay HUD Top Status Bar
+    ctx.fillStyle = 'rgba(11, 17, 30, 0.88)';
+    ctx.fillRect(rx, ry, rw, 32);
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
     ctx.lineWidth = 1;
-    for (let gx = rx + 36; gx < rx + rw; gx += 36) {
-      ctx.beginPath();
-      ctx.moveTo(gx, ry);
-      ctx.lineTo(gx, ry + rh);
-      ctx.stroke();
-    }
-    for (let gy = ry + 30; gy < ry + rh; gy += 30) {
-      ctx.beginPath();
-      ctx.moveTo(rx, gy);
-      ctx.lineTo(rx + rw, gy);
-      ctx.stroke();
-    }
-
-    // Radar Circle & Crosshair
-    const cx = rx + rw / 2;
-    const cy = ry + rh / 2;
-    ctx.strokeStyle = project.color || '#00F0FF';
-    ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.arc(cx, cy, 75, 0, Math.PI * 2);
+    ctx.moveTo(rx, ry + 32);
+    ctx.lineTo(rx + rw, ry + 32);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(cx, cy, 35, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(cx - 95, cy);
-    ctx.lineTo(cx + 95, cy);
-    ctx.moveTo(cx, cy - 95);
-    ctx.lineTo(cx, cy + 95);
-    ctx.stroke();
-
-    // Radar labels
     ctx.fillStyle = project.color || '#00F0FF';
     ctx.font = 'bold 15px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(`TARGET ID: ${project.id.toUpperCase()}`, rx + 18, ry + 26);
+    ctx.fillText(`● LIVE UI SNAPSHOT // ${project.title}`, rx + 14, ry + 22);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = '#00FF66';
-    ctx.fillText('ICE BREACH: 100% SECURE', rx + rw - 18, ry + 26);
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText('DEPLOYMENT: ONLINE', rx + rw - 14, ry + 22);
+
+    // Overlay HUD Bottom Status Bar
+    ctx.fillStyle = 'rgba(11, 17, 30, 0.88)';
+    ctx.fillRect(rx, ry + rh - 32, rw, 32);
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+    ctx.beginPath();
+    ctx.moveTo(rx, ry + rh - 32);
+    ctx.lineTo(rx + rw, ry + rh - 32);
+    ctx.stroke();
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 15px monospace';
-    ctx.fillText(project.tagline || 'SYSTEM DATA SHARD ARCHIVE', cx, ry + rh - 18);
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(project.tagline || 'SYSTEM DATA SHARD ARCHIVE', rx + rw / 2, ry + rh - 11);
 
     // Large Nav Buttons Section
     const btnY = 325;
