@@ -83,10 +83,12 @@ export class CameraController {
       }
     };
 
-    // Precompute orientation quaternions for all anchors
+    // Precompute orientation quaternions and store base vectors for all anchors
     const m = new THREE.Matrix4();
     for (const key of Object.keys(this.anchors)) {
       const a = this.anchors[key];
+      a.basePosition = a.position.clone();
+      a.baseTarget = a.target.clone();
       const up = a.name === 'TOPDOWN' ? new THREE.Vector3(0, 0, -1) : new THREE.Vector3(0, 1, 0);
       m.lookAt(a.position, a.target, up);
       a.quaternion = new THREE.Quaternion().setFromRotationMatrix(m);
@@ -101,10 +103,75 @@ export class CameraController {
     this.onTransitionStart = null;
     this.onTransitionComplete = null;
 
-    // Set initial camera position & orientation
-    this.camera.position.copy(this.anchors.HOME.position);
-    this.camera.quaternion.copy(this.anchors.HOME.quaternion);
-    this.camera.lookAt(this.anchors.HOME.target);
+    // Set initial camera position & orientation dynamically adapted to screen aspect ratio
+    const initialHome = this.getAdjustedAnchor('HOME');
+    this.camera.position.copy(initialHome.position);
+    this.camera.quaternion.copy(initialHome.quaternion);
+    this.camera.lookAt(initialHome.target);
+    this.basePosition.copy(initialHome.position);
+    this.baseTarget.copy(initialHome.target);
+  }
+
+  /**
+   * Calculates aspect ratio distance multiplier.
+   * On narrower screens (laptops, tablets, mobile portrait), pushes camera back
+   * proportionally to preserve horizontal framing and keep all monitors in view.
+   */
+  getAspectScale(anchorName) {
+    const aspect = window.innerWidth / Math.max(window.innerHeight, 1);
+    const baseAspect = 16 / 9; // ~1.778
+    if (aspect >= baseAspect) {
+      return 1.0;
+    }
+    const rawRatio = baseAspect / aspect;
+    if (anchorName === 'PROJECTS') {
+      // Allows camera to smoothly pull back on narrower viewports up to 2.1x distance
+      return Math.min(2.1, Math.max(1.0, rawRatio));
+    }
+    return Math.min(1.5, Math.max(1.0, rawRatio));
+  }
+
+  /**
+   * Returns anchor with camera position dynamically adjusted for current aspect ratio
+   */
+  getAdjustedAnchor(anchorName) {
+    let key = anchorName.toUpperCase();
+    if (key === 'CONTACT') key = 'COMM';
+    const a = this.anchors[key];
+    if (!a) return null;
+
+    if (a.name === 'TOPDOWN') return a;
+
+    const scale = this.getAspectScale(a.name);
+    const dir = new THREE.Vector3().subVectors(a.basePosition, a.baseTarget);
+    const pos = new THREE.Vector3().copy(a.baseTarget).addScaledVector(dir, scale);
+
+    const m = new THREE.Matrix4();
+    m.lookAt(pos, a.baseTarget, new THREE.Vector3(0, 1, 0));
+    const quat = new THREE.Quaternion().setFromRotationMatrix(m);
+
+    return {
+      ...a,
+      position: pos,
+      target: a.baseTarget.clone(),
+      quaternion: quat
+    };
+  }
+
+  /**
+   * Called on window resize to immediately adapt camera distance to new screen aspect ratio
+   */
+  handleResize() {
+    if (this.isTransitioning) return;
+    const adjusted = this.getAdjustedAnchor(this.currentAnchor);
+    if (!adjusted) return;
+
+    this.basePosition.copy(adjusted.position);
+    this.baseTarget.copy(adjusted.target);
+    this.camera.position.copy(adjusted.position);
+    this.camera.quaternion.copy(adjusted.quaternion);
+    this.target.copy(adjusted.target);
+    this.camera.lookAt(this.target);
   }
 
   /**
@@ -151,7 +218,7 @@ export class CameraController {
     let key = anchorName.toUpperCase();
     if (key === 'CONTACT') key = 'COMM';
 
-    const anchor = this.anchors[key];
+    const anchor = this.getAdjustedAnchor(key);
     if (!anchor) {
       console.warn(`[CameraController] Unknown anchor: ${anchorName}`);
       return;

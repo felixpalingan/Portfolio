@@ -59,11 +59,11 @@ export const portfolioData = {
       liveUrl: "https://iron-pixels.vercel.app",
       repoUrl: "https://github.com/felixpalingan/IronPixels",
       color: "#00FF66",
-      metrics: {
-        latency: "< 50ms WS",
-        nodes: "Realtime Co-Op",
-        security: "RLS & CAS Engine"
-      },
+      metrics: [
+        { label: "RVS VOLUME MATH", val: "Authoritative Score Engine", color: "#00FF66" },
+        { label: "GUILD CO-OP RAIDS", val: "Multi-Device Boss Battles", color: "#00F0FF" },
+        { label: "CHIPTUNE WEB AUDIO", val: "Zero-Latency Retro SFX", color: "#FCEE09" }
+      ],
       image: "/ironpixels_icon.png",
       imagePlaceholder: "/ironpixels_icon.png",
       preview: "/ironpixels_preview.png"
@@ -81,11 +81,11 @@ export const portfolioData = {
       liveUrl: "https://oit-seven.vercel.app",
       repoUrl: "https://github.com/felixpalingan/Oit",
       color: "#FF5C00",
-      metrics: {
-        latency: "Sub-100ms CDC",
-        nodes: "LiveKit SFU",
-        security: "4-Tier RBAC"
-      },
+      metrics: [
+        { label: "POSTGRES CDC STREAM", val: "Sub-100ms Instant Comms", color: "#FF5C00" },
+        { label: "WEBRTC SFU CALLING", val: "LiveKit Audio/Video Mesh", color: "#00F0FF" },
+        { label: "ROLE ARCHITECTURE", val: "4-Tier RBAC & Strict RLS", color: "#00FF66" }
+      ],
       image: "/oit_logo.png",
       imagePlaceholder: "/oit_logo.png",
       preview: "/oit_preview.png"

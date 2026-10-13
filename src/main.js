@@ -659,6 +659,10 @@ class App {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
+    if (this.cameraController) {
+      this.cameraController.handleResize();
+    }
+
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }

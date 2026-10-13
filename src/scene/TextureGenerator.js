@@ -906,10 +906,10 @@ export class TextureGenerator {
       });
     }
 
-    // Telemetry metric cards
+    // Telemetry metric cards (Flagship Feature Highlights)
     const mY = tagY + 52;
     const mCardW = 300;
-    const metricsData = [
+    const metricsData = Array.isArray(project.metrics) ? project.metrics : [
       { label: 'LATENCY', val: project.metrics?.latency || '1.2ms', color: '#00FF66' },
       { label: 'NODES', val: project.metrics?.nodes || '1,024 Active', color: '#00F0FF' },
       { label: 'CLEARANCE', val: project.metrics?.security || 'ICE-Bypass Clean', color: '#FCEE09' }
@@ -919,17 +919,21 @@ export class TextureGenerator {
       const mx = leftX + i * (mCardW + 24);
       ctx.fillStyle = 'rgba(10, 16, 28, 0.9)';
       ctx.fillRect(mx, mY, mCardW, 64);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.20)';
+      ctx.strokeStyle = m.color ? `${m.color}66` : 'rgba(255, 255, 255, 0.20)';
       ctx.lineWidth = 1;
       ctx.strokeRect(mx, mY, mCardW, 64);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-      ctx.font = 'bold 13px monospace';
-      ctx.fillText(m.label, mx + 16, mY + 24);
+      // Micro accent strip on left of card
+      ctx.fillStyle = m.color || '#00F0FF';
+      ctx.fillRect(mx, mY, 3.5, 64);
 
-      ctx.fillStyle = m.color;
-      ctx.font = 'bold 20px monospace';
-      ctx.fillText(m.val, mx + 16, mY + 50);
+      ctx.fillStyle = m.color || '#00F0FF';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText(`◈ ${m.label}`, mx + 14, mY + 24);
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 15px monospace';
+      ctx.fillText(m.val, mx + 14, mY + 49);
     });
 
     // Huge Action Buttons at Bottom
