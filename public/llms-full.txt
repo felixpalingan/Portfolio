@@ -36,7 +36,7 @@ He specializes in:
   - **Database Systems:** Guided hands-on relational database design (ERD), SQL DDL/DML querying, normalization, and table joins using MySQL.
   - **Algorithms & Programming:** Taught foundational Python programming, pseudocode design, and core algorithms (Binary Search, Bubble Sort, Greedy Algorithm) to 30+ first-year students.
 
-### Vice Head of PBK Department — Informatics Student Association (HIMP TIF), Universitas Trisakti
+### Vice Head of PBK Department - Informatics Student Association (HIMP TIF), Universitas Trisakti (Sep 2026 – Sekarang, Semester 7)
 - **Role:** Co-led departmental work programs, student competency initiatives, and internal/external organizational coordination.
 
 ---
@@ -108,3 +108,4 @@ He specializes in:
 - **Portfolio:** https://portfolio-felix-bariq.vercel.app/
 - **GitHub:** https://github.com/felixpalingan
 - **LinkedIn:** https://www.linkedin.com/in/almakius-felix-bariq-hekopung/
+

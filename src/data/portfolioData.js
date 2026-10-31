@@ -225,30 +225,13 @@ export const portfolioData = {
       techStack: ["Competitive Programming", "C++", "Dynamic Programming", "Graph Theory", "Greedy Algorithms", "Data Structures"]
     },
     {
-      id: "exp-pbk",
-      period: "2024 – 2025",
-      tickLabel: "PBK '24",
-      role: "Wakil Ketua Departemen PBK",
-      company: "Himpunan Mahasiswa Teknik Informatika (HIMP TIF) Universitas Trisakti",
-      location: "Jakarta Barat, DKI Jakarta",
-      layer: "LEADERSHIP // 03",
-      layerColor: "#FCEE09",
-      summary: "Membantu memimpin divisi Pengembangan Bakat & Kreativitas mahasiswa dalam penyelenggaraan program kerja teknologi, workshop coding, dan delegasi kompetisi.",
-      highlights: [
-        "Mengoordinasikan program kerja strategis departemen PBK untuk mendorong eksplorasi minat bakat riset teknologi dan kreativitas mahasiswa informatika.",
-        "Menyelenggarakan workshop coding, webinar teknologi, dan study group intensif serta mengelola kolaborasi kepanitiaan lintas divisi himpunan.",
-        "Memfasilitasi delegasi mahasiswa berprestasi ke ajang perlombaan teknologi informasi tingkat universitas maupun nasional."
-      ],
-      techStack: ["Leadership", "Project Management", "Event Organizing", "Public Speaking", "Team Coordination", "Technical Mentoring"]
-    },
-    {
       id: "exp-aslab-algo",
       period: "Sep 2024 – Jan 2025",
       tickLabel: "Algo '24",
       role: "Asisten Laboratorium — Algoritma & Pemrograman",
       company: "Lab Komputasi Dasar, Univ. Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 04",
+      layer: "ACADEMIC_LAB // 03",
       layerColor: "#00FF66",
       summary: "Membimbing mahasiswa dalam fondasi komputasi logika, struktur data dasar, dan implementasi algoritma pemrograman menggunakan Python.",
       highlights: [
@@ -265,7 +248,7 @@ export const portfolioData = {
       role: "Asisten Laboratorium — Analitik Data & Business Intelligence",
       company: "Lab Sains Data & Analitik, Univ. Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 05",
+      layer: "ACADEMIC_LAB // 04",
       layerColor: "#00FF66",
       summary: "Membimbing praktikum analisis data eksploratif (EDA), pemodelan machine learning dasar, dan perancangan dashboard Business Intelligence interaktif.",
       highlights: [
@@ -282,7 +265,7 @@ export const portfolioData = {
       role: "Asisten Laboratorium — Jaringan Komputer",
       company: "Lab Sistem Keamanan & Jaringan, Univ. Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 06",
+      layer: "ACADEMIC_LAB // 05",
       layerColor: "#00FF66",
       summary: "Membimbing praktikum arsitektur protokol jaringan TCP/IP, subnetting VLSM/CIDR, routing statis & dinamis, serta packet analysis.",
       highlights: [
@@ -299,7 +282,7 @@ export const portfolioData = {
       role: "Asisten Laboratorium — Manajemen Data & Informasi (Basis Data)",
       company: "Lab Rekayasa Data, Teknik Informatika Univ. Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 07",
+      layer: "ACADEMIC_LAB // 06",
       layerColor: "#00FF66",
       summary: "Membimbing praktikum perancangan skema basis data relasional enterprise, query optimization, DDL/DML kompleks, dan normalisasi tabel.",
       highlights: [
@@ -316,7 +299,7 @@ export const portfolioData = {
       role: "Full-Stack Developer Intern",
       company: "OK OCE Indonesia (okoce.net)",
       location: "Jakarta, Indonesia (Hybrid / Onsite)",
-      layer: "PROD_PLATFORM // 08",
+      layer: "PROD_PLATFORM // 07",
       layerColor: "#00F0FF",
       summary: "Mengembangkan ekosistem portal komunitas wirausaha nasional (okoce.net): Smart E-Ticket Hub, Web Attendance Scanner, integrasi Payment Gateway Finpay QRIS/VA, dan toko UMKM multi-gudang.",
       highlights: [
@@ -326,6 +309,23 @@ export const portfolioData = {
         "Menerapkan security hardening: sanitasi input HtmlAman (pencegah XSS), proteksi CSRF pada seluruh endpoint AJAX, engine OTP email in-house, enkripsi JWT, dan Role-Based Access Control (RBAC)."
       ],
       techStack: ["PHP (CodeIgniter 4)", "MySQL", "JavaScript ES6+", "Tailwind CSS", "Finpay Gateway", "Html5Qrcode", "Git"]
+    },
+    {
+      id: "exp-pbk",
+      period: "Sep 2026 – Sekarang",
+      tickLabel: "PBK '26",
+      role: "Wakil Ketua Departemen PBK",
+      company: "Himpunan Mahasiswa Teknik Informatika (HIMP TIF) Universitas Trisakti",
+      location: "Jakarta Barat, DKI Jakarta",
+      layer: "LEADERSHIP // 08",
+      layerColor: "#FCEE09",
+      summary: "Memimpin departemen Pengembangan Bakat & Kreativitas mahasiswa (Semester 7) dalam penyelenggaraan program kerja teknologi, workshop coding, dan delegasi kompetisi.",
+      highlights: [
+        "Mengoordinasikan program kerja strategis departemen PBK untuk mendorong eksplorasi minat bakat riset teknologi dan kreativitas mahasiswa informatika.",
+        "Menyelenggarakan workshop coding, webinar teknologi, dan study group intensif serta mengelola kolaborasi kepanitiaan lintas divisi himpunan.",
+        "Memfasilitasi delegasi mahasiswa berprestasi ke ajang perlombaan teknologi informasi tingkat universitas maupun nasional."
+      ],
+      techStack: ["Leadership", "Project Management", "Event Organizing", "Public Speaking", "Team Coordination", "Technical Mentoring"]
     }
   ],
 
