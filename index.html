@@ -6,18 +6,32 @@
     <link rel="alternate icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Preload Critical Project & Profile Media -->
+    <!-- AI / LLM Discovery Links (llms.txt standard) -->
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Context" />
+    <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full LLM Context" />
+
+    <!-- Preload Top 3 Critical Above-the-Fold 3D Textures -->
+    <link rel="preload" as="image" href="/default.jpg" />
     <link rel="preload" as="image" href="/ironpixels_preview.png" />
     <link rel="preload" as="image" href="/oit_preview.png" />
-    <link rel="preload" as="image" href="/ironpixels_icon.png" />
-    <link rel="preload" as="image" href="/oit_logo.png" />
-    <link rel="preload" as="image" href="/default.jpg" />
+
+    <!-- Speculation Rules API for Instant Navigation -->
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "list",
+          "urls": ["/llms.txt"]
+        }
+      ]
+    }
+    </script>
 
     <!-- Primary Meta Tags -->
     <title>Felix Palingan | Full Stack Web Developer &amp; Creative Engineer</title>
     <meta name="title" content="Felix Palingan | Full Stack Web Developer &amp; Creative Engineer" />
-    <meta name="description" content="Interactive 3D WebGL portfolio of Almakius Felix Bariq Hekopung (Felix Palingan). Explore V's Megabuilding H10 apartment, Netrunner workstation, IronPixels, and Oit." />
-    <meta name="keywords" content="Felix Palingan, Almakius Felix Bariq Hekopung, Full Stack Developer, Creative Engineer, Three.js, WebGL, Cyberpunk 2077, Netrunner, JavaScript, TypeScript, Next.js, Frontend Developer Indonesia" />
+    <meta name="description" content="Interactive 3D WebGL portfolio of Almakius Felix Bariq Hekopung (Felix Palingan). Full-Stack, PWA &amp; Mobile Developer building IronPixels, Oit, and enterprise systems." />
+    <meta name="keywords" content="Felix Palingan, Almakius Felix Bariq Hekopung, Full Stack Developer, PWA Developer, Flutter Developer, Creative Engineer, Three.js, WebGL, Cyberpunk 2077, Netrunner, JavaScript, TypeScript, Next.js, Python, Flask, CodeIgniter 4, Frontend Developer Indonesia" />
     <meta name="author" content="Almakius Felix Bariq Hekopung" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -39,6 +53,9 @@
     <meta property="og:image:alt" content="Felix Palingan 3D WebGL Cyberpunk Portfolio" />
     <meta property="og:site_name" content="Felix Palingan 3D Portfolio" />
     <meta property="og:locale" content="en_US" />
+    <meta property="profile:first_name" content="Almakius Felix Bariq" />
+    <meta property="profile:last_name" content="Hekopung" />
+    <meta property="profile:username" content="felixpalingan" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -56,9 +73,11 @@
           "@type": "Person",
           "@id": "https://portfolio-felix-bariq.vercel.app/#person",
           "name": "Almakius Felix Bariq Hekopung",
+          "givenName": "Almakius Felix Bariq",
+          "familyName": "Hekopung",
           "alternateName": ["Felix Palingan", "V_NETRUNNER", "Felix"],
           "jobTitle": "Full Stack Web Developer & Creative Engineer",
-          "description": "Full Stack Web Developer specializing in immersive 3D WebGL experiences, resilient distributed systems, Next.js, Three.js, and high-performance web applications.",
+          "description": "Full Stack Web Developer, PWA & Mobile Engineer specializing in immersive 3D WebGL experiences, real-time distributed systems, Next.js, Three.js, Flutter, Python (Flask), and PHP (CodeIgniter 4).",
           "url": "https://portfolio-felix-bariq.vercel.app/",
           "image": {
             "@type": "ImageObject",
@@ -66,10 +85,25 @@
             "caption": "Almakius Felix Bariq Hekopung"
           },
           "email": "mailto:felixbariq@gmail.com",
+          "nationality": {
+            "@type": "Country",
+            "name": "Indonesia"
+          },
           "address": {
             "@type": "PostalAddress",
-            "addressCountry": "ID",
-            "addressRegion": "Indonesia"
+            "addressLocality": "East Jakarta",
+            "addressRegion": "DKI Jakarta",
+            "addressCountry": "ID"
+          },
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Universitas Trisakti",
+            "url": "https://trisakti.ac.id/"
+          },
+          "worksFor": {
+            "@type": "Organization",
+            "name": "OK OCE Indonesia",
+            "url": "https://okoce.net/"
           },
           "sameAs": [
             "https://github.com/felixpalingan",
@@ -78,13 +112,21 @@
           ],
           "knowsAbout": [
             "Full Stack Web Development",
+            "Progressive Web Apps (PWA)",
             "Three.js",
             "WebGL",
             "JavaScript",
             "TypeScript",
             "Next.js",
             "React",
+            "Flutter",
+            "Python",
+            "Flask",
+            "PHP",
+            "CodeIgniter 4",
             "Supabase",
+            "PostgreSQL",
+            "MySQL",
             "Node.js",
             "Web Audio API",
             "GSAP",
@@ -124,7 +166,7 @@
             "url": "https://portfolio-felix-bariq.vercel.app/preview.png"
           },
           "dateCreated": "2025-01-01T00:00:00+07:00",
-          "dateModified": "2026-10-12T00:00:00+07:00"
+          "dateModified": "2026-10-31T00:00:00+07:00"
         },
         {
           "@type": "SoftwareApplication",
@@ -164,25 +206,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <!-- Semantic Search Engine & Accessibility Layer -->
+    <!-- Semantic Search Engine, Screen Reader & AI Agent Layer -->
     <main class="sr-only" id="person">
-      <h1>Almakius Felix Bariq Hekopung (Felix Palingan) — Full Stack Web Developer &amp; Creative Engineer</h1>
+      <h1>Almakius Felix Bariq Hekopung (Felix Palingan) — Full Stack Web Developer, PWA &amp; Creative Engineer</h1>
       <p>
-        Full Stack Web Developer with a strong passion for immersive web experiences, high-performance architecture, and interactive 3D WebGL interfaces. Building bleeding-edge software from front-end diegetic UIs to resilient distributed back-ends.
+        Almakius Felix Bariq Hekopung (known online as Felix Palingan) is an Indonesian Full-Stack Software Engineer, PWA &amp; Mobile Developer, and Creative WebGL Technologist based in East Jakarta, Indonesia. He is a final-year Information Systems undergraduate at Universitas Trisakti (GPA: 3.72 / 4.00) and Full-Stack Developer Intern at OK OCE Indonesia, specializing in Next.js, TypeScript, Three.js (WebGL), Flutter, Python (Flask), PHP (CodeIgniter 4), and PostgreSQL/Supabase.
       </p>
+
+      <section id="experience">
+        <h2>Professional Experience</h2>
+        <article>
+          <h3>Full-Stack Developer Intern — OK OCE Indonesia (okoce.net)</h3>
+          <p>Engineered enterprise community and MSME (UMKM) digital infrastructure including a Smart E-Ticket Hub with USB/Camera QR Web Attendance Scanner, Finpay Payment Gateway integration (QRIS &amp; Virtual Accounts with real-time AJAX status polling and idempotent webhooks), a Multi-Warehouse E-Commerce &amp; FIFO/Average COGS engine, and a dual-tier Affiliate Viral Loop system.</p>
+        </article>
+        <article>
+          <h3>Laboratory Teaching Assistant — Universitas Trisakti (4 Semesters)</h3>
+          <p>Instructed over 50 undergraduate students across four courses: Cross-Platform Mobile Application Development (Flutter &amp; Python Flask REST API), Data Analytics (Python pandas, NumPy, K-Means, Linear Regression, Power BI, Tableau, Looker Studio), Database Systems (MySQL, ERD, SQL DDL/DML), and Algorithms &amp; Programming (Python fundamentals).</p>
+        </article>
+      </section>
 
       <section id="projects">
         <h2>Featured Production Projects</h2>
         <article>
           <h3>IronPixels — 16-Bit Gamified Workout Tracker &amp; Co-Op Raid RPG</h3>
-          <p>Gamified fitness tracking PWA that fuses weightlifting routines with retro 16-bit MMORPG dungeon progression. Features authoritative Relative Volume Scoring (RVS), realtime multi-device Co-Op boss raids via Supabase WebSockets, and zero-latency Web Audio chiptune SFX.</p>
+          <p>Gamified fitness tracking Progressive Web App (PWA) built with Next.js 15, TypeScript, and Supabase that fuses weightlifting routines with retro 16-bit MMORPG dungeon progression. Features authoritative Relative Volume Scoring (RVS), realtime multi-device Co-Op boss raids via Supabase WebSockets, and zero-latency Web Audio API chiptune SFX.</p>
           <a href="https://iron-pixels.vercel.app" target="_blank" rel="noopener noreferrer">IronPixels Live Demo</a>
           <a href="https://github.com/felixpalingan/IronPixels" target="_blank" rel="noopener noreferrer">IronPixels GitHub Repository</a>
         </article>
 
         <article>
           <h3>Oit — High-Performance Real-Time Workspace &amp; WebRTC Calling</h3>
-          <p>High-performance real-time communication platform engineered for high-velocity teams and tech communities. Features sub-100ms instant messaging via Supabase CDC, low-latency LiveKit Cloud SFU audio/video calling, 4-tier RBAC moderation, and dark glassmorphic UI.</p>
+          <p>High-performance real-time communication platform engineered for high-velocity teams and tech communities using Next.js 16, React 19, Supabase CDC, and LiveKit Cloud SFU. Features sub-100ms instant messaging, low-latency WebRTC audio/video calling with screen sharing, 4-tier RBAC moderation, and dark glassmorphic UI.</p>
           <a href="https://oit-seven.vercel.app" target="_blank" rel="noopener noreferrer">Oit Live Demo</a>
           <a href="https://github.com/felixpalingan/Oit" target="_blank" rel="noopener noreferrer">Oit GitHub Repository</a>
         </article>
@@ -191,10 +245,10 @@
       <section id="skills">
         <h2>Technical Loadout &amp; Core Competencies</h2>
         <ul>
-          <li>Technical Ability: JavaScript, TypeScript, PHP, Node.js, Python, SQL, REST/GraphQL APIs</li>
-          <li>Intelligence: System Architecture, DevOps, Database Optimization, Supabase, PostgreSQL</li>
-          <li>Reflexes: Three.js, WebGL, Modern Frontend, GSAP, CSS Alchemy, Canvas 2D</li>
-          <li>Cool: Problem Solving, Production Debugging, Git Workflows, Team Collaboration</li>
+          <li>Technical Ability: JavaScript, TypeScript, Python (Flask), PHP (CodeIgniter 4, Laravel), Dart (Flutter), Node.js, SQL, REST APIs</li>
+          <li>Intelligence: System Architecture, Progressive Web Apps (PWA), Database Optimization, Supabase, PostgreSQL, MySQL, Payment Gateways</li>
+          <li>Reflexes: Three.js, WebGL, Next.js, React, GSAP, Tailwind CSS, Canvas 2D, WebRTC (LiveKit), Web Audio API</li>
+          <li>Cool: Problem Solving, Production Debugging, Git &amp; CI/CD Workflows, Technical Mentoring, Team Leadership</li>
         </ul>
       </section>
 
@@ -204,6 +258,7 @@
         <p>GitHub: <a href="https://github.com/felixpalingan">https://github.com/felixpalingan</a></p>
         <p>LinkedIn: <a href="https://www.linkedin.com/in/almakius-felix-bariq-hekopung/">https://www.linkedin.com/in/almakius-felix-bariq-hekopung/</a></p>
         <p>LinkedIn ID: <a href="https://id.linkedin.com/in/almakius-felix-bariq-hekopung-a59695394">https://id.linkedin.com/in/almakius-felix-bariq-hekopung-a59695394</a></p>
+        <p>AI Context Index: <a href="/llms.txt">https://portfolio-felix-bariq.vercel.app/llms.txt</a></p>
       </section>
     </main>
 

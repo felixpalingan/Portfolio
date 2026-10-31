@@ -1,0 +1,24 @@
+# Almakius Felix Bariq Hekopung (Felix Palingan)
+
+> Full-Stack Developer, PWA & Mobile Engineer, and Creative WebGL Technologist based in Jakarta, Indonesia. B.Sc. Information Systems student at Universitas Trisakti (GPA: 3.72/4.00), Full-Stack Developer Intern at OK OCE Indonesia, and creator of interactive 3D WebGL and real-time distributed web applications.
+
+Almakius Felix Bariq Hekopung (known online as **Felix Palingan** or `V_NETRUNNER`) specializes in building full-stack web applications, Progressive Web Apps (PWAs), cross-platform mobile apps (Flutter), and diegetic 3D WebGL experiences (Three.js, GSAP). His engineering work spans real-time WebRTC/WebSocket systems, fintech payment gateway integrations (Finpay QRIS/VA), multi-warehouse e-commerce architectures, and automated event management infrastructure serving national communities.
+
+## Core Profile & Resources
+
+- [Interactive 3D Cyberpunk Portfolio](https://portfolio-felix-bariq.vercel.app/): Real-time 3D WebGL developer workstation set in Cyberpunk 2077's Megabuilding H10 Room 1214, featuring interactive multi-monitor displays, technical stats, and procedural synth audio.
+- [Full LLM Context & Technical Profile](https://portfolio-felix-bariq.vercel.app/llms-full.txt): Comprehensive markdown documentation detailing Felix's work experience, technical stack, academic achievements, and software architecture case studies.
+- [Sitemap XML](https://portfolio-felix-bariq.vercel.app/sitemap.xml): Search engine and AI crawler sitemap index.
+
+## Featured Production Projects
+
+- [IronPixels — 16-Bit Gamified Workout Tracker & Co-Op Raid RPG (Live App)](https://iron-pixels.vercel.app): Progressive Web App (PWA) built with Next.js 15, TypeScript, and Supabase that turns weightlifting routines into a retro 16-bit MMORPG with Relative Volume Scoring (RVS) and real-time WebSocket Co-Op boss raids.
+- [IronPixels Source Code (GitHub)](https://github.com/felixpalingan/IronPixels): Open-source repository for IronPixels featuring offline-ready PWA architecture, Web Audio API chiptune synthesis, and PostgreSQL Row-Level Security (RLS).
+- [Oit — High-Performance Real-Time Workspace & WebRTC Calling (Live App)](https://oit-seven.vercel.app): Low-latency communication platform built with Next.js 16, React 19, Supabase CDC, and LiveKit Cloud SFU for sub-100ms instant messaging and multi-participant audio/video calls.
+- [Oit Source Code (GitHub)](https://github.com/felixpalingan/Oit): Open-source repository for Oit featuring 4-tier Role-Based Access Control (RBAC), screen sharing, and glassmorphic dark UI.
+
+## Contact & Social Profiles
+
+- [GitHub (@felixpalingan)](https://github.com/felixpalingan): Source code repositories, full-stack web projects, and open-source contributions.
+- [LinkedIn Profile](https://www.linkedin.com/in/almakius-felix-bariq-hekopung/): Professional experience, education at Universitas Trisakti, and certifications.
+- [Direct Email (felixbariq@gmail.com)](mailto:felixbariq@gmail.com): Direct contact for software engineering roles, full-stack consulting, and technical collaborations.

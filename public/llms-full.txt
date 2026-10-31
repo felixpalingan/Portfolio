@@ -1,0 +1,99 @@
+# Almakius Felix Bariq Hekopung (Felix Palingan) — Full Technical Profile
+
+> Full-Stack Developer, PWA & Mobile Engineer, and Creative WebGL Technologist based in East Jakarta, DKI Jakarta, Indonesia.
+
+---
+
+## 1. Executive Summary
+
+**Almakius Felix Bariq Hekopung** (online handle: **Felix Palingan**) is an Indonesian Full-Stack Software Engineer and final-year Information Systems undergraduate at **Universitas Trisakti** (GPA: **3.72 / 4.00**, Trisakti English Proficiency Test Score: **563.33 / 677**).
+
+He specializes in:
+- **Full-Stack Web Engineering:** Next.js (App Router), React 19, TypeScript, PHP (CodeIgniter 4, Laravel), Python (Flask), RESTful APIs, and PostgreSQL / MySQL / Supabase.
+- **PWA, Real-Time & Mobile Development:** Progressive Web Apps (Service Workers, Web Push/FCM), Flutter (Dart) cross-platform mobile apps, Supabase Realtime CDC WebSockets, and LiveKit Cloud SFU WebRTC audio/video streaming.
+- **Creative 3D WebGL & Diegetic UI:** Three.js, custom GLSL/canvas procedural textures, GSAP camera choreography, and Web Audio API procedural sound synthesis.
+
+---
+
+## 2. Professional Experience
+
+### Full-Stack Developer Intern — OK OCE Indonesia (`okoce.net`)
+- **Period:** July 2026 – December 2026
+- **Location:** Jakarta, Indonesia
+- **Tech Stack:** PHP (CodeIgniter 4), MySQL, JavaScript (ES6+, Alpine.js), Tailwind CSS, Finpay Payment Gateway, Mailgun API, Html5Qrcode.
+- **Key Engineering Achievements:**
+  - **Smart Event & Attendance Infrastructure:** Engineered a Smart E-Ticket Hub and hardware-compatible Web Attendance Scanner (`/scanner`) supporting physical USB barcode scanners, mobile/webcam QR scanning (`Html5Qrcode`), and 300ms live debounced manual search for instant participant check-in.
+  - **Fintech & Payment Gateway Integration:** Integrated the Finpay payment gateway for event ticketing and MSME (UMKM) marketplace transactions, supporting QRIS (with dynamic 0.7% platform fee calculation) and Virtual Accounts, backed by real-time AJAX status polling and idempotent webhook listeners.
+  - **Multi-Warehouse E-Commerce & COGS Engine:** Built an integrated UMKM e-commerce platform supporting multi-warehouse inventory, product variants, FIFO/Average Cost of Goods Sold (HPP/COGS) accounting, third-party logistics (Everpro/KiriminAja), visual return verification, and seller payout workflows.
+  - **Affiliate Viral Loop & CMS Modernization:** Developed a dual-tier split commission engine with 1-click WhatsApp referral links (`?ref=username`) and migrated legacy portal content to CodeIgniter 4 while preserving SEO canonical URLs, Open Graph metadata, and strict XSS sanitization.
+
+### Laboratory Teaching Assistant — Universitas Trisakti
+- **Period:** September 2024 – Present (4 Semesters)
+- **Location:** Jakarta, Indonesia
+- **Courses Taught:**
+  - **Cross-Platform Mobile Application Development:** Mentored students in building end-to-end mobile applications using Flutter (Dart) integrated with Python Flask REST APIs and PostgreSQL.
+  - **Data Analytics:** Taught data cleaning, K-Means clustering, and Multiple Linear Regression using Python (`pandas`, `NumPy`) to 20+ students, alongside business intelligence dashboarding with Power BI, Tableau, and Google Looker Studio.
+  - **Database Systems:** Guided hands-on relational database design (ERD), SQL DDL/DML querying, normalization, and table joins using MySQL.
+  - **Algorithms & Programming:** Taught foundational Python programming, pseudocode design, and core algorithms (Binary Search, Bubble Sort, Greedy Algorithm) to 30+ first-year students.
+
+### Vice Head of PBK Department — Informatics Student Association (HIMP TIF), Universitas Trisakti
+- **Role:** Co-led departmental work programs, student competency initiatives, and internal/external organizational coordination.
+
+---
+
+## 3. Featured Production Projects
+
+### 3.1. IronPixels — 16-Bit Gamified Workout Tracker & Co-Op Raid RPG
+- **Live Application:** https://iron-pixels.vercel.app
+- **GitHub Repository:** https://github.com/felixpalingan/IronPixels
+- **Category:** Health & Fitness Progressive Web App (PWA) / Gamified RPG
+- **Tech Stack:** Next.js 15, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Realtime WebSockets + Auth), Framer Motion, Web Audio API.
+- **Architecture Highlights:**
+  - **Relative Volume Scoring (RVS):** Normalizes workout volume against user bodyweight and personal records so beginners and advanced lifters deal balanced damage in cooperative raids.
+  - **Realtime Co-Op Boss Raids:** Multi-device synchronization powered by Supabase Realtime Broadcast & Presence channels.
+  - **Zero-Latency Audio:** Custom procedural 8-bit/16-bit chiptune sound effects synthesized directly in the browser via the native Web Audio API.
+
+### 3.2. Oit — High-Performance Real-Time Workspace & WebRTC Calling
+- **Live Application:** https://oit-seven.vercel.app
+- **GitHub Repository:** https://github.com/felixpalingan/Oit
+- **Category:** Real-Time Communication & Collaboration Platform
+- **Tech Stack:** Next.js 16, React 19, TypeScript, Supabase CDC, LiveKit Cloud SFU (WebRTC), Tailwind CSS v4.
+- **Architecture Highlights:**
+  - **Sub-100ms Messaging:** Powered by Supabase Change Data Capture (CDC) WebSockets with optimistic UI updates, typing indicators, and emoji reactions.
+  - **Low-Latency Voice & Video Rooms:** Integrated with LiveKit Cloud Selective Forwarding Unit (SFU) for multi-participant WebRTC audio/video streaming and screen sharing.
+  - **4-Tier RBAC Security:** Granular Role-Based Access Control (Owner, Admin, Moderator, Member) enforced via PostgreSQL Row-Level Security (RLS) policies.
+
+### 3.3. OK OCE EventIT — National Community Event & LMS Ecosystem
+- **Category:** Full-Stack Mobile & Web Event Management Platform (Capstone & Thesis Project)
+- **Tech Stack:** Flutter (Dart), Python (Flask REST API), PostgreSQL, Firebase Cloud Messaging (FCM), Flask-Mail, QR Code Digital Presence.
+- **Architecture Highlights:**
+  - Built an integrated event management and mini-LMS platform designed for OK OCE Indonesia's national entrepreneurial network.
+  - Implemented encrypted OTP email registration, real-time QR code attendance validation, quantitative Pre-Test/Post-Test learning analytics, and automated H-1 push notifications via FCM.
+
+### 3.4. Megabuilding H10 Room 1214 — 3D WebGL Cyberpunk Portfolio
+- **Live Application:** https://portfolio-felix-bariq.vercel.app/
+- **Tech Stack:** Three.js (WebGL), Vite, GSAP, HTML5 Canvas 2D Diegetic UI, Web Audio API.
+- **Architecture Highlights:**
+  - Completely procedural 3D apartment scene inspired by Cyberpunk 2077, built without heavy external `.glb` bottlenecks for fast initial load and 60 FPS desktop/mobile performance.
+  - Triple-monitor Netrunner workstation rendered dynamically onto 2D HTML5 canvases mapped as `THREE.CanvasTexture` materials with UV raycast hitboxes.
+
+---
+
+## 4. Technical Skills Matrix
+
+- **Languages:** JavaScript (ES6+), TypeScript, Python, PHP, Dart, SQL, C++, Java, HTML5, CSS3.
+- **Frontend & Mobile:** Next.js, React, Flutter, Progressive Web Apps (PWA), Three.js (WebGL), Tailwind CSS, Alpine.js, GSAP.
+- **Backend & Databases:** Flask (Python), CodeIgniter 4 (PHP), Laravel, Node.js, PostgreSQL, MySQL, Supabase (Auth, RLS, Realtime CDC), RESTful API Design.
+- **Cloud, Real-Time & Tools:** LiveKit WebRTC, Firebase Cloud Messaging (FCM), Finpay Payment Gateway, Git & GitHub Actions, Docker, Linux, DigitalOcean, Vercel, Power BI, Tableau, Google Looker Studio.
+
+---
+
+## 5. Contact Information
+
+- **Full Name:** Almakius Felix Bariq Hekopung
+- **Alias:** Felix Palingan
+- **Location:** East Jakarta, DKI Jakarta, Indonesia
+- **Email:** felixbariq@gmail.com
+- **Portfolio:** https://portfolio-felix-bariq.vercel.app/
+- **GitHub:** https://github.com/felixpalingan
+- **LinkedIn:** https://www.linkedin.com/in/almakius-felix-bariq-hekopung/

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 // SECTOR NOT FOUND | Felix Palingan</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#060912" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --bg: #060912;
+        --cyan: #00f0ff;
+        --yellow: #fcee0a;
+        --red: #ff003c;
+        --text: #e2e8f0;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background-image:
+          radial-gradient(circle at 50% 40%, rgba(0, 240, 255, 0.08), transparent 60%),
+          linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 32px 32px, 32px 32px;
+      }
+      .terminal {
+        max-width: 560px;
+        width: 100%;
+        border: 1px solid rgba(0, 240, 255, 0.35);
+        background: rgba(10, 15, 29, 0.9);
+        padding: 36px 32px;
+        box-shadow: 0 0 40px rgba(0, 240, 255, 0.12);
+        position: relative;
+      }
+      .tag {
+        display: inline-block;
+        background: var(--red);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        letter-spacing: 0.12em;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: 42px;
+        color: var(--yellow);
+        letter-spacing: 0.06em;
+        margin-bottom: 12px;
+      }
+      p {
+        font-size: 14px;
+        line-height: 1.65;
+        color: #94a3b8;
+        margin-bottom: 28px;
+      }
+      .btn {
+        display: inline-block;
+        text-decoration: none;
+        background: transparent;
+        color: var(--cyan);
+        border: 1px solid var(--cyan);
+        padding: 12px 22px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: all 0.2s ease;
+      }
+      .btn:hover {
+        background: var(--cyan);
+        color: #060912;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="terminal">
+      <span class="tag">ERR_CODE // 404_NET_SECTOR_MISSING</span>
+      <h1>404 NOT FOUND</h1>
+      <p>
+        The neural link coordinates you requested do not exist in Megabuilding H10 Room 1214.
+        Return to the main Netrunner workstation terminal to explore projects, stats, and comms.
+      </p>
+      <a href="/" class="btn">Return to Main Terminal [HOME]</a>
+    </main>
+  </body>
+</html>
