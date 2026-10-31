@@ -207,18 +207,6 @@ This project is open-source and released under the terms of the [MIT License](LI
 
 ---
 
-## 👤 Author
+## 👤 Author & Credits
 
-**Felix Palingan**  
-*Full Stack Web Developer & Creative Engineer*
-
-- **Live Portfolio**: [https://portfolio-felix-bariq.vercel.app](https://portfolio-felix-bariq.vercel.app)
-- **GitHub**: [@felixpalingan](https://github.com/felixpalingan)
-- **LinkedIn**: [Felix Palingan](https://www.linkedin.com/in/almakius-felix-bariq-hekopung/)
-- **Email**: [felixbariq@gmail.com](mailto:felixbariq@gmail.com)
-
----
-
-<p align="center">
-  <sub>Megabuilding H10 // Watson District // Night City // Indonesia © 2025-2026 Felix Palingan</sub>
-</p>
+Designed and engineered by **Almakius Felix Bariq Hekopung** ([@felixpalingan](https://github.com/felixpalingan)) as a flagship interactive 3D WebGL developer portfolio.
