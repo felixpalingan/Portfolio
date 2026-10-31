@@ -107,7 +107,7 @@ export class BDPlaybackOverlay {
                          style="left: ${tickLeft}%"
                          data-index="${idx}" 
                          title="${e.period} - ${e.role}">
-                      <span class="tick-label">${e.period.split(' ')[0]}</span>
+                      <span class="tick-label">${e.tickLabel || e.period.split(' ')[0]}</span>
                     </div>
                   `;
                 }).join('')}
@@ -128,7 +128,7 @@ export class BDPlaybackOverlay {
   renderExperienceCard(exp, totalExp) {
     return `
       <div class="bd-memory-shard" id="bd-current-shard">
-        <!-- Hologram Header Tag -->
+        <!-- Hologram Header Tag (Pinned at top of card) -->
         <div class="shard-header">
           <div class="shard-badges">
             <span class="badge-era" style="color:${exp.layerColor || '#00F0FF'}">${exp.period || ''}</span>
@@ -137,30 +137,33 @@ export class BDPlaybackOverlay {
           <div class="shard-pagination">SHARD ${this.currentExpIndex + 1} OF ${totalExp}</div>
         </div>
 
-        <!-- Role & Company -->
-        <div class="shard-title-block">
-          <h2 class="shard-role">${exp.role || 'Full Stack Engineer'}</h2>
-          <div class="shard-org">
-            <span class="org-icon">◈</span>
-            <span class="org-name">${exp.company || 'OK OCE Indonesia'}</span>
-            <span class="org-loc"> // ${exp.location || 'Remote'}</span>
+        <!-- Scrollable Memory Shard Body -->
+        <div class="shard-body-scroll">
+          <!-- Role & Company -->
+          <div class="shard-title-block">
+            <h2 class="shard-role">${exp.role || 'Full Stack Engineer'}</h2>
+            <div class="shard-org">
+              <span class="org-icon">◈</span>
+              <span class="org-name">${exp.company || 'OK OCE Indonesia'}</span>
+              <span class="org-loc"> // ${exp.location || 'Jakarta'}</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Summary -->
-        <p class="shard-summary">${exp.summary || ''}</p>
+          <!-- Summary -->
+          <p class="shard-summary">${exp.summary || ''}</p>
 
-        <!-- Key Contributions -->
-        <div class="shard-highlights">
-          <div class="highlights-label">// KEY MEMORY RECORDINGS:</div>
-          <ul>
-            ${(exp.highlights || []).map(h => `<li><span class="bullet">▹</span>${h}</li>`).join('')}
-          </ul>
-        </div>
+          <!-- Key Contributions -->
+          <div class="shard-highlights">
+            <div class="highlights-label">// KEY MEMORY RECORDINGS:</div>
+            <ul>
+              ${(exp.highlights || []).map(h => `<li><span class="bullet">▹</span>${h}</li>`).join('')}
+            </ul>
+          </div>
 
-        <!-- Tech Stack Chips -->
-        <div class="shard-tech-stack">
-          ${(exp.techStack || []).map(t => `<span class="tech-chip">${t}</span>`).join('')}
+          <!-- Tech Stack Chips -->
+          <div class="shard-tech-stack">
+            ${(exp.techStack || []).map(t => `<span class="tech-chip">${t}</span>`).join('')}
+          </div>
         </div>
       </div>
     `;
@@ -173,20 +176,22 @@ export class BDPlaybackOverlay {
           <span class="matrix-title">// OPERATIVE ATTRIBUTES &amp; NEURAL ATTRIBUTES</span>
           <span class="matrix-sub">SYS_DIAGNOSTICS: OPTIMAL (60 FPS)</span>
         </div>
-        <div class="matrix-grid">
-          ${this.stats.map(s => `
-            <div class="matrix-card">
-              <div class="card-head">
-                <span class="card-attr">${s.attribute}</span>
-                <span class="card-level">${s.level}<span class="level-max">/100</span></span>
+        <div class="matrix-scroll-body">
+          <div class="matrix-grid">
+            ${this.stats.map(s => `
+              <div class="matrix-card">
+                <div class="card-head">
+                  <span class="card-attr">${s.attribute}</span>
+                  <span class="card-level">${s.level}<span class="level-max">/100</span></span>
+                </div>
+                <div class="card-bar-bg">
+                  <div class="card-bar-fill" style="width: ${s.level}%"></div>
+                </div>
+                <div class="card-sub">${s.sub}</div>
+                <div class="card-desc">${s.description}</div>
               </div>
-              <div class="card-bar-bg">
-                <div class="card-bar-fill" style="width: ${s.level}%"></div>
-              </div>
-              <div class="card-sub">${s.sub}</div>
-              <div class="card-desc">${s.description}</div>
-            </div>
-          `).join('')}
+            `).join('')}
+          </div>
         </div>
       </div>
     `;
