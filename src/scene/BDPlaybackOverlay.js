@@ -188,10 +188,7 @@ export class BDPlaybackOverlay {
                 <div class="matrix-card">
                   <div class="card-head">
                     <span class="card-attr">${s.category || s.attribute}</span>
-                    <span class="card-level">${s.level}<span class="level-max">/100</span></span>
-                  </div>
-                  <div class="card-bar-bg">
-                    <div class="card-bar-fill" style="width: ${s.level}%"></div>
+                    <span class="card-tech-count">[${skillItems.length} STACK]</span>
                   </div>
                   <div class="card-skills-chips">
                     ${skillItems.map(item => `<span class="skill-tag">${item}</span>`).join('')}
