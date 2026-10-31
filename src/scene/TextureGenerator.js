@@ -382,14 +382,13 @@ export class TextureGenerator {
       ctx.fillStyle = topGrad;
       ctx.fillRect(0, 0, w, 260);
 
-      // Bottom Overlay Gradient (darkens lower area where transparent buttons hover)
-      const bottomGrad = ctx.createLinearGradient(0, 560, 0, h);
-      bottomGrad.addColorStop(0, 'rgba(6, 10, 18, 0.05)');
-      bottomGrad.addColorStop(0.35, 'rgba(6, 10, 18, 0.55)');
-      bottomGrad.addColorStop(0.70, 'rgba(6, 10, 18, 0.78)');
-      bottomGrad.addColorStop(1, 'rgba(6, 10, 18, 0.94)');
+      // Bottom Overlay Gradient (soft gentle vignette at the very bottom where transparent buttons hover)
+      const bottomGrad = ctx.createLinearGradient(0, 880, 0, h);
+      bottomGrad.addColorStop(0, 'rgba(6, 10, 18, 0.00)');
+      bottomGrad.addColorStop(0.40, 'rgba(6, 10, 18, 0.35)');
+      bottomGrad.addColorStop(1, 'rgba(6, 10, 18, 0.75)');
       ctx.fillStyle = bottomGrad;
-      ctx.fillRect(0, 560, w, h - 560);
+      ctx.fillRect(0, 880, w, h - 880);
 
       // Subtle holographic scanlines
       ctx.fillStyle = 'rgba(0, 240, 255, 0.035)';
@@ -435,87 +434,6 @@ export class TextureGenerator {
       ctx.moveTo(56, 145);
       ctx.lineTo(w - 56, 145);
       ctx.stroke();
-
-      // Facial Targeting Reticle & Eye Crosshair (Cyberpunk 2077 HUD scan)
-      const eyeX = w / 2;
-      const eyeY = 360;
-
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.65)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(eyeX - 160, eyeY - 150, 320, 280);
-
-      // Corner reticle accents
-      ctx.fillStyle = '#FCEE09';
-      ctx.fillRect(eyeX - 164, eyeY - 154, 18, 4);
-      ctx.fillRect(eyeX - 164, eyeY - 154, 4, 18);
-      ctx.fillRect(eyeX + 146, eyeY - 154, 18, 4);
-      ctx.fillRect(eyeX + 160, eyeY - 154, 4, 18);
-      ctx.fillRect(eyeX - 164, eyeY + 126, 18, 4);
-      ctx.fillRect(eyeX - 164, eyeY + 112, 4, 18);
-      ctx.fillRect(eyeX + 146, eyeY + 126, 18, 4);
-      ctx.fillRect(eyeX + 160, eyeY + 112, 4, 18);
-
-      // Retinal crosshair circle
-      ctx.beginPath();
-      ctx.arc(eyeX, eyeY - 30, 28, 0, Math.PI * 2);
-      ctx.strokeStyle = '#FCEE09';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Biometric scan tag
-      ctx.fillStyle = '#00FF66';
-      ctx.font = 'bold 16px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('◈ [KIROSHI OPTICS: BIOMETRIC MATCH 100% // ARASAKA ICE CLEAN] ◈', w / 2, eyeY + 160);
-
-      // Operative Info Telemetry Card (Glassmorphic HUD panel)
-      const cardY = eyeY + 180;
-      ctx.fillStyle = 'rgba(6, 12, 24, 0.80)';
-      ctx.fillRect(56, cardY, w - 112, 126);
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(56, cardY, w - 112, 126);
-
-      // Left Accent Strip on Operative Card
-      ctx.fillStyle = '#00F0FF';
-      ctx.fillRect(56, cardY, 6, 126);
-
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 28px monospace';
-      ctx.fillText('ALMAKIUS FELIX BARIQ HEKOPUNG', 82, cardY + 36);
-
-      ctx.fillStyle = '#00F0FF';
-      ctx.font = 'bold 18px monospace';
-      ctx.fillText('// FULL STACK DEVELOPER & PWA / MOBILE SPECIALIST', 82, cardY + 68);
-
-      ctx.fillStyle = '#E2E8F0';
-      ctx.font = '16px monospace';
-      ctx.fillText('AFFILIATION: OK OCE INDONESIA // UNIVERSITAS TRISAKTI', 82, cardY + 96);
-      ctx.fillText('CORE: PHP (CI 4) | FLUTTER | FLASK | NEXT.JS | SUPABASE', 82, cardY + 118);
-
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#00FF66';
-      ctx.font = 'bold 16px monospace';
-      ctx.fillText('● STATUS: OPEN FOR CONTRACTS', w - 80, cardY + 36);
-
-      // Transmission Channels Header (above the 3D buttons)
-      const transY = cardY + 148;
-      ctx.strokeStyle = '#FF003C';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(56, transY);
-      ctx.lineTo(w - 56, transY);
-      ctx.stroke();
-
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#FCEE09';
-      ctx.font = 'bold 22px monospace';
-      ctx.fillText('// DIRECT TRANSMISSION CHANNELS [3D HOLOGRAPHIC OVERLAY]', 56, transY + 32);
-
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.75)';
-      ctx.font = '15px monospace';
-      ctx.fillText('CLICK THE FLOATING 3D GLASS BUTTONS OVERLAYING THE MIRROR BELOW TO ENGAGE COMMS', 56, transY + 58);
     }
 
     renderBase();
