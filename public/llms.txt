@@ -12,6 +12,7 @@ Almakius Felix Bariq Hekopung (known online as **Felix Palingan** or `V_NETRUNNE
 
 ## Featured Production Projects
 
+- [OK OCE EventIT — Integrated Event Management & Participant Monitoring](https://okoce.net): Mobile-first event ecosystem & LMS mini built for OK OCE Indonesia (Capstone S1) with Flutter, Flask RESTful API, PostgreSQL, dynamic QR presence (<3s check-in), and learning analytics.
 - [IronPixels — 16-Bit Gamified Workout Tracker & Co-Op Raid RPG (Live App)](https://iron-pixels.vercel.app): Progressive Web App (PWA) built with Next.js 15, TypeScript, and Supabase that turns weightlifting routines into a retro 16-bit MMORPG with Relative Volume Scoring (RVS) and real-time WebSocket Co-Op boss raids.
 - [IronPixels Source Code (GitHub)](https://github.com/felixpalingan/IronPixels): Open-source repository for IronPixels featuring offline-ready PWA architecture, Web Audio API chiptune synthesis, and PostgreSQL Row-Level Security (RLS).
 - [Oit — High-Performance Real-Time Workspace & WebRTC Calling (Live App)](https://oit-seven.vercel.app): Low-latency communication platform built with Next.js 16, React 19, Supabase CDC, and LiveKit Cloud SFU for sub-100ms instant messaging and multi-participant audio/video calls.

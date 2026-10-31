@@ -410,30 +410,30 @@ export class TextureGenerator {
       const infoY = 195;
 
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 32px monospace';
+      ctx.font = 'bold 30px monospace';
       ctx.fillText('ALMAKIUS FELIX BARIQ HEKOPUNG', infoX, infoY + 15);
 
       ctx.fillStyle = '#00F0FF';
-      ctx.font = 'bold 22px monospace';
-      ctx.fillText('// FULL STACK NETRUNNER & CREATIVE DEVELOPER', infoX, infoY + 55);
+      ctx.font = 'bold 20px monospace';
+      ctx.fillText('// FULL STACK DEVELOPER & PWA / MOBILE SPECIALIST', infoX, infoY + 52);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.font = '18px monospace';
-      ctx.fillText('LOCATION: WATSON DISTRICT // MEGABUILDING H10', infoX, infoY + 95);
-      ctx.fillText('ICE PROTOCOL: WATSON SUBNET BYPASS [SECURE]', infoX, infoY + 125);
-      ctx.fillText('CORE LOADOUT: REACT | NEXT.JS | THREE.JS | PYTHON', infoX, infoY + 155);
-      ctx.fillText('SPECIALTY   : IMMERSIVE 3D WEBGL & SYSTEMS ARCHITECTURE', infoX, infoY + 185);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      ctx.font = '17px monospace';
+      ctx.fillText('AFFILIATION: OK OCE INDONESIA // UNIVERSITAS TRISAKTI', infoX, infoY + 90);
+      ctx.fillText('EDUCATION  : S1 SISTEM INFORMASI (IPK: 3.72 / 4.00)', infoX, infoY + 120);
+      ctx.fillText('CORE STACK : PHP (CI 4) | FLUTTER | FLASK | NEXT.JS | SQL', infoX, infoY + 150);
+      ctx.fillText('SPECIALTY  : FULL STACK WEB, PWA & REAL-TIME WEBRTC/CDC', infoX, infoY + 180);
 
       // Status Pill
       ctx.fillStyle = 'rgba(0, 255, 102, 0.15)';
-      ctx.fillRect(infoX, infoY + 220, 520, 48);
+      ctx.fillRect(infoX, infoY + 215, 530, 48);
       ctx.strokeStyle = '#00FF66';
       ctx.lineWidth = 1.5;
-      ctx.strokeRect(infoX, infoY + 220, 520, 48);
+      ctx.strokeRect(infoX, infoY + 215, 530, 48);
 
       ctx.fillStyle = '#00FF66';
-      ctx.font = 'bold 20px monospace';
-      ctx.fillText('● STATUS: AVAILABLE FOR CONTRACTS & RAID TEAMS', infoX + 20, infoY + 252);
+      ctx.font = 'bold 19px monospace';
+      ctx.fillText('● STATUS: OPEN FOR FULL-STACK & PWA / MOBILE ROLES', infoX + 16, infoY + 246);
 
       // Middle Divider
       ctx.strokeStyle = '#FF003C';
@@ -587,8 +587,8 @@ export class TextureGenerator {
   static getLeftMonitorCardGeometry(total = 2) {
     const cardStartX = 20;
     const cardGap = total <= 2 ? 22 : 14;
-    const cardH = total <= 2 ? 180 : 104;
-    const startY = total <= 2 ? 66 : 58;
+    const cardH = total <= 2 ? 180 : 130;
+    const startY = total <= 2 ? 66 : 56;
     return { cardStartX, cardGap, cardH, startY };
   }
 
@@ -666,21 +666,21 @@ export class TextureGenerator {
 
       // Shard Index Badge
       ctx.fillStyle = isActive ? (p.color || '#00F0FF') : 'rgba(0, 240, 255, 0.6)';
-      ctx.font = 'bold 18px monospace';
+      ctx.font = cardH >= 150 ? 'bold 18px monospace' : 'bold 15px monospace';
       ctx.textAlign = 'left';
-      ctx.fillText(`[SHARD 0${idx + 1}]`, cardStartX + 20, cy + 32);
+      ctx.fillText(`[SHARD 0${idx + 1}]`, cardStartX + 20, cy + (cardH >= 150 ? 32 : 26));
 
       // Title
       ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.9)');
-      ctx.font = 'bold 26px monospace';
-      ctx.fillText(p.title, cardStartX + 20, cy + 68);
+      ctx.font = cardH >= 150 ? 'bold 26px monospace' : 'bold 22px monospace';
+      ctx.fillText(p.title, cardStartX + 20, cy + (cardH >= 150 ? 68 : 54));
 
       // Category & Year
       ctx.fillStyle = isActive ? '#FCEE09' : 'rgba(255, 255, 255, 0.65)';
-      ctx.font = 'bold 15px monospace';
-      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + 98);
+      ctx.font = cardH >= 150 ? 'bold 15px monospace' : 'bold 13px monospace';
+      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + (cardH >= 150 ? 98 : 78));
 
-      // Tagline or Tags summary for spacious cards
+      // Tagline or Tags summary
       if (cardH >= 150 && p.tagline) {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
         ctx.font = '13px monospace';
@@ -692,6 +692,10 @@ export class TextureGenerator {
           ctx.font = '12px monospace';
           ctx.fillText(`LOADOUT: ${p.tags.slice(0, 4).join(' • ')}`, cardStartX + 20, cy + 154);
         }
+      } else if (p.tags && p.tags.length > 0) {
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.70)';
+        ctx.font = '12px monospace';
+        ctx.fillText(`LOADOUT: ${p.tags.slice(0, 3).join(' • ')}`, cardStartX + 20, cy + 104);
       }
 
       // Status Pill on Right of Card
@@ -699,20 +703,21 @@ export class TextureGenerator {
       if (isActive) {
         ctx.fillStyle = '#00FF66';
         ctx.font = 'bold 14px monospace';
-        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 24, cy + 40);
+        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 24, cy + (cardH >= 150 ? 40 : 32));
         ctx.fillStyle = 'rgba(0, 255, 102, 0.55)';
-        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 24, cy + 68);
+        ctx.font = cardH >= 150 ? '14px monospace' : '11px monospace';
+        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 24, cy + (cardH >= 150 ? 68 : 52));
       } else {
         ctx.fillStyle = isHovered ? '#00F0FF' : 'rgba(255, 255, 255, 0.5)';
         ctx.font = 'bold 14px monospace';
-        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 24, cy + 55);
+        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 24, cy + (cardH >= 150 ? 55 : 42));
       }
 
-      // Optional project icon thumbnail in card if available
-      if (p.image && cardH >= 150) {
-        const thumbBoxX = cardStartX + cardW - 100;
-        const thumbBoxY = cy + 85;
-        const thumbBoxSize = 72;
+      // Project icon thumbnail in card if available
+      if (p.image) {
+        const thumbBoxSize = cardH >= 150 ? 72 : 52;
+        const thumbBoxX = cardStartX + cardW - (cardH >= 150 ? 100 : 76);
+        const thumbBoxY = cy + (cardH >= 150 ? 85 : 66);
 
         ctx.fillStyle = 'rgba(8, 14, 26, 0.9)';
         ctx.fillRect(thumbBoxX, thumbBoxY, thumbBoxSize, thumbBoxSize);

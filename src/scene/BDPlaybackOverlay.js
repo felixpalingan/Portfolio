@@ -142,7 +142,7 @@ export class BDPlaybackOverlay {
           <h2 class="shard-role">${exp.role || 'Full Stack Engineer'}</h2>
           <div class="shard-org">
             <span class="org-icon">◈</span>
-            <span class="org-name">${exp.company || 'Digital Forge'}</span>
+            <span class="org-name">${exp.company || 'OK OCE Indonesia'}</span>
             <span class="org-loc"> // ${exp.location || 'Remote'}</span>
           </div>
         </div>
