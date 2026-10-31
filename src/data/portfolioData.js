@@ -169,107 +169,21 @@ export const portfolioData = {
 
   experiences: [
     {
-      id: "exp-okoce",
-      period: "Jul 2026 – Des 2026",
-      tickLabel: "OK OCE '26",
-      role: "Full-Stack Developer Intern",
-      company: "OK OCE Indonesia (okoce.net)",
-      location: "Jakarta, Indonesia (Hybrid / Onsite)",
-      layer: "PROD_PLATFORM // 01",
-      layerColor: "#00F0FF",
-      summary: "Mengembangkan ekosistem portal komunitas wirausaha nasional (okoce.net): Smart E-Ticket Hub, Web Attendance Scanner, integrasi Payment Gateway Finpay QRIS/VA, dan toko UMKM multi-gudang.",
-      highlights: [
-        "Membangun Smart E-Ticket Hub & Web Attendance Scanner (/scanner) hardware-compatible (USB barcode & kamera HP Html5Qrcode) dengan 300ms live debounced manual search.",
-        "Mengintegrasikan Finpay Payment Gateway untuk tiket event & bursa UMKM via QRIS (biaya admin 0.7%) dan Virtual Account dengan auto-polling AJAX real-time & webhook callback listener idempoten.",
-        "Mengembangkan modul Toko UMKM (multi-gudang, kalkulasi HPP/COGS FIFO/Average, retur barang restock vs write-off) serta mesin komisi afiliasi dual-tier berparameter referral WhatsApp unik.",
-        "Menerapkan security hardening: sanitasi input HtmlAman (pencegah XSS), proteksi CSRF pada seluruh endpoint AJAX, engine OTP email in-house, enkripsi JWT, dan Role-Based Access Control (RBAC)."
-      ],
-      techStack: ["PHP (CodeIgniter 4)", "MySQL", "JavaScript ES6+", "Tailwind CSS", "Finpay Gateway", "Html5Qrcode", "Git"]
-    },
-    {
-      id: "exp-aslab-mdi",
-      period: "Sep 2025 – Jan 2026",
-      tickLabel: "Basis Data '25",
-      role: "Asisten Laboratorium — Manajemen Data & Informasi (Basis Data)",
-      company: "Lab Rekayasa Data, Teknik Informatika Univ. Trisakti",
+      id: "exp-pendidikan",
+      period: "Sep 2023 – Sekarang",
+      tickLabel: "S1 Trisakti '23",
+      role: "Sarjana (S1) Sistem Informasi — Semester 7",
+      company: "Universitas Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 02",
-      layerColor: "#00FF66",
-      summary: "Membimbing praktikum perancangan skema basis data relasional enterprise, query optimization, DDL/DML kompleks, dan normalisasi tabel.",
+      layer: "FOUNDATION // 01",
+      layerColor: "#FF0055",
+      summary: "Mahasiswa aktif tingkat akhir dengan IPK 3.72 / 4.00 (123 SKS selesai), skor TEPT 563.33 / 677, berfokus pada rekayasa Full Stack Web dan PWA / Mobile.",
       highlights: [
-        "Membimbing dan menguji 30+ mahasiswa dalam perancangan database relasional, pemodelan Entity-Relationship Diagram (ERD), dan normalisasi tabel hingga 3NF/BCNF.",
-        "Melatih optimasi query SQL tingkat lanjut (JOIN kompleks, Indexing, Subquery, Window/Aggregate Functions, Stored Procedures) pada PostgreSQL dan MySQL.",
-        "Mengevaluasi tugas laboratorium mingguan, menguji integritas transaksi data (ACID compliance), dan membimbing proyek perancangan database enterprise."
+        "Indeks Prestasi Kumulatif (IPK): 3.72 dari skala 4.00 dengan predikat akademik Sangat Memuaskan (telah menyelesaikan 123 SKS hingga Semester 6).",
+        "Kemampuan Bahasa Inggris (TEPT): Skor 563.33 / 677 dari KUIKK Universitas Trisakti.",
+        "Proyek Tugas Akhir / Capstone: OK OCE EventIT (Arsitektur Ekosistem Manajemen Event & Monitoring Digital UMKM berbasis Flutter, Flask RESTful API, dan PostgreSQL)."
       ],
-      techStack: ["PostgreSQL", "MySQL", "SQL (DDL/DML)", "Database Design", "ERD", "Query Optimization", "Relational Modeling"]
-    },
-    {
-      id: "exp-aslab-jarkom",
-      period: "Sep 2025 – Jan 2026",
-      tickLabel: "Jarkom '25",
-      role: "Asisten Laboratorium — Jaringan Komputer",
-      company: "Lab Sistem Keamanan & Jaringan, Univ. Trisakti",
-      location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 03",
-      layerColor: "#00FF66",
-      summary: "Membimbing praktikum arsitektur protokol jaringan TCP/IP, subnetting VLSM/CIDR, routing statis & dinamis, serta packet analysis.",
-      highlights: [
-        "Membimbing 25+ mahasiswa dalam konfigurasi topologi jaringan komputer, routing protokol, serta perhitungan alokasi subnet IP address berbasis CIDR dan VLSM.",
-        "Mengarahkan simulasi deep packet analysis menggunakan Wireshark untuk menganalisis 3-way handshake TCP, DNS query/response, HTTP/HTTPS traffic, dan isolasi bottleneck OSI layer.",
-        "Melakukan asistensi konfigurasi perangkat jaringan (switch, router, DHCP server, NAT) dan pengujian latency serta throughput transmisi data."
-      ],
-      techStack: ["Wireshark", "Cisco Packet Tracer", "TCP/IP Suite", "Subnetting VLSM", "Routing Protocols", "Network Security"]
-    },
-    {
-      id: "exp-aslab-analitik",
-      period: "Feb 2025 – Jul 2025",
-      tickLabel: "Analitik '25",
-      role: "Asisten Laboratorium — Analitik Data & Business Intelligence",
-      company: "Lab Sains Data & Analitik, Univ. Trisakti",
-      location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 04",
-      layerColor: "#00FF66",
-      summary: "Membimbing praktikum analisis data eksploratif (EDA), pemodelan machine learning dasar, dan perancangan dashboard Business Intelligence interaktif.",
-      highlights: [
-        "Membimbing 25+ mahasiswa dalam data preprocessing, feature engineering, penanganan missing values, dan deteksi anomali/outlier menggunakan Python (pandas, NumPy).",
-        "Memandu implementasi model statistik dan machine learning seperti Regresi Linier Berganda, K-Means Clustering, dan visualisasi data matplotlib/seaborn.",
-        "Mengarahkan perancangan executive dashboard interaktif berbasis Power BI, Tableau, dan Looker Studio untuk insight performa bisnis berbasis data empiris."
-      ],
-      techStack: ["Python (pandas, NumPy)", "Power BI", "Tableau", "Looker Studio", "Machine Learning", "EDA", "Statistical Analysis"]
-    },
-    {
-      id: "exp-aslab-algo",
-      period: "Sep 2024 – Jan 2025",
-      tickLabel: "Algo '24",
-      role: "Asisten Laboratorium — Algoritma & Pemrograman",
-      company: "Lab Komputasi Dasar, Univ. Trisakti",
-      location: "Jakarta Barat, DKI Jakarta",
-      layer: "ACADEMIC_LAB // 05",
-      layerColor: "#00FF66",
-      summary: "Membimbing mahasiswa dalam fondasi komputasi logika, struktur data dasar, dan implementasi algoritma pemrograman menggunakan Python.",
-      highlights: [
-        "Mengajarkan logika pemrograman dasar, branching, looping, function modular, rekursi, dan formulasi pseudocode kepada 35+ mahasiswa semester awal.",
-        "Membimbing implementasi algoritma pencarian (Linear, Binary Search) dan pengurutan (Bubble, Selection, Insertion, Merge Sort) serta evaluasi kompleksitas asimtotik Big-O.",
-        "Menilai penulisan kode berstandar clean code, modularisasi arsitektur file skrip, dan melatih teknik debugging kode secara sistematis."
-      ],
-      techStack: ["Python", "Algorithms", "Data Structures", "Big-O Notation", "Code Optimization", "Clean Code Standards"]
-    },
-    {
-      id: "exp-pbk",
-      period: "2024 – 2025",
-      tickLabel: "PBK '24",
-      role: "Wakil Ketua Departemen PBK",
-      company: "Himpunan Mahasiswa Teknik Informatika (HIMP TIF) Universitas Trisakti",
-      location: "Jakarta Barat, DKI Jakarta",
-      layer: "LEADERSHIP // 06",
-      layerColor: "#FCEE09",
-      summary: "Membantu memimpin divisi Pengembangan Bakat & Kreativitas mahasiswa dalam penyelenggaraan program kerja teknologi, workshop coding, dan delegasi kompetisi.",
-      highlights: [
-        "Mengoordinasikan program kerja strategis departemen PBK untuk mendorong eksplorasi minat bakat riset teknologi dan kreativitas mahasiswa informatika.",
-        "Menyelenggarakan workshop coding, webinar teknologi, dan study group intensif serta mengelola kolaborasi kepanitiaan lintas divisi himpunan.",
-        "Memfasilitasi delegasi mahasiswa berprestasi ke ajang perlombaan teknologi informasi tingkat universitas maupun nasional."
-      ],
-      techStack: ["Leadership", "Project Management", "Event Organizing", "Public Speaking", "Team Coordination", "Technical Mentoring"]
+      techStack: ["Information Systems", "System Analysis & Design", "Database Architecture", "Enterprise Systems", "Software Engineering", "Full-Stack Development"]
     },
     {
       id: "exp-gemastik",
@@ -278,7 +192,7 @@ export const portfolioData = {
       role: "Competitive Programmer (Divisi Pemrograman Kompetitif)",
       company: "GEMASTIK XVII — Puspresnas / Kemendikbudristek & Univ. Trisakti",
       location: "Universitas Trisakti / Kemendikbudristek",
-      layer: "COMPETITION // 07",
+      layer: "COMPETITION // 02",
       layerColor: "#FCEE09",
       summary: "Mewakili Universitas Trisakti dalam ajang Pagelaran Mahasiswa Nasional Bidang TIK (GEMASTIK XVII) pada divisi Pemrograman Kompetitif.",
       highlights: [
@@ -289,21 +203,107 @@ export const portfolioData = {
       techStack: ["Competitive Programming", "C++", "Dynamic Programming", "Graph Theory", "Greedy Algorithms", "Data Structures"]
     },
     {
-      id: "exp-pendidikan",
-      period: "Sep 2023 – Sekarang",
-      tickLabel: "S1 Trisakti '23",
-      role: "Sarjana (S1) Sistem Informasi — Semester 7",
-      company: "Universitas Trisakti",
+      id: "exp-pbk",
+      period: "2024 – 2025",
+      tickLabel: "PBK '24",
+      role: "Wakil Ketua Departemen PBK",
+      company: "Himpunan Mahasiswa Teknik Informatika (HIMP TIF) Universitas Trisakti",
       location: "Jakarta Barat, DKI Jakarta",
-      layer: "FOUNDATION // 08",
-      layerColor: "#FF0055",
-      summary: "Mahasiswa aktif tingkat akhir dengan IPK 3.72 / 4.00 (123 SKS selesai), skor TEPT 563.33 / 677, berfokus pada rekayasa Full Stack Web dan PWA / Mobile.",
+      layer: "LEADERSHIP // 03",
+      layerColor: "#FCEE09",
+      summary: "Membantu memimpin divisi Pengembangan Bakat & Kreativitas mahasiswa dalam penyelenggaraan program kerja teknologi, workshop coding, dan delegasi kompetisi.",
       highlights: [
-        "Indeks Prestasi Kumulatif (IPK): 3.72 dari skala 4.00 dengan predikat akademik Sangat Memuaskan (telah menyelesaikan 123 SKS hingga Semester 6).",
-        "Kemampuan Bahasa Inggris (TEPT): Skor 563.33 / 677 dari KUIKK Universitas Trisakti.",
-        "Proyek Tugas Akhir / Capstone: OK OCE EventIT (Arsitektur Ekosistem Manajemen Event & Monitoring Digital UMKM berbasis Flutter, Flask RESTful API, dan PostgreSQL)."
+        "Mengoordinasikan program kerja strategis departemen PBK untuk mendorong eksplorasi minat bakat riset teknologi dan kreativitas mahasiswa informatika.",
+        "Menyelenggarakan workshop coding, webinar teknologi, dan study group intensif serta mengelola kolaborasi kepanitiaan lintas divisi himpunan.",
+        "Memfasilitasi delegasi mahasiswa berprestasi ke ajang perlombaan teknologi informasi tingkat universitas maupun nasional."
       ],
-      techStack: ["Information Systems", "System Analysis & Design", "Database Architecture", "Enterprise Systems", "Software Engineering", "Full-Stack Development"]
+      techStack: ["Leadership", "Project Management", "Event Organizing", "Public Speaking", "Team Coordination", "Technical Mentoring"]
+    },
+    {
+      id: "exp-aslab-algo",
+      period: "Sep 2024 – Jan 2025",
+      tickLabel: "Algo '24",
+      role: "Asisten Laboratorium — Algoritma & Pemrograman",
+      company: "Lab Komputasi Dasar, Univ. Trisakti",
+      location: "Jakarta Barat, DKI Jakarta",
+      layer: "ACADEMIC_LAB // 04",
+      layerColor: "#00FF66",
+      summary: "Membimbing mahasiswa dalam fondasi komputasi logika, struktur data dasar, dan implementasi algoritma pemrograman menggunakan Python.",
+      highlights: [
+        "Mengajarkan logika pemrograman dasar, branching, looping, function modular, rekursi, dan formulasi pseudocode kepada 35+ mahasiswa semester awal.",
+        "Membimbing implementasi algoritma pencarian (Linear, Binary Search) dan pengurutan (Bubble, Selection, Insertion, Merge Sort) serta evaluasi kompleksitas asimtotik Big-O.",
+        "Menilai penulisan kode berstandar clean code, modularisasi arsitektur file skrip, dan melatih teknik debugging kode secara sistematis."
+      ],
+      techStack: ["Python", "Algorithms", "Data Structures", "Big-O Notation", "Code Optimization", "Clean Code Standards"]
+    },
+    {
+      id: "exp-aslab-analitik",
+      period: "Feb 2025 – Jul 2025",
+      tickLabel: "Analitik '25",
+      role: "Asisten Laboratorium — Analitik Data & Business Intelligence",
+      company: "Lab Sains Data & Analitik, Univ. Trisakti",
+      location: "Jakarta Barat, DKI Jakarta",
+      layer: "ACADEMIC_LAB // 05",
+      layerColor: "#00FF66",
+      summary: "Membimbing praktikum analisis data eksploratif (EDA), pemodelan machine learning dasar, dan perancangan dashboard Business Intelligence interaktif.",
+      highlights: [
+        "Membimbing 25+ mahasiswa dalam data preprocessing, feature engineering, penanganan missing values, dan deteksi anomali/outlier menggunakan Python (pandas, NumPy).",
+        "Memandu implementasi model statistik dan machine learning seperti Regresi Linier Berganda, K-Means Clustering, dan visualisasi data matplotlib/seaborn.",
+        "Mengarahkan perancangan executive dashboard interaktif berbasis Power BI, Tableau, dan Looker Studio untuk insight performa bisnis berbasis data empiris."
+      ],
+      techStack: ["Python (pandas, NumPy)", "Power BI", "Tableau", "Looker Studio", "Machine Learning", "EDA", "Statistical Analysis"]
+    },
+    {
+      id: "exp-aslab-jarkom",
+      period: "Sep 2025 – Jan 2026",
+      tickLabel: "Jarkom '25",
+      role: "Asisten Laboratorium — Jaringan Komputer",
+      company: "Lab Sistem Keamanan & Jaringan, Univ. Trisakti",
+      location: "Jakarta Barat, DKI Jakarta",
+      layer: "ACADEMIC_LAB // 06",
+      layerColor: "#00FF66",
+      summary: "Membimbing praktikum arsitektur protokol jaringan TCP/IP, subnetting VLSM/CIDR, routing statis & dinamis, serta packet analysis.",
+      highlights: [
+        "Membimbing 25+ mahasiswa dalam konfigurasi topologi jaringan komputer, routing protokol, serta perhitungan alokasi subnet IP address berbasis CIDR dan VLSM.",
+        "Mengarahkan simulasi deep packet analysis menggunakan Wireshark untuk menganalisis 3-way handshake TCP, DNS query/response, HTTP/HTTPS traffic, dan isolasi bottleneck OSI layer.",
+        "Melakukan asistensi konfigurasi perangkat jaringan (switch, router, DHCP server, NAT) dan pengujian latency serta throughput transmisi data."
+      ],
+      techStack: ["Wireshark", "Cisco Packet Tracer", "TCP/IP Suite", "Subnetting VLSM", "Routing Protocols", "Network Security"]
+    },
+    {
+      id: "exp-aslab-mdi",
+      period: "Sep 2025 – Jan 2026",
+      tickLabel: "Basis Data '25",
+      role: "Asisten Laboratorium — Manajemen Data & Informasi (Basis Data)",
+      company: "Lab Rekayasa Data, Teknik Informatika Univ. Trisakti",
+      location: "Jakarta Barat, DKI Jakarta",
+      layer: "ACADEMIC_LAB // 07",
+      layerColor: "#00FF66",
+      summary: "Membimbing praktikum perancangan skema basis data relasional enterprise, query optimization, DDL/DML kompleks, dan normalisasi tabel.",
+      highlights: [
+        "Membimbing dan menguji 30+ mahasiswa dalam perancangan database relasional, pemodelan Entity-Relationship Diagram (ERD), dan normalisasi tabel hingga 3NF/BCNF.",
+        "Melatih optimasi query SQL tingkat lanjut (JOIN kompleks, Indexing, Subquery, Window/Aggregate Functions, Stored Procedures) pada PostgreSQL dan MySQL.",
+        "Mengevaluasi tugas laboratorium mingguan, menguji integritas transaksi data (ACID compliance), dan membimbing proyek perancangan database enterprise."
+      ],
+      techStack: ["PostgreSQL", "MySQL", "SQL (DDL/DML)", "Database Design", "ERD", "Query Optimization", "Relational Modeling"]
+    },
+    {
+      id: "exp-okoce",
+      period: "Jul 2026 – Des 2026",
+      tickLabel: "OK OCE '26",
+      role: "Full-Stack Developer Intern",
+      company: "OK OCE Indonesia (okoce.net)",
+      location: "Jakarta, Indonesia (Hybrid / Onsite)",
+      layer: "PROD_PLATFORM // 08",
+      layerColor: "#00F0FF",
+      summary: "Mengembangkan ekosistem portal komunitas wirausaha nasional (okoce.net): Smart E-Ticket Hub, Web Attendance Scanner, integrasi Payment Gateway Finpay QRIS/VA, dan toko UMKM multi-gudang.",
+      highlights: [
+        "Membangun Smart E-Ticket Hub & Web Attendance Scanner (/scanner) hardware-compatible (USB barcode & kamera HP Html5Qrcode) dengan 300ms live debounced manual search.",
+        "Mengintegrasikan Finpay Payment Gateway untuk tiket event & bursa UMKM via QRIS (biaya admin 0.7%) dan Virtual Account dengan auto-polling AJAX real-time & webhook callback listener idempoten.",
+        "Mengembangkan modul Toko UMKM (multi-gudang, kalkulasi HPP/COGS FIFO/Average, retur barang restock vs write-off) serta mesin komisi afiliasi dual-tier berparameter referral WhatsApp unik.",
+        "Menerapkan security hardening: sanitasi input HtmlAman (pencegah XSS), proteksi CSRF pada seluruh endpoint AJAX, engine OTP email in-house, enkripsi JWT, dan Role-Based Access Control (RBAC)."
+      ],
+      techStack: ["PHP (CodeIgniter 4)", "MySQL", "JavaScript ES6+", "Tailwind CSS", "Finpay Gateway", "Html5Qrcode", "Git"]
     }
   ],
 

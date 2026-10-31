@@ -12,8 +12,9 @@ export class BDPlaybackOverlay {
     this.container = null;
     this.onDisengageCallback = options.onDisengage || null;
     this.currentMode = 'EXPERIENCES'; // 'EXPERIENCES' | 'SKILLS'
-    this.currentExpIndex = 0;
     this.experiences = portfolioData.experiences || [];
+    // Initialize on recent memory (right-most shard on timeline)
+    this.currentExpIndex = Math.max(0, this.experiences.length - 1);
     this.skills = portfolioData.skills || portfolioData.stats || [];
     this.stats = this.skills;
 

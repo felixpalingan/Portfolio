@@ -875,11 +875,16 @@ html, body {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  background: rgba(5, 10, 18, 0.88);
+  gap: 0.5rem;
+  background: rgba(5, 10, 18, 0.94);
   border: 1px solid rgba(0, 240, 255, 0.35);
   padding: 0.8rem 1.4rem;
   clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  align-self: center;
+  box-sizing: border-box;
 }
 
 .bd-deck-controls {
@@ -924,11 +929,12 @@ html, body {
 
 .bd-scrubber-track {
   position: relative;
-  height: 48px;
+  height: 52px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  margin: 0.4rem 0 0.8rem 0;
+  padding: 0 45px;
+  margin: 0.2rem 0 0.6rem 0;
+  box-sizing: border-box;
 }
 
 .bd-scrubber-rail {
@@ -1011,11 +1017,24 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   white-space: nowrap;
   pointer-events: none;
   transition: color 0.2s ease;
+}
+
+.bd-scrubber-tick:first-child .tick-label {
+  left: 0;
+  transform: none;
+  text-align: left;
+}
+
+.bd-scrubber-tick:last-child .tick-label {
+  left: auto;
+  right: 0;
+  transform: none;
+  text-align: right;
 }
 
 .bd-scrubber-tick.current .tick-label {
@@ -1091,6 +1110,21 @@ html, body {
   .bd-top-bar {
     flex-wrap: wrap;
     gap: 0.6rem;
+  }
+  .bd-bottom-deck {
+    max-width: 100%;
+    padding: 0.6rem 0.8rem;
+  }
+  .bd-scrubber-track {
+    padding: 0 24px;
+    height: 44px;
+  }
+  .tick-label {
+    display: none;
+  }
+  .bd-scrubber-tick.current .tick-label {
+    display: block;
+    font-size: 0.62rem;
   }
 }
 
