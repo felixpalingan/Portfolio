@@ -1013,37 +1013,81 @@ html, body {
 
 .tick-label {
   position: absolute;
-  top: 22px;
+  top: 24px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(4px);
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   white-space: nowrap;
   pointer-events: none;
-  transition: color 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, transform 0.22s ease, color 0.2s ease, border-color 0.2s ease;
+  background: rgba(6, 12, 22, 0.94);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  padding: 2px 8px;
+  border-radius: 3px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+  z-index: 5;
 }
 
 .bd-scrubber-tick:first-child .tick-label {
   left: 0;
-  transform: none;
+  transform: translateY(4px);
   text-align: left;
 }
 
 .bd-scrubber-tick:last-child .tick-label {
   left: auto;
   right: 0;
-  transform: none;
+  transform: translateY(4px);
   text-align: right;
 }
 
+/* Reveal ONLY when node is currently in view */
 .bd-scrubber-tick.current .tick-label {
+  opacity: 1;
+  visibility: visible;
   color: #FCEE09;
   font-weight: 700;
+  border-color: #FCEE09;
+  box-shadow: 0 0 12px rgba(252, 238, 9, 0.45);
+  transform: translateX(-50%) translateY(0);
+  z-index: 10;
 }
 
-.bd-scrubber-tick.passed .tick-label {
+.bd-scrubber-tick:first-child.current .tick-label {
+  transform: translateY(0);
+}
+
+.bd-scrubber-tick:last-child.current .tick-label {
+  transform: translateY(0);
+}
+
+/* Also reveal on hover so user can preview any node before clicking */
+.bd-scrubber-tick:hover .tick-label {
+  opacity: 1;
+  visibility: visible;
   color: #00F0FF;
+  border-color: #00F0FF;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+  transform: translateX(-50%) translateY(0);
+  z-index: 12;
+}
+
+.bd-scrubber-tick:first-child:hover .tick-label {
+  transform: translateY(0);
+}
+
+.bd-scrubber-tick:last-child:hover .tick-label {
+  transform: translateY(0);
+}
+
+.bd-scrubber-tick.current:hover .tick-label {
+  color: #FCEE09;
+  border-color: #FCEE09;
+  box-shadow: 0 0 15px rgba(252, 238, 9, 0.65);
 }
 
 .bd-deck-hint {
@@ -1120,11 +1164,8 @@ html, body {
     height: 44px;
   }
   .tick-label {
-    display: none;
-  }
-  .bd-scrubber-tick.current .tick-label {
-    display: block;
-    font-size: 0.62rem;
+    font-size: 0.64rem;
+    padding: 2px 6px;
   }
 }
 
