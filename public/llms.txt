@@ -17,6 +17,8 @@ Almakius Felix Bariq Hekopung (known online as **Felix Palingan** or `V_NETRUNNE
 - [IronPixels Source Code (GitHub)](https://github.com/felixpalingan/IronPixels): Open-source repository for IronPixels featuring offline-ready PWA architecture, Web Audio API chiptune synthesis, and PostgreSQL Row-Level Security (RLS).
 - [Oit — High-Performance Real-Time Workspace & WebRTC Calling (Live App)](https://oit-seven.vercel.app): Low-latency communication platform built with Next.js 16, React 19, Supabase CDC, and LiveKit Cloud SFU for sub-100ms instant messaging and multi-participant audio/video calls.
 - [Oit Source Code (GitHub)](https://github.com/felixpalingan/Oit): Open-source repository for Oit featuring 4-tier Role-Based Access Control (RBAC), screen sharing, and glassmorphic dark UI.
+- [Slop Dungeon — Cooperative Roguelike & Serverless WebRTC P2P (Live Game)](https://slop-dungeon.vercel.app): Serverless 1–6 player cooperative roguelike dungeon crawler built with pure procedural HTML5 Canvas 2D, procedural Web Audio API synthesis, 60Hz host-authoritative WebRTC DataChannels (PeerJS), 54+ modular anime equipment sets, and cinematic ultimate abilities.
+- [Slop Dungeon Source Code (GitHub)](https://github.com/felixpalingan/Slop-dungeon): Open-source repository for Slop Dungeon featuring zero-download procedural sprites, client-side lag compensation, and multiplayer gacha mechanics.
 
 ## Contact & Social Profiles
 

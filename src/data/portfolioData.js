@@ -164,6 +164,28 @@ export const portfolioData = {
       image: "/oit_logo.png",
       imagePlaceholder: "/oit_logo.png",
       preview: "/oit_preview.png"
+    },
+    {
+      id: "slop-dungeon",
+      title: "SLOP DUNGEON",
+      tabTitle: "04 // SLOP DUNGEON",
+      tagline: "CHAOTIC COOPERATIVE ROGUELIKE & SERVERLESS WEBRTC P2P DUNGEON CRAWLER",
+      category: "Web Game & Real-Time P2P",
+      year: "2026",
+      status: "PRODUCTION LIVE // MULTIPLAYER",
+      description: "Game roguelike dungeon crawler kooperatif 1–6 pemain serverless berbasis peer-to-peer (WebRTC DataChannels via PeerJS). Mengimplementasikan grafis 100% prosedural HTML5 Canvas 2D (tanpa download sprite sheet), audio synthesizer prosedural Web Audio API (tanpa file audio eksternal), sinkronisasi game loop 60Hz host-authoritative architecture & client prediction, 54+ modular anime gear, cinematic ultimate abilities, dan minigame gacha altar & blackjack.",
+      tags: ["WebRTC P2P (PeerJS)", "HTML5 Canvas 2D", "Web Audio API", "Vite 5", "JavaScript ES6+", "Playwright E2E", "Vitest"],
+      liveUrl: "https://slop-dungeon.vercel.app",
+      repoUrl: "https://github.com/felixpalingan/Slop-dungeon",
+      color: "#A855F7",
+      metrics: [
+        { label: "SERVERLESS P2P", val: "WebRTC DataChannel 60Hz", color: "#00F0FF" },
+        { label: "PROCEDURAL CANVAS", val: "Zero-Asset Sprite Engine", color: "#00FF66" },
+        { label: "WEB AUDIO SYNTH", val: "Zero-Latency Chiptune SFX", color: "#FCEE09" }
+      ],
+      image: "/slop_dungeon_logo.jpg",
+      imagePlaceholder: "/slop_dungeon_logo.jpg",
+      preview: "/slop_dungeon_logo.jpg"
     }
   ],
 

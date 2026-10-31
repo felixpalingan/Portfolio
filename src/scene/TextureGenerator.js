@@ -555,9 +555,21 @@ export class TextureGenerator {
    */
   static getLeftMonitorCardGeometry(total = 2) {
     const cardStartX = 20;
-    const cardGap = total <= 2 ? 22 : 14;
-    const cardH = total <= 2 ? 180 : 130;
-    const startY = total <= 2 ? 66 : 56;
+    let cardGap, cardH, startY;
+    if (total <= 2) {
+      cardGap = 22;
+      cardH = 180;
+      startY = 66;
+    } else if (total === 3) {
+      cardGap = 14;
+      cardH = 130;
+      startY = 56;
+    } else {
+      // 4 or more projects (compact layout for 540px height)
+      cardGap = 10;
+      cardH = 104;
+      startY = 50;
+    }
     return { cardStartX, cardGap, cardH, startY };
   }
 
@@ -635,19 +647,19 @@ export class TextureGenerator {
 
       // Shard Index Badge
       ctx.fillStyle = isActive ? (p.color || '#00F0FF') : 'rgba(0, 240, 255, 0.6)';
-      ctx.font = cardH >= 150 ? 'bold 18px monospace' : 'bold 15px monospace';
+      ctx.font = cardH >= 150 ? 'bold 18px monospace' : (cardH >= 120 ? 'bold 15px monospace' : 'bold 13px monospace');
       ctx.textAlign = 'left';
-      ctx.fillText(`[SHARD 0${idx + 1}]`, cardStartX + 20, cy + (cardH >= 150 ? 32 : 26));
+      ctx.fillText(`[SHARD 0${idx + 1}]`, cardStartX + 20, cy + (cardH >= 150 ? 32 : (cardH >= 120 ? 26 : 22)));
 
       // Title
       ctx.fillStyle = isActive ? '#FFFFFF' : (isHovered ? '#00F0FF' : 'rgba(230, 242, 255, 0.9)');
-      ctx.font = cardH >= 150 ? 'bold 26px monospace' : 'bold 22px monospace';
-      ctx.fillText(p.title, cardStartX + 20, cy + (cardH >= 150 ? 68 : 54));
+      ctx.font = cardH >= 150 ? 'bold 26px monospace' : (cardH >= 120 ? 'bold 22px monospace' : 'bold 19px monospace');
+      ctx.fillText(p.title, cardStartX + 20, cy + (cardH >= 150 ? 68 : (cardH >= 120 ? 54 : 46)));
 
       // Category & Year
       ctx.fillStyle = isActive ? '#FCEE09' : 'rgba(255, 255, 255, 0.65)';
-      ctx.font = cardH >= 150 ? 'bold 15px monospace' : 'bold 13px monospace';
-      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + (cardH >= 150 ? 98 : 78));
+      ctx.font = cardH >= 150 ? 'bold 15px monospace' : (cardH >= 120 ? 'bold 13px monospace' : 'bold 12px monospace');
+      ctx.fillText(`// ${p.category} [${p.year}]`, cardStartX + 20, cy + (cardH >= 150 ? 98 : (cardH >= 120 ? 78 : 67)));
 
       // Tagline or Tags summary
       if (cardH >= 150 && p.tagline) {
@@ -663,30 +675,30 @@ export class TextureGenerator {
         }
       } else if (p.tags && p.tags.length > 0) {
         ctx.fillStyle = 'rgba(0, 240, 255, 0.70)';
-        ctx.font = '12px monospace';
-        ctx.fillText(`LOADOUT: ${p.tags.slice(0, 3).join(' • ')}`, cardStartX + 20, cy + 104);
+        ctx.font = cardH >= 120 ? '12px monospace' : '11px monospace';
+        ctx.fillText(`LOADOUT: ${p.tags.slice(0, 3).join(' • ')}`, cardStartX + 20, cy + (cardH >= 120 ? 104 : 88));
       }
 
       // Status Pill on Right of Card
       ctx.textAlign = 'right';
       if (isActive) {
         ctx.fillStyle = '#00FF66';
-        ctx.font = 'bold 14px monospace';
-        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 24, cy + (cardH >= 150 ? 40 : 32));
+        ctx.font = 'bold 13px monospace';
+        ctx.fillText('● MOUNTED ACTIVE', cardStartX + cardW - 24, cy + (cardH >= 150 ? 40 : (cardH >= 120 ? 32 : 25)));
         ctx.fillStyle = 'rgba(0, 255, 102, 0.55)';
-        ctx.font = cardH >= 150 ? '14px monospace' : '11px monospace';
-        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 24, cy + (cardH >= 150 ? 68 : 52));
+        ctx.font = cardH >= 150 ? '14px monospace' : (cardH >= 120 ? '11px monospace' : '10px monospace');
+        ctx.fillText('DISPLAYING ON CENTER SCREEN', cardStartX + cardW - 24, cy + (cardH >= 150 ? 68 : (cardH >= 120 ? 52 : 43)));
       } else {
         ctx.fillStyle = isHovered ? '#00F0FF' : 'rgba(255, 255, 255, 0.5)';
-        ctx.font = 'bold 14px monospace';
-        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 24, cy + (cardH >= 150 ? 55 : 42));
+        ctx.font = 'bold 13px monospace';
+        ctx.fillText('▷ SELECT SHARD', cardStartX + cardW - 24, cy + (cardH >= 150 ? 55 : (cardH >= 120 ? 42 : 33)));
       }
 
       // Project icon thumbnail in card if available
       if (p.image) {
-        const thumbBoxSize = cardH >= 150 ? 72 : 52;
-        const thumbBoxX = cardStartX + cardW - (cardH >= 150 ? 100 : 76);
-        const thumbBoxY = cy + (cardH >= 150 ? 85 : 66);
+        const thumbBoxSize = cardH >= 150 ? 72 : (cardH >= 120 ? 52 : 44);
+        const thumbBoxX = cardStartX + cardW - (cardH >= 150 ? 100 : (cardH >= 120 ? 76 : 64));
+        const thumbBoxY = cy + (cardH >= 150 ? 85 : (cardH >= 120 ? 66 : 52));
 
         ctx.fillStyle = 'rgba(8, 14, 26, 0.9)';
         ctx.fillRect(thumbBoxX, thumbBoxY, thumbBoxSize, thumbBoxSize);

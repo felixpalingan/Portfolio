@@ -70,7 +70,18 @@ He specializes in:
   - Built an integrated event management and mini-LMS platform designed for OK OCE Indonesia's national entrepreneurial network.
   - Implemented encrypted OTP email registration, real-time QR code attendance validation, quantitative Pre-Test/Post-Test learning analytics, and automated H-1 push notifications via FCM.
 
-### 3.4. Megabuilding H10 Room 1214 — 3D WebGL Cyberpunk Portfolio
+### 3.4. Slop Dungeon — Cooperative Roguelike & Serverless WebRTC P2P
+- **Live Application:** https://slop-dungeon.vercel.app
+- **GitHub Repository:** https://github.com/felixpalingan/Slop-dungeon
+- **Category:** Multiplayer Roguelike Dungeon Crawler / Real-Time P2P Web Game
+- **Tech Stack:** HTML5 Canvas 2D, WebRTC DataChannels (PeerJS), Web Audio API (Synthesizer), Vite 5, JavaScript (ES6+), Playwright E2E, Vitest.
+- **Architecture Highlights:**
+  - **Serverless Peer-to-Peer:** Game state replicated across 1–6 players via WebRTC DataChannels using PeerJS signaling, eliminating dedicated server costs and achieving 60Hz host-authoritative state sync with client prediction.
+  - **100% Procedural Canvas Rendering:** Zero-asset sprite sheet downloads; all monsters, characters, weapons, rooms, and particles are drawn procedurally via HTML5 Canvas 2D for instant initial load and 60+ FPS on all devices.
+  - **Procedural Audio Synthesizer:** Zero external audio files; all sound effects (swords, blasts, heartbeats, gongs, coins) are synthesized at runtime via oscillators, gain nodes, and noise buffers using the Web Audio API.
+  - **Modular Anime Equipment & Ultimates:** 54+ procedural items across 5 rarity tiers unlocking screen-clearing cinematic abilities (Hollow Purple, World Cutting Slash, Berserker Rage) and shared party economy with gacha altar mechanics.
+
+### 3.5. Megabuilding H10 Room 1214 — 3D WebGL Cyberpunk Portfolio
 - **Live Application:** https://portfolio-felix-bariq.vercel.app/
 - **Tech Stack:** Three.js (WebGL), Vite, GSAP, HTML5 Canvas 2D Diegetic UI, Web Audio API.
 - **Architecture Highlights:**
