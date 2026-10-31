@@ -13,7 +13,7 @@ export const portfolioData = {
     affiliation: "Universitas Trisakti // OK OCE Indonesia",
     location: "Jakarta Timur, DKI Jakarta, Indonesia",
     status: "OPEN FOR FULL-STACK & PWA / MOBILE ROLES",
-    bio: "Mahasiswa S1 Sistem Informasi Universitas Trisakti (Semester 7, IPK 3.72 / 4.00) berfokus pada rekayasa perangkat lunak Full Stack Web dan Progressive Web Apps (PWA) / Mobile. Berpengalaman sebagai Full-Stack Developer Intern di OK OCE Indonesia (okoce.net) mengembangkan ekosistem portal (Smart E-Ticket, Web Scanner kehadiran, integrasi Payment Gateway Finpay QRIS/VA, dan toko UMKM), membangun aplikasi mobile & web OK OCE EventIT (Capstone S1), serta 3 semester aktif sebagai Asisten Lab Informatika membimbing 50+ mahasiswa.",
+    bio: "Mahasiswa S1 Sistem Informasi Universitas Trisakti (Semester 7, IPK 3.72 / 4.00) berfokus pada rekayasa perangkat lunak Full Stack Web dan Progressive Web Apps (PWA) / Mobile. Berpengalaman sebagai Full-Stack Developer Intern di OK OCE Indonesia (ecsys.okoce.net / okoce.net) merancang dan memodernisasi ekosistem portal (unbuffered database streaming, migrasi WordPress ke CI4, integrasi Finpay QRIS/VA, dan zero-scroll QR scanner event), membangun aplikasi mobile & web OK OCE EventIT (Capstone S1), serta 4 semester aktif sebagai Asisten Lab Informatika membimbing 50+ mahasiswa.",
     avatar: "/default.jpg",
     avatarPlaceholder: "/default.jpg"
   },
@@ -287,19 +287,21 @@ export const portfolioData = {
       id: "exp-okoce",
       period: "Jul 2026 – Des 2026",
       tickLabel: "OK OCE '26",
-      role: "Full-Stack Developer Intern",
-      company: "OK OCE Indonesia (okoce.net)",
+      role: "Full-Stack Web Developer Intern",
+      company: "OK OCE Indonesia (ecsys.okoce.net / okoce.net)",
       location: "Jakarta, Indonesia (Hybrid / Onsite)",
       layer: "PROD_PLATFORM // 07",
       layerColor: "#00F0FF",
-      summary: "Mengembangkan ekosistem portal komunitas wirausaha nasional (okoce.net): Smart E-Ticket Hub, Web Attendance Scanner, integrasi Payment Gateway Finpay QRIS/VA, dan toko UMKM multi-gudang.",
+      summary: "Merancang, memodernisasi, dan mengamankan platform ekosistem digital skala besar (OK OCE Member & Super App). Mengembangkan arsitektur MVC berbasis CodeIgniter 4 & MySQL 8, integrasi Payment Gateway Finpay (QRIS & VA), automasi ticketing & zero-scroll QR scanner event, migrasi ribuan data dari CMS WordPress ke custom CI4, serta perancangan antarmuka mobile-first responsif.",
       highlights: [
-        "Membangun Smart E-Ticket Hub & Web Attendance Scanner (/scanner) hardware-compatible (USB barcode & kamera HP Html5Qrcode) dengan 300ms live debounced manual search.",
-        "Mengintegrasikan Finpay Payment Gateway untuk tiket event & bursa UMKM via QRIS (biaya admin 0.7%) dan Virtual Account dengan auto-polling AJAX real-time & webhook callback listener idempoten.",
-        "Mengembangkan modul Toko UMKM (multi-gudang, kalkulasi HPP/COGS FIFO/Average, retur barang restock vs write-off) serta mesin komisi afiliasi dual-tier berparameter referral WhatsApp unik.",
-        "Menerapkan security hardening: sanitasi input HtmlAman (pencegah XSS), proteksi CSRF pada seluruh endpoint AJAX, engine OTP email in-house, enkripsi JWT, dan Role-Based Access Control (RBAC)."
+        "Database Optimization & Unbuffered Streaming: Mengembangkan fitur ekspor data analitik pengguna aktif berbasis unbuffered database streaming (getUnbufferedRow) pada CI4 dan engine CSV ramah regional Excel (; & UTF-8 BOM), mencegah server memory exhaustion (OOM) saat memproses puluhan ribu baris data.",
+        "Finpay Payment Gateway & Event Ticketing: Mengintegrasikan sistem pembayaran Finpay untuk transaksi tiket event dan produk UMKM (QRIS dinamis/statis, Virtual Account, validasi harga server-side, countdown timer persisten, dan automasi presensi hadir pasca submit pre-test).",
+        "Event QR Scanner Redesign: Merancang ulang antarmuka Camera QR Scanner petugas lapangan menjadi sistem 1-layar zero-scroll dengan visual feedback instan (hijau/merah) untuk mempercepat validasi kehadiran peserta di pintu masuk acara tanpa bottleneck.",
+        "WordPress to CodeIgniter 4 Migration: Berkontribusi dalam migrasi arsitektur portal resmi okoce.net dari WordPress ke framework CodeIgniter 4; memindahkan ribuan artikel, halaman, dan aset media tanpa merusak SEO lama melalui pemetaan 301 Redirect dan sitemap otomatis.",
+        "Mobile-First Navigation & UX Overhaul: Menata ulang struktur navigasi website dari 49 item menu flat yang bertumpuk menjadi 5 kategori berjenjang terstruktur, lengkap dengan Mobile Bottom Navigation Bar (thumb-friendly), drawer backdrop blur, dan pencarian menu instan real-time berbasis Vanilla JavaScript.",
+        "E-Commerce UMKM & Application Security: Mengembangkan dashboard penjual 'Toko Saya' (omzet riil transaksi selesai, validasi dinamis fisik vs digital), mitigasi SQL Injection pada DataTables server-side, sanitasi input HtmlAman (pencegah XSS), serta penguatan HTTP Security Headers (CSP, X-Frame-Options, X-Content-Type-Options)."
       ],
-      techStack: ["PHP (CodeIgniter 4)", "MySQL", "JavaScript ES6+", "Tailwind CSS", "Finpay Gateway", "Html5Qrcode", "Git"]
+      techStack: ["PHP 8.1+ (CodeIgniter 4)", "MySQL 8", "Tailwind CSS", "JavaScript (ES6+)", "Finpay Gateway (QRIS/VA)", "Fonnte WhatsApp API", "HTML5-QRCode", "DataTables", "OWASP Top 10 Security", "Git & CI/CD"]
     },
     {
       id: "exp-pbk",

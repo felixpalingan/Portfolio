@@ -17,15 +17,17 @@ He specializes in:
 
 ## 2. Professional Experience
 
-### Full-Stack Developer Intern — OK OCE Indonesia (`okoce.net`)
+### Full-Stack Web Developer Intern - OK OCE Indonesia (ecsys.okoce.net / okoce.net)
 - **Period:** July 2026 – December 2026
-- **Location:** Jakarta, Indonesia
-- **Tech Stack:** PHP (CodeIgniter 4), MySQL, JavaScript (ES6+, Alpine.js), Tailwind CSS, Finpay Payment Gateway, Mailgun API, Html5Qrcode.
+- **Location:** Jakarta, Indonesia (Hybrid / Onsite)
+- **Tech Stack:** PHP 8.1+, CodeIgniter 4 (MVC), MySQL 8, Tailwind CSS, JavaScript (ES6+), Finpay Payment Gateway (QRIS & VA), Fonnte WhatsApp API, HTML5-QRCode, DataTables.
 - **Key Engineering Achievements:**
-  - **Smart Event & Attendance Infrastructure:** Engineered a Smart E-Ticket Hub and hardware-compatible Web Attendance Scanner (`/scanner`) supporting physical USB barcode scanners, mobile/webcam QR scanning (`Html5Qrcode`), and 300ms live debounced manual search for instant participant check-in.
-  - **Fintech & Payment Gateway Integration:** Integrated the Finpay payment gateway for event ticketing and MSME (UMKM) marketplace transactions, supporting QRIS (with dynamic 0.7% platform fee calculation) and Virtual Accounts, backed by real-time AJAX status polling and idempotent webhook listeners.
-  - **Multi-Warehouse E-Commerce & COGS Engine:** Built an integrated UMKM e-commerce platform supporting multi-warehouse inventory, product variants, FIFO/Average Cost of Goods Sold (HPP/COGS) accounting, third-party logistics (Everpro/KiriminAja), visual return verification, and seller payout workflows.
-  - **Affiliate Viral Loop & CMS Modernization:** Developed a dual-tier split commission engine with 1-click WhatsApp referral links (`?ref=username`) and migrated legacy portal content to CodeIgniter 4 while preserving SEO canonical URLs, Open Graph metadata, and strict XSS sanitization.
+  - **Finpay Payment Gateway & Event Ticketing:** Integrated Finpay Payment Gateway (Dynamic QRIS, Virtual Accounts), implementing secure server-side price validation, automated callbacks, persistent payment countdown timers, real-time quota validation, and automated attendance post pre-test.
+  - **Database Optimization & Unbuffered Streaming:** Developed an unbuffered CSV data export engine (getUnbufferedRow) capable of streaming tens of thousands of active member records without memory exhaustion (OOM), fully compatible with regional Excel settings (semicolon delimiter, UTF-8 BOM, and safe text formula escaping).
+  - **Event QR Scanner Redesign:** Modernized the field-officer Event QR Check-in scanner into a zero-scroll single-page UI with instant visual alerts (green/red feedback), drastically reducing event registration bottlenecks.
+  - **WordPress to CodeIgniter 4 Migration:** Contributed to migrating enterprise WordPress content to a custom CodeIgniter 4 architecture, preserving 100% of legacy SEO routing, media assets, and canonical URLs via 301 redirects and automatic sitemap generation.
+  - **Mobile-First Navigation & UX Overhaul:** Revamped the platform's navigation architecture from a 49-item flat menu into 5 structured tiers featuring a sticky thumb-friendly bottom navigation bar, drawer transitions, and real-time client-side search.
+  - **Application Security Hardening:** Hardened web application security against OWASP vulnerabilities, including DataTables SQL injection mitigation, XSS sanitization (HtmlAman), and strict HTTP security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
 
 ### Laboratory Teaching Assistant — Universitas Trisakti
 - **Period:** September 2024 – Present (4 Semesters)
