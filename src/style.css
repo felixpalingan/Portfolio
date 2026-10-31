@@ -834,6 +834,33 @@ html, body {
   margin-bottom: 0.35rem;
 }
 
+/* Categorized Skill Tags inside Matrix Cards */
+.card-skills-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.skill-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #00F0FF;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+}
+
+.skill-tag:hover {
+  background: rgba(0, 240, 255, 0.22);
+  border-color: #00F0FF;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.45);
+}
+
 .card-desc {
   font-family: var(--font-body);
   font-size: 0.8rem;

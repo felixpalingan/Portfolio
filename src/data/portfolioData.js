@@ -18,32 +18,85 @@ export const portfolioData = {
     avatarPlaceholder: "/default.jpg"
   },
 
-  stats: [
+  skills: [
     {
-      attribute: "TECHNICAL ABILITY",
+      category: "FRONTEND & PWA ENGINEERING",
+      attribute: "FRONTEND & PWA ENGINEERING",
       level: 96,
-      sub: "PHP (CodeIgniter 4), TypeScript, Python (Flask), Dart (Flutter), SQL",
-      description: "Penguasaan mendalam dalam rekayasa full-stack web, arsitektur RESTful API, aplikasi mobile cross-platform, dan integrasi backend modern."
+      skills: ["Next.js (React)", "TypeScript", "JavaScript (ES6+)", "Tailwind CSS", "PWA (Service Workers, Offline-First)", "HTML5 & Modern CSS", "Alpine.js", "GSAP Animations"],
+      sub: "Next.js, TypeScript, Tailwind CSS, PWA, JavaScript (ES6+), HTML5/CSS3, Alpine.js, GSAP",
+      description: "Rekayasa web modern responsif, Progressive Web Apps (PWA) dengan service workers & offline caching, state management, SSR/SSG, dan animasi micro-interaction performa tinggi 60 FPS."
     },
     {
-      attribute: "INTELLIGENCE",
+      category: "BACKEND & RESTFUL ARCHITECTURE",
+      attribute: "BACKEND & RESTFUL ARCHITECTURE",
       level: 94,
-      sub: "PWA Architecture, System Design, PostgreSQL/MySQL, Database Tuning",
-      description: "Perancangan skema relasional skala multi-gudang, kalkulasi HPP/COGS, offline-first PWA caching, listener webhook idempoten, dan optimasi query."
+      skills: ["PHP (CodeIgniter 4)", "Python (Flask v3)", "RESTful API Design", "Node.js", "Webhooks & Idempotency", "JWT Authentication", "Role-Based Access Control (RBAC)"],
+      sub: "PHP (CodeIgniter 4), Python (Flask), RESTful API, Webhooks, JWT, RBAC, Data Sanitization",
+      description: "Pembangunan arsitektur backend robust, sanitasi keamanan ketat (pencegah XSS via HtmlAman & proteksi CSRF), listener webhook idempoten, dan otentikasi aman berbasis JWT/OTP."
     },
     {
-      attribute: "REFLEXES",
+      category: "MOBILE APP DEVELOPMENT",
+      attribute: "MOBILE APP DEVELOPMENT",
       level: 92,
-      sub: "Next.js 16, Supabase CDC, Three.js (WebGL), LiveKit WebRTC, Tailwind",
-      description: "Rapid prototyping antarmuka responsif performa tinggi, perpesanan instan real-time sub-100ms, WebRTC audio/video mesh, dan grafis interaktif 3D 60 FPS."
+      skills: ["Flutter (Dart)", "Cross-Platform iOS/Android", "State Management (Provider/Riverpod)", "REST API Integration", "Hardware Scanner (Camera QR)", "Mini-LMS Modules"],
+      sub: "Flutter (Dart), Cross-Platform Mobile, REST API, QR Attendance Scanner, Mini-LMS",
+      description: "Rekayasa aplikasi mobile cross-platform interaktif (OK OCE EventIT) terintegrasi ke backend Flask/PostgreSQL, integrasi modul presensi QR Code real-time, dan modul kuis evaluasi."
     },
     {
-      attribute: "COOL",
+      category: "DATABASE & DATA MODELING",
+      attribute: "DATABASE & DATA MODELING",
+      level: 93,
+      skills: ["PostgreSQL", "MySQL / MariaDB", "Supabase", "ERD & Relational Modeling", "Normalisasi (1NF – 3NF/BCNF)", "Query Optimization & Indexing", "ACID Compliance"],
+      sub: "PostgreSQL, MySQL, Supabase, Relational Modeling, Query Optimization, FIFO/Average HPP",
+      description: "Perancangan skema relasional enterprise skala multi-gudang, kalkulasi HPP/COGS (FIFO & Average), penulisan query SQL kompleks (JOIN, subquery, stored procedure), dan tuning performa database."
+    },
+    {
+      category: "PAYMENT GATEWAYS & INTEGRATIONS",
+      attribute: "PAYMENT GATEWAYS & INTEGRATIONS",
+      level: 92,
+      skills: ["Finpay Gateway (QRIS & Virtual Account)", "Fazpass OTP Gateway", "Mailgun Bulk Email API", "Fonnte / WhatsApp Gateway API", "Html5Qrcode / Barcode Scanner"],
+      sub: "Finpay (QRIS & VA), Fazpass OTP, Mailgun API, WhatsApp Gateway, Html5Qrcode Scanner",
+      description: "Integrasi gateway pembayaran dengan kalkulasi biaya admin dinamis (0.7%), auto-polling AJAX status transaksi real-time, verifikasi OTP multi-channel, dan pemindai barcode USB/kamera."
+    },
+    {
+      category: "REAL-TIME SYSTEMS & 3D WEBGL",
+      attribute: "REAL-TIME SYSTEMS & 3D WEBGL",
       level: 90,
-      sub: "Problem Solving, Production Triage, Technical Mentoring, Git Workflows",
-      description: "Tenang menghadapi insiden produksi, pengalaman Pemrograman Kompetitif (GEMASTIK), dan kepemimpinan dalam mengajar 50+ mahasiswa sebagai Asisten Lab."
+      skills: ["Three.js (WebGL)", "GLSL Shaders", "Supabase Realtime (CDC)", "LiveKit Cloud SFU (WebRTC Audio/Video)", "Web Audio API (Synthesizer)", "WebSockets"],
+      sub: "Three.js (WebGL), Supabase CDC, LiveKit WebRTC, Web Audio API, WebSockets",
+      description: "Pengembangan platform kolaborasi real-time sub-100ms (Oit), video/audio mesh calling latency rendah, rendering 3D diegetic Cyberpunk 60 FPS di browser, dan Web Audio chiptune synthesis."
+    },
+    {
+      category: "DATA SCIENCE & ANALYTICS",
+      attribute: "DATA SCIENCE & ANALYTICS",
+      level: 88,
+      skills: ["Python (pandas, NumPy)", "Power BI", "Tableau", "Looker Studio", "Exploratory Data Analysis (EDA)", "Linear Regression", "K-Means Clustering"],
+      sub: "Python (pandas, NumPy), Power BI, Tableau, Looker Studio, EDA, Machine Learning Dasar",
+      description: "Pembersihan dan transformasi data analitik, pemodelan statistik kuantitatif, analisis korelasi bisnis UMKM, dan perancangan executive dashboard interaktif multi-platform."
+    },
+    {
+      category: "DEVOPS, SECURITY & TOOLS",
+      attribute: "DEVOPS, SECURITY & TOOLS",
+      level: 91,
+      skills: ["Git & GitHub", "GitHub Actions (CI/CD)", "Postman API Testing", "Linux / VPS / SiteGround", "Wireshark Packet Analysis", "TCP/IP & VLSM Subnetting", "XSS & CSRF Hardening"],
+      sub: "Git & GitHub Actions, Postman, Linux, Wireshark, TCP/IP, Network Security, XSS/CSRF Prevention",
+      description: "Alur kerja version control standar industri, automasi pipeline deployment, pengujian endpoint API komprehensif, analisis paket jaringan OSI layer, dan hardening proteksi kerentanan web."
+    },
+    {
+      category: "PROBLEM SOLVING & LEADERSHIP",
+      attribute: "PROBLEM SOLVING & LEADERSHIP",
+      level: 93,
+      skills: ["Competitive Programming (C++)", "Algorithms & Data Structures", "Big-O Optimization", "Technical Mentoring", "Project Management", "Public Speaking"],
+      sub: "Competitive Programming (C++), GEMASTIK XVII, Himpunan Leadership, Mentoring 50+ Mahasiswa",
+      description: "Lulusan GEMASTIK XVII Pemrograman Kompetitif dengan penguasaan DP/Graph Theory/Greedy, pengalaman memimpin divisi organisasi (HIMP TIF), dan membimbing 50+ mahasiswa sebagai Asisten Laboratorium."
     }
   ],
+
+  // Backward compatibility alias
+  get stats() {
+    return this.skills;
+  },
 
   projects: [
     {

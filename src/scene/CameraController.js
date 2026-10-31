@@ -49,7 +49,7 @@ export class CameraController {
       },
       STATS: {
         name: 'STATS',
-        label: 'SUNKEN LOUNGE // BRAINDANCE & STATS',
+        label: 'SUNKEN LOUNGE // BRAINDANCE & SKILLS',
         // Seated on lounge couch directly at Braindance station, facing coffee table & 360 display
         position: new THREE.Vector3(2.70, 0.72, -2.80),
         target: new THREE.Vector3(2.95, 0.48, -1.80),

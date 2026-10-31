@@ -11,10 +11,11 @@ export class BDPlaybackOverlay {
   constructor(options = {}) {
     this.container = null;
     this.onDisengageCallback = options.onDisengage || null;
-    this.currentMode = 'EXPERIENCES'; // 'EXPERIENCES' | 'STATS'
+    this.currentMode = 'EXPERIENCES'; // 'EXPERIENCES' | 'SKILLS'
     this.currentExpIndex = 0;
     this.experiences = portfolioData.experiences || [];
-    this.stats = portfolioData.stats || [];
+    this.skills = portfolioData.skills || portfolioData.stats || [];
+    this.stats = this.skills;
 
     this.createDOM();
   }
@@ -62,8 +63,8 @@ export class BDPlaybackOverlay {
           <button class="bd-tab-btn ${this.currentMode === 'EXPERIENCES' ? 'active' : ''}" data-mode="EXPERIENCES">
             <span class="tab-code">[01]</span> CAREER JOURNEY
           </button>
-          <button class="bd-tab-btn ${this.currentMode === 'STATS' ? 'active' : ''}" data-mode="STATS">
-            <span class="tab-code">[02]</span> OPERATIVE ATTRIBUTES
+          <button class="bd-tab-btn ${this.currentMode === 'SKILLS' || this.currentMode === 'STATS' ? 'active' : ''}" data-mode="SKILLS">
+            <span class="tab-code">[02]</span> TECHNICAL SKILLS
           </button>
         </div>
 
@@ -76,10 +77,10 @@ export class BDPlaybackOverlay {
 
       <!-- Center Holographic AR Content -->
       <div class="bd-center-stage">
-        ${this.currentMode === 'EXPERIENCES' ? this.renderExperienceCard(exp, totalExp) : this.renderStatsMatrix()}
+        ${this.currentMode === 'EXPERIENCES' ? this.renderExperienceCard(exp, totalExp) : this.renderSkillsMatrix()}
       </div>
 
-      <!-- Bottom Timeline Deck (Only shown for EXPERIENCES, hidden for STATS) -->
+      <!-- Bottom Timeline Deck (Only shown for EXPERIENCES, hidden for SKILLS) -->
       ${this.currentMode === 'EXPERIENCES' ? `
         <div class="bd-bottom-deck">
           <div class="bd-deck-controls">
@@ -169,32 +170,44 @@ export class BDPlaybackOverlay {
     `;
   }
 
-  renderStatsMatrix() {
+  renderSkillsMatrix() {
     return `
       <div class="bd-stats-matrix" id="bd-current-shard">
         <div class="matrix-header">
-          <span class="matrix-title">// OPERATIVE ATTRIBUTES &amp; NEURAL ATTRIBUTES</span>
-          <span class="matrix-sub">SYS_DIAGNOSTICS: OPTIMAL (60 FPS)</span>
+          <span class="matrix-title">// TECHNICAL SKILLS &amp; PROFICIENCIES ARCHIVE</span>
+          <span class="matrix-sub">PROFICIENCY: PRODUCTION READY // 60 FPS</span>
         </div>
         <div class="matrix-scroll-body">
           <div class="matrix-grid">
-            ${this.stats.map(s => `
-              <div class="matrix-card">
-                <div class="card-head">
-                  <span class="card-attr">${s.attribute}</span>
-                  <span class="card-level">${s.level}<span class="level-max">/100</span></span>
+            ${this.skills.map(s => {
+              const skillItems = Array.isArray(s.skills) 
+                ? s.skills 
+                : (s.sub ? s.sub.split(',').map(x => x.trim()) : []);
+              return `
+                <div class="matrix-card">
+                  <div class="card-head">
+                    <span class="card-attr">${s.category || s.attribute}</span>
+                    <span class="card-level">${s.level}<span class="level-max">/100</span></span>
+                  </div>
+                  <div class="card-bar-bg">
+                    <div class="card-bar-fill" style="width: ${s.level}%"></div>
+                  </div>
+                  <div class="card-skills-chips">
+                    ${skillItems.map(item => `<span class="skill-tag">${item}</span>`).join('')}
+                  </div>
+                  <div class="card-desc">${s.description || ''}</div>
                 </div>
-                <div class="card-bar-bg">
-                  <div class="card-bar-fill" style="width: ${s.level}%"></div>
-                </div>
-                <div class="card-sub">${s.sub}</div>
-                <div class="card-desc">${s.description}</div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         </div>
       </div>
     `;
+  }
+
+  // Alias for backward compatibility
+  renderStatsMatrix() {
+    return this.renderSkillsMatrix();
   }
 
   bindEvents() {

@@ -501,7 +501,7 @@ class App {
         } else if (e.key === '2') {
           cyberAudio.playClick();
           if (this.bdOverlay) {
-            this.bdOverlay.currentMode = 'STATS';
+            this.bdOverlay.currentMode = 'SKILLS';
             this.bdOverlay.render();
           }
         }
