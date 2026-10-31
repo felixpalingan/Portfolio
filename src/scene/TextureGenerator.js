@@ -324,6 +324,7 @@ export class TextureGenerator {
 
   /**
    * Generates Cyberpunk 2077 Smart Mirror diegetic HUD texture with biometric avatar
+   * Renders the avatar photo full-bleed across the entire mirror with Cyberpunk HUD overlays.
    */
   static createSmartMirrorTexture() {
     const w = 1024;
@@ -335,32 +336,82 @@ export class TextureGenerator {
 
     const texture = new THREE.CanvasTexture(canvas);
 
-    function renderBase() {
-      // Deep semi-transparent cybernetic glass background
-      ctx.fillStyle = 'rgba(6, 10, 18, 0.88)';
+    function renderBase(img = null) {
+      // 1. Base dark background
+      ctx.fillStyle = '#060a12';
       ctx.fillRect(0, 0, w, h);
 
-      // Subtle background scanline matrix
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.04)';
-      for (let y = 0; y < h; y += 8) {
-        ctx.fillRect(0, y, w, 4);
+      // 2. Full-bleed Avatar Photo if available
+      if (img && img.complete && img.naturalWidth > 0) {
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const canvasRatio = w / h; // 1024 / 1280 = 0.8
+        let sW, sH, sX, sY;
+        if (imgRatio > canvasRatio) {
+          sH = img.naturalHeight;
+          sW = sH * canvasRatio;
+          sX = (img.naturalWidth - sW) / 2;
+          sY = 0;
+        } else {
+          sW = img.naturalWidth;
+          sH = sW / canvasRatio;
+          sX = 0;
+          sY = (img.naturalHeight - sH) / 2;
+        }
+        ctx.drawImage(img, sX, sY, sW, sH, 0, 0, w, h);
+
+        // Cyberpunk tint overlay across photo
+        ctx.fillStyle = 'rgba(6, 12, 24, 0.22)';
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        // Scanning grid placeholder if image is loading
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.05)';
+        for (let x = 0; x < w; x += 32) {
+          ctx.fillRect(x, 0, 1, h);
+        }
+        for (let y = 0; y < h; y += 32) {
+          ctx.fillRect(0, y, w, 1);
+        }
+      }
+
+      // 3. Cyberpunk Cinematic Lighting & Vignette Gradients
+      // Top Header Gradient (darkens top area for sharp HUD text)
+      const topGrad = ctx.createLinearGradient(0, 0, 0, 260);
+      topGrad.addColorStop(0, 'rgba(6, 10, 18, 0.92)');
+      topGrad.addColorStop(0.5, 'rgba(6, 10, 18, 0.60)');
+      topGrad.addColorStop(1, 'rgba(6, 10, 18, 0.05)');
+      ctx.fillStyle = topGrad;
+      ctx.fillRect(0, 0, w, 260);
+
+      // Bottom Overlay Gradient (darkens lower area where transparent buttons hover)
+      const bottomGrad = ctx.createLinearGradient(0, 560, 0, h);
+      bottomGrad.addColorStop(0, 'rgba(6, 10, 18, 0.05)');
+      bottomGrad.addColorStop(0.35, 'rgba(6, 10, 18, 0.55)');
+      bottomGrad.addColorStop(0.70, 'rgba(6, 10, 18, 0.78)');
+      bottomGrad.addColorStop(1, 'rgba(6, 10, 18, 0.94)');
+      ctx.fillStyle = bottomGrad;
+      ctx.fillRect(0, 560, w, h - 560);
+
+      // Subtle holographic scanlines
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.035)';
+      for (let y = 0; y < h; y += 6) {
+        ctx.fillRect(0, y, w, 2);
       }
 
       // Outer HUD frame with cyber brackets
       ctx.strokeStyle = '#00F0FF';
       ctx.lineWidth = 3;
-      ctx.strokeRect(30, 30, w - 60, h - 60);
+      ctx.strokeRect(24, 24, w - 48, h - 48);
 
       // Corner brackets
       ctx.fillStyle = '#FCEE09';
-      ctx.fillRect(20, 20, 36, 8);
-      ctx.fillRect(20, 20, 8, 36);
-      ctx.fillRect(w - 56, 20, 36, 8);
-      ctx.fillRect(w - 28, 20, 8, 36);
-      ctx.fillRect(20, h - 28, 36, 8);
-      ctx.fillRect(20, h - 56, 8, 36);
-      ctx.fillRect(w - 56, h - 28, 36, 8);
-      ctx.fillRect(w - 28, h - 56, 8, 36);
+      ctx.fillRect(16, 16, 36, 6);
+      ctx.fillRect(16, 16, 6, 36);
+      ctx.fillRect(w - 52, 16, 36, 6);
+      ctx.fillRect(w - 22, 16, 6, 36);
+      ctx.fillRect(16, h - 22, 36, 6);
+      ctx.fillRect(16, h - 52, 6, 36);
+      ctx.fillRect(w - 52, h - 22, 36, 6);
+      ctx.fillRect(w - 22, h - 52, 6, 36);
 
       // Top Header
       ctx.fillStyle = '#00F0FF';
@@ -378,123 +429,108 @@ export class TextureGenerator {
       ctx.textAlign = 'left';
 
       // Divider Line
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(56, 145);
       ctx.lineTo(w - 56, 145);
       ctx.stroke();
 
-      // =======================================================================
-      // AVATAR / PROFILE PHOTO BOX (Left Column: w=340, h=340)
-      // =======================================================================
-      const photoX = 56;
-      const photoY = 175;
-      const photoSize = 340;
+      // Facial Targeting Reticle & Eye Crosshair (Cyberpunk 2077 HUD scan)
+      const eyeX = w / 2;
+      const eyeY = 360;
 
-      ctx.fillStyle = '#0a101d';
-      ctx.fillRect(photoX, photoY, photoSize, photoSize);
-      ctx.strokeStyle = '#00F0FF';
-      ctx.lineWidth = 2.5;
-      ctx.strokeRect(photoX, photoY, photoSize, photoSize);
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.65)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(eyeX - 160, eyeY - 150, 320, 280);
 
-      // Biometric tag
-      ctx.fillStyle = '#00FF66';
-      ctx.font = 'bold 18px monospace';
-      ctx.fillText('[BIOMETRIC SCAN: 100% MATCH // ARASAKA ICE CLEAN]', 56, photoY + photoSize + 32);
+      // Corner reticle accents
+      ctx.fillStyle = '#FCEE09';
+      ctx.fillRect(eyeX - 164, eyeY - 154, 18, 4);
+      ctx.fillRect(eyeX - 164, eyeY - 154, 4, 18);
+      ctx.fillRect(eyeX + 146, eyeY - 154, 18, 4);
+      ctx.fillRect(eyeX + 160, eyeY - 154, 4, 18);
+      ctx.fillRect(eyeX - 164, eyeY + 126, 18, 4);
+      ctx.fillRect(eyeX - 164, eyeY + 112, 4, 18);
+      ctx.fillRect(eyeX + 146, eyeY + 126, 18, 4);
+      ctx.fillRect(eyeX + 160, eyeY + 112, 4, 18);
 
-      // =======================================================================
-      // OPERATIVE INFO & TELEMETRY (Right Column)
-      // =======================================================================
-      const infoX = 428;
-      const infoY = 195;
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 30px monospace';
-      ctx.fillText('ALMAKIUS FELIX BARIQ HEKOPUNG', infoX, infoY + 15);
-
-      ctx.fillStyle = '#00F0FF';
-      ctx.font = 'bold 20px monospace';
-      ctx.fillText('// FULL STACK DEVELOPER & PWA / MOBILE SPECIALIST', infoX, infoY + 52);
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-      ctx.font = '17px monospace';
-      ctx.fillText('AFFILIATION: OK OCE INDONESIA // UNIVERSITAS TRISAKTI', infoX, infoY + 90);
-      ctx.fillText('EDUCATION  : S1 SISTEM INFORMASI (IPK: 3.72 / 4.00)', infoX, infoY + 120);
-      ctx.fillText('CORE STACK : PHP (CI 4) | FLUTTER | FLASK | NEXT.JS | SQL', infoX, infoY + 150);
-      ctx.fillText('SPECIALTY  : FULL STACK WEB, PWA & REAL-TIME WEBRTC/CDC', infoX, infoY + 180);
-
-      // Status Pill
-      ctx.fillStyle = 'rgba(0, 255, 102, 0.15)';
-      ctx.fillRect(infoX, infoY + 215, 530, 48);
-      ctx.strokeStyle = '#00FF66';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(infoX, infoY + 215, 530, 48);
-
-      ctx.fillStyle = '#00FF66';
-      ctx.font = 'bold 19px monospace';
-      ctx.fillText('● STATUS: OPEN FOR FULL-STACK & PWA / MOBILE ROLES', infoX + 16, infoY + 246);
-
-      // Middle Divider
-      ctx.strokeStyle = '#FF003C';
-      ctx.lineWidth = 2.5;
+      // Retinal crosshair circle
       ctx.beginPath();
-      ctx.moveTo(56, 580);
-      ctx.lineTo(w - 56, 580);
+      ctx.arc(eyeX, eyeY - 30, 28, 0, Math.PI * 2);
+      ctx.strokeStyle = '#FCEE09';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // =======================================================================
-      // TRANSMISSION CHANNELS HEADER
-      // =======================================================================
-      ctx.fillStyle = '#FCEE09';
-      ctx.font = 'bold 26px monospace';
-      ctx.fillText('// DIRECT TRANSMISSION CHANNELS [SELECT 3D BUTTONS ON MIRROR]', 56, 625);
+      // Biometric scan tag
+      ctx.fillStyle = '#00FF66';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('◈ [KIROSHI OPTICS: BIOMETRIC MATCH 100% // ARASAKA ICE CLEAN] ◈', w / 2, eyeY + 160);
 
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.6)';
-      ctx.font = '18px monospace';
-      ctx.fillText('CLICK DIRECTLY ON THE 3D INTERFACE PLATES BELOW TO ENGAGE COMMS', 56, 655);
+      // Operative Info Telemetry Card (Glassmorphic HUD panel)
+      const cardY = eyeY + 180;
+      ctx.fillStyle = 'rgba(6, 12, 24, 0.80)';
+      ctx.fillRect(56, cardY, w - 112, 126);
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(56, cardY, w - 112, 126);
+
+      // Left Accent Strip on Operative Card
+      ctx.fillStyle = '#00F0FF';
+      ctx.fillRect(56, cardY, 6, 126);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 28px monospace';
+      ctx.fillText('ALMAKIUS FELIX BARIQ HEKOPUNG', 82, cardY + 36);
+
+      ctx.fillStyle = '#00F0FF';
+      ctx.font = 'bold 18px monospace';
+      ctx.fillText('// FULL STACK DEVELOPER & PWA / MOBILE SPECIALIST', 82, cardY + 68);
+
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = '16px monospace';
+      ctx.fillText('AFFILIATION: OK OCE INDONESIA // UNIVERSITAS TRISAKTI', 82, cardY + 96);
+      ctx.fillText('CORE: PHP (CI 4) | FLUTTER | FLASK | NEXT.JS | SUPABASE', 82, cardY + 118);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#00FF66';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText('● STATUS: OPEN FOR CONTRACTS', w - 80, cardY + 36);
+
+      // Transmission Channels Header (above the 3D buttons)
+      const transY = cardY + 148;
+      ctx.strokeStyle = '#FF003C';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(56, transY);
+      ctx.lineTo(w - 56, transY);
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#FCEE09';
+      ctx.font = 'bold 22px monospace';
+      ctx.fillText('// DIRECT TRANSMISSION CHANNELS [3D HOLOGRAPHIC OVERLAY]', 56, transY + 32);
+
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.75)';
+      ctx.font = '15px monospace';
+      ctx.fillText('CLICK THE FLOATING 3D GLASS BUTTONS OVERLAYING THE MIRROR BELOW TO ENGAGE COMMS', 56, transY + 58);
     }
 
     renderBase();
 
-    // Check cache first for instant synchronous render
-    const photoX = 56;
-    const photoY = 175;
-    const photoSize = 340;
-
-    const drawAvatar = (img) => {
-      renderBase();
-      ctx.drawImage(img, photoX, photoY, photoSize, photoSize);
-
-      // Cyan HUD facial targeting brackets overlay on top of photo
-      ctx.strokeStyle = '#00F0FF';
-      ctx.lineWidth = 2.5;
-      ctx.strokeRect(photoX + 30, photoY + 30, photoSize - 60, photoSize - 60);
-
-      // Retinal crosshair
-      ctx.beginPath();
-      ctx.arc(photoX + photoSize / 2, photoY + photoSize / 2 - 20, 24, 0, Math.PI * 2);
-      ctx.strokeStyle = '#FCEE09';
-      ctx.stroke();
-
-      texture.needsUpdate = true;
-    };
-
     let cachedAvatar = TextureGenerator.projectImgCache.get('/default.jpg') || TextureGenerator.projectImgCache.get('/felix_avatar.jpg');
     if (cachedAvatar && cachedAvatar.complete && cachedAvatar.naturalWidth > 0) {
-      drawAvatar(cachedAvatar);
+      renderBase(cachedAvatar);
+      texture.needsUpdate = true;
     } else {
-      // Biometric scanning loading indicator
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
-      ctx.font = 'bold 15px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('[ BIOMETRIC SCAN IN PROGRESS... ]', photoX + photoSize / 2, photoY + photoSize / 2);
-
       const avatarImg = new Image();
       avatarImg.crossOrigin = 'anonymous';
       avatarImg.onload = () => {
         TextureGenerator.projectImgCache.set('/default.jpg', avatarImg);
-        drawAvatar(avatarImg);
+        renderBase(avatarImg);
+        texture.needsUpdate = true;
       };
       avatarImg.src = '/default.jpg';
     }
@@ -504,6 +540,7 @@ export class TextureGenerator {
 
   /**
    * Generates high-res Cyberpunk 3D button canvas textures (normal, hover, success)
+   * Styled as translucent holographic glass floating on top of the mirror photo.
    */
   static createMirrorButtonTexture(config) {
     const { icon, title, subtitle, color = '#00F0FF', isHovered = false, isSuccess = false } = config;
@@ -514,11 +551,12 @@ export class TextureGenerator {
     canvas.height = h;
     const ctx = canvas.getContext('2d');
 
-    // Background
-    ctx.fillStyle = isHovered ? 'rgba(0, 240, 255, 0.28)' : 'rgba(8, 14, 26, 0.94)';
-    if (isSuccess) ctx.fillStyle = 'rgba(0, 255, 102, 0.35)';
+    // Translucent cybernetic glass background (transparent so photo shows through!)
+    ctx.fillStyle = isSuccess 
+      ? 'rgba(0, 255, 102, 0.45)' 
+      : (isHovered ? 'rgba(0, 240, 255, 0.35)' : 'rgba(6, 14, 28, 0.45)');
 
-    // Angled corner clip
+    // Angled corner clip (Cyberpunk 2077 HUD style)
     ctx.beginPath();
     ctx.moveTo(16, 0);
     ctx.lineTo(w, 0);
@@ -529,8 +567,15 @@ export class TextureGenerator {
     ctx.closePath();
     ctx.fill();
 
-    // Border
-    ctx.strokeStyle = isSuccess ? '#00FF66' : (isHovered ? '#FFFFFF' : color);
+    // Subtle inner glass highlight gradient
+    const innerGrad = ctx.createLinearGradient(0, 0, 0, h);
+    innerGrad.addColorStop(0, isHovered ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 240, 255, 0.12)');
+    innerGrad.addColorStop(1, 'rgba(0, 0, 0, 0.22)');
+    ctx.fillStyle = innerGrad;
+    ctx.fill();
+
+    // Glowing cyber border
+    ctx.strokeStyle = isSuccess ? '#00FF66' : (isHovered ? '#FFFFFF' : 'rgba(0, 240, 255, 0.85)');
     ctx.lineWidth = isHovered ? 3.5 : 2;
     ctx.stroke();
 
@@ -541,14 +586,14 @@ export class TextureGenerator {
     ctx.fillRect(w - 14, h - 4, 14, 4);
     ctx.fillRect(w - 4, h - 14, 4, 14);
 
-    // Left Icon Box
-    ctx.fillStyle = isHovered ? color : 'rgba(0, 240, 255, 0.15)';
+    // Left Icon Box (frosted translucent glass)
+    ctx.fillStyle = isHovered ? color : 'rgba(0, 240, 255, 0.18)';
     ctx.fillRect(20, 24, 60, 88);
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = isSuccess ? '#00FF66' : color;
     ctx.lineWidth = 1.5;
     ctx.strokeRect(20, 24, 60, 88);
 
-    ctx.fillStyle = isHovered ? '#070a10' : color;
+    ctx.fillStyle = isHovered ? '#070a10' : (isSuccess ? '#00FF66' : color);
     ctx.font = 'bold 36px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -558,18 +603,27 @@ export class TextureGenerator {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
 
-    // Title
+    // Title with high-contrast text shadow for maximum legibility over background photo
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+
     ctx.fillStyle = isSuccess ? '#00FF66' : (isHovered ? '#FFFFFF' : '#EAF2FF');
     ctx.font = 'bold 24px monospace';
     ctx.fillText(isSuccess ? '[✓ COPIED TO CLIPBOARD]' : title, 98, 58);
 
     // Subtitle
-    ctx.fillStyle = isSuccess ? '#00FF66' : (isHovered ? color : 'rgba(0, 240, 255, 0.7)');
+    ctx.fillStyle = isSuccess ? '#00FF66' : (isHovered ? color : 'rgba(0, 240, 255, 0.95)');
     ctx.font = 'bold 18px monospace';
     ctx.fillText(isSuccess ? 'felixbariq@gmail.com' : subtitle, 98, 92);
 
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+
     // Right Arrow badge
-    ctx.fillStyle = isHovered ? color : 'rgba(255, 255, 255, 0.6)';
+    ctx.fillStyle = isHovered ? color : 'rgba(255, 255, 255, 0.75)';
     ctx.font = 'bold 24px monospace';
     ctx.textAlign = 'right';
     ctx.fillText(icon === '◄' ? '◄' : '↗', w - 24, 76);
@@ -578,9 +632,6 @@ export class TextureGenerator {
     return texture;
   }
 
-  /**
-   * Generates interactive project repository terminal canvas for workstation ultrawide monitor
-   */
   /**
    * Card layout geometry helper for Left Monitor
    */

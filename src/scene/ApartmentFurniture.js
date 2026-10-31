@@ -685,6 +685,7 @@ export class ApartmentFurniture {
     // Properly oriented facing -Z (towards bed and COMM camera) so text reads forwards
     this.smartMirrorDisplay.rotation.y = Math.PI;
     this.smartMirrorDisplay.position.set(0, 1.55, 2.180);
+    this.smartMirrorDisplay.renderOrder = 10;
     bathGroup.add(this.smartMirrorDisplay);
 
     // 6. 3D INTERACTIVE BUTTONS ON MIRROR FACE (Facing Bed & Camera)
@@ -743,9 +744,9 @@ export class ApartmentFurniture {
       });
 
       const chassisMat = new THREE.MeshStandardMaterial({
-        color: 0x101622,
-        roughness: 0.4,
-        metalness: 0.8,
+        color: 0x00f0ff,
+        roughness: 0.1,
+        metalness: 0.9,
         transparent: true,
         opacity: 0.0
       });
@@ -754,9 +755,11 @@ export class ApartmentFurniture {
       // Properly oriented facing -Z (towards bed and COMM camera)
       btnMesh.rotation.y = Math.PI;
       btnMesh.position.set(cfg.pos.x, cfg.pos.y, 2.165);
+      btnMesh.renderOrder = 20;
 
       const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
       chassisMesh.position.set(cfg.pos.x, cfg.pos.y, 2.176);
+      chassisMesh.renderOrder = 15;
 
       btnMesh.userData = {
         id: cfg.id,
@@ -830,7 +833,7 @@ export class ApartmentFurniture {
           });
           if (b.userData.chassis) {
             gsap.to(b.userData.chassis.material, {
-              opacity: 0.92,
+              opacity: 0.12, // Subtle translucent glass backing allowing photo to shine through
               duration: 0.35,
               delay: 0.18 + i * 0.06,
               ease: 'power2.out'
