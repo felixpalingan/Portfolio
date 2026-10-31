@@ -139,7 +139,9 @@ graph TD
 ├── public/                  # Static assets served at root (icons, avatars)
 │   ├── default.jpg          # Developer avatar image
 │   ├── ironpixels_icon.png  # IronPixels project logo
-│   └── oit_logo.png         # Oit project logo
+│   ├── oit_logo.png         # Oit project logo
+│   ├── okoce_icon.png       # OK OCE EventIT project logo
+│   └── slop_dungeon_logo.jpg # Slop Dungeon project logo
 ├── src/
 │   ├── data/
 │   │   └── portfolioData.js # Centralized profile, stats, projects & experience data
@@ -207,16 +209,16 @@ This project is open-source and released under the terms of the [MIT License](LI
 
 ## 👤 Author
 
-**Felix Palingan (Almakius Felix Bariq Hekopung)**  
+**Felix Palingan**  
 *Full Stack Web Developer & Creative Engineer*
 
 - **Live Portfolio**: [https://portfolio-felix-bariq.vercel.app](https://portfolio-felix-bariq.vercel.app)
 - **GitHub**: [@felixpalingan](https://github.com/felixpalingan)
-- **LinkedIn**: [Almakius Felix Bariq Hekopung](https://www.linkedin.com/in/almakius-felix-bariq-hekopung/)
+- **LinkedIn**: [Felix Palingan](https://www.linkedin.com/in/almakius-felix-bariq-hekopung/)
 - **Email**: [felixbariq@gmail.com](mailto:felixbariq@gmail.com)
 
 ---
 
 <p align="center">
-  <sub>Megabuilding H10 // Watson District // Night City // Indonesia &copy; 2025-2026 Felix Palingan</sub>
+  <sub>Megabuilding H10 // Watson District // Night City // Indonesia © 2025-2026 Felix Palingan</sub>
 </p>
